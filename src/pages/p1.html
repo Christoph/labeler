@@ -1,0 +1,125 @@
+<template>
+  <div class="row">
+    <div class="col s3">
+      <label for="progressBar">
+        Labeling Progress: ${progress | numberFormat:'00.'}%
+      </label>
+      <div class="progress" id="progressBar">
+          <div class="determinate" style.bind="progressStyle"></div>
+      </div>
+      <div class="form-group">
+          <input type="text" value.bind="filters[0].value" placeholder="Filter Titles" class="form-control"/>
+      </div>
+      <p>
+        <md-checkbox checked.bind="filters[1].value">Show finished</md-checkbox>
+      </p>
+      <table class="striped"
+      aurelia-table="data.bind: meta; display-data.bind: $displayData;
+      current-page.bind: currentPage; page-size.bind: pageSize; total-items.bind: totalItems;
+      filters.bind: filters; api.bind: tableApi">
+          <thead>
+            <tr>
+                <th aut-sort="key: Title; default: desc">Title</th>
+                <th aut-sort="key: Done; default: asc">Done</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr repeat.for="point of $displayData" aut-select="row.bind: point; mode: single; selected-class: highlight"
+                select.delegate="rowSelected($event.detail.row)">
+                <td>${point["Title"]}</td>
+                <td><md-checkbox checked.bind="point['Done']" change.delegate="statusChanged($event.target.checked)"></md-checkbox></td>
+                <!-- <td><a href="mailto:${user.email}">${user.email}</a></td>
+                <td>${user.address.street + ', ' + user.address.city}</td> -->
+            </tr>
+          </tbody>
+      </table>
+      <div class="row">
+        <div class="col-md-9">
+            <aut-pagination current-page.bind="currentPage" page-size.bind="pageSize" total-items.bind="totalItems"
+                                   pagination-size.bind="5" boundary-links.bind="true"> </aut-pagination>
+        </div>
+
+        <div class="col-md-3">
+            <div class="form-inline">
+                <div class="form-group pull-right">
+                    <select value.bind="pageSize" id="pageSize" class="form-control">
+                        <option model.bind="5">5</option>
+                        <option model.bind="10">10</option>
+                        <option model.bind="20">20</option>
+                        <option model.bind="50">50</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <div class="col s4">
+      <h3><strong>Title:</strong> ${Title}</h3>
+      <br>
+      <strong>Abstract:</strong> ${Abstract}
+      <br>
+      <br>
+      <strong>Keywords:</strong> ${Keywords}
+      <br>
+      <strong>DOI:</strong> ${DOI}
+      <div class="collapsible-accordion">
+        <ul md-collapsible="accordion: false;">
+          <li>
+            <div class="collapsible-header"><i class="far fa-poll-h"></i>Result from the Dataset</div>
+            <div class="collapsible-body">
+              <p repeat.for="clust of Clusters">${clust}</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <strong>Recommendations:</strong>
+      <table>
+        <thead><tr>
+          <th>Used</th>
+          <th>Name</th>
+          <th>Source</th>
+        </tr></thead>
+        <tbody>
+          <tr repeat.for="rec of recommendations">
+            <td><md-checkbox checked.bind="rec['used']"></md-checkbox></td>
+            <td>${rec.name}</td>
+            <td>${rec.type}</td>
+          </tr>
+        </tbody>
+      </table>
+      <br>
+      <button style="width: 100%;" md-button click.trigger="done()">Done</button>
+    </div>
+    <div  class="col s5">
+      <div class="row">
+        <label for="searchField">
+          Search:
+        </label>
+        <input type="text" value.bind="search_term" id="searchField"
+        keyup.delegate="marking() & debounce">
+        <strong>Search Results:</strong> ${search_results}
+        <div class="collapsible-accordion">
+          <ul md-collapsible="accordion: false;">
+            <li id="search">
+              <div class="collapsible-header"><i class="far fa-print-search"></i>Search Results</div>
+              <div id="search" class="collapsible-body"><p repeat.for="sent of search_sentences">${sent}</p></div>
+            <li id="text">
+            <li class="active">
+              <div class="collapsible-header"><i class="far fa-book-open"></i>Fulltext</div>
+              <div id="context" class="collapsible-body">${Fulltext}</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- <select md-select="label: Select a Dataset for the Projection" value.bind="selected_dataset" change.trigger="DatasetSelected()">
+    <option repeat.for="item of datasets" model.bind="item">${item}</option>
+  </select>
+  <select md-select="label: Select a Projection" value.bind="selected_projection" change.trigger="ProjectionSelected()">
+    <option repeat.for="item of projections" model.bind="item">${item}</option>
+  </select> -->
+
+  <!-- <scatter-plot></scatter-plot> -->
+  <!-- <bar-chart></bar-chart> -->
+</template>

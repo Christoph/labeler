@@ -1,0 +1,30 @@
+<template>
+  <require from="../custom_elements/document-row.html"></require>
+  <require from="../custom_elements/small-bar"></require>
+
+  <div class="container">
+    <div class="row one-page">
+      <div class="col m6 offset-m3 areas">
+        <div repeat.for="class of classes">
+          <a class="class-selector" click.trigger="rowSelected(class['Title'])" href="#selection"
+            md-button="flat: true; large: true;">${class["Title"]}</a>
+        </div>
+      </div>
+
+    </div>
+    <div id="selection" class="row one-page">
+      <div class="col m4 areas">
+        aasdfadfadf
+      </div>
+      <div class="col m4 areas">
+        <div repeat.for="doc of selected_documents">
+          ${doc["Document"]["Title"]}
+        </div>
+      </div>
+      <div class="col m4 areas">
+        cnnnnnnnnnnnnnnnnnnnnvadvanfancoaofacndh
+      </div>
+    </div>
+  </div>
+
+</template>

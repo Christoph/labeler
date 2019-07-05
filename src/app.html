@@ -1,3 +1,23 @@
 <template>
-  <h1>${message}</h1>
+  <require from="custom.css"></require>
+  <require from="@fortawesome/fontawesome-pro/css/all.css"></require>
+  <require from="materialize-css/dist/css/materialize.css"></require>
+
+
+  <div class="row">
+    <ul md-tabs="fixed: true;" class="z-depth-1">
+      <li md-waves="color: primary;"><a href="#tab_1">Prototype 1</a></li>
+      <li md-waves="color: primary;"><a href="#tab_2">Prototype 2</a></li>
+      <li md-waves="color: primary;"><a class="active" href="#tab_3">Prototype 3</a></li>
+    </ul>
+  </div>
+  <div id="tab_1" class="tab-content z-depth-1">
+    <compose view-model="./pages/p1"></compose>
+  </div>
+  <div id="tab_2" class="tab-content z-depth-1">
+    <compose view-model="./pages/p2"></compose>
+  </div>
+  <div id="tab_3" class="tab-content z-depth-1">
+    <compose view-model="./pages/p3"></compose>
+  </div>
 </template>

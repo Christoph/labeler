@@ -1,0 +1,56 @@
+.aut-sort::before{
+  font-family: "Font Awesome 5 Pro";
+  padding-right: 0.5em;
+  width: 1.28571429em;
+  display: inline-block;
+  text-align: center;
+}
+
+.aut-sortable::before{
+    content: "\f0dc";
+}
+
+.aut-asc::before{
+    content: "\f160";
+}
+
+.aut-desc::before{
+    content: "\f161";
+}
+
+.au-target .highlight{
+    background-color: rgba(3, 155, 230, 0.20)!important;
+    color: #039be5;
+}
+
+mark {
+    background-color: rgba(3, 155, 230, 0.20)!important;
+    color: black;
+}
+
+[md-tabs] .waves-ripple {
+  position: static;
+}
+
+.small-bar {
+  fill: green;
+}
+
+.row .selectionList {
+  margin-bottom: 0;
+}
+
+.one-page {
+  height: calc(100vh - 20px);
+}
+
+.areas {
+  height: 100%;
+  overflow-y: auto;
+  overflow-wrap: break-word;
+}
+
+.class-selector {
+  height: 32px!important;
+  line-height: 32px!important;
+}
