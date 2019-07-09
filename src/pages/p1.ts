@@ -2,7 +2,7 @@ import { autoinject } from 'aurelia-dependency-injection';
 import { DataStore } from 'data-store';
 import * as Mark from 'mark.js';
 
-import { connectTo, dispatchify  } from 'aurelia-store';
+import { connectTo, dispatchify } from 'aurelia-store';
 import { State } from 'store/state';
 import { selectProjection, selectDataset } from 'store/actions/data';
 
@@ -20,7 +20,7 @@ export class P1 {
 
   public totalItems = 0;
   public progress = 0;
-  public progressStyle = "width: "+this.progress+"%";
+  public progressStyle = "width: " + this.progress + "%";
   public Title;
   public Abstract;
   public Clusters;
@@ -36,8 +36,8 @@ export class P1 {
   public search_marking;
 
   public filters = [
-        {value: '', keys: ['Title']},
-        {value: false, keys: ['Done']},
+    { value: '', keys: ['Title'] },
+    { value: false, keys: ['Done'] },
   ];
 
   public labelingStatus = [false, true];
@@ -49,7 +49,6 @@ export class P1 {
 
   constructor(public store: DataStore) {
     this.meta = store.getMeta()
-    console.log(this.meta)
 
     this.fulltext_marking = new Mark("#context");
     this.search_marking = new Mark("#search");
@@ -64,7 +63,7 @@ export class P1 {
     // dispatchify(selectProjection)(this.selected_projection);
   }
 
-  rowSelected(row){
+  rowSelected(row) {
     this.selectedRow = row;
 
     this.Title = this.selectedRow.Title
@@ -80,11 +79,11 @@ export class P1 {
   }
 
   marking() {
-    if(this.search_term.length > 1) {
+    if (this.search_term.length > 1) {
       this.fulltext_marking.unmark();
       this.fulltext_marking.mark(this.search_term, {
         "done": (counter: number) => {
-            this.search_results = counter
+          this.search_results = counter
         }
       });
 
@@ -99,45 +98,45 @@ export class P1 {
     let indices = this.getIndicesOf(this.search_term, this.Fulltext, false)
     this.search_sentences = new Array()
 
-    for(let index of indices) {
-      let text = this.Fulltext.substring(index-40, index+this.search_term.length+40)
-      this.search_sentences.push("..."+text+"...")
+    for (let index of indices) {
+      let text = this.Fulltext.substring(index - 40, index + this.search_term.length + 40)
+      this.search_sentences.push("..." + text + "...")
     }
   }
 
   getIndicesOf(searchStr: string, str: string, caseSensitive: boolean) {
     var searchStrLen = searchStr.length;
     if (searchStrLen == 0) {
-        return [];
+      return [];
     }
     var startIndex = 0, index: number, indices = [];
     if (!caseSensitive) {
-        str = str.toLowerCase();
-        searchStr = searchStr.toLowerCase();
+      str = str.toLowerCase();
+      searchStr = searchStr.toLowerCase();
     }
     while ((index = str.indexOf(searchStr, startIndex)) > -1) {
-        indices.push(index);
-        startIndex = index + searchStrLen;
+      indices.push(index);
+      startIndex = index + searchStrLen;
     }
     return indices;
   }
 
   collapsibleOpen(element) {
-    if(element.id === "search") {
+    if (element.id === "search") {
       this.search_marking.unmark();
       this.search_marking.mark(this.search_term);
     }
   }
 
   statusChanged(status: boolean) {
-    if(status) {
-      this.progress = this.progress + (1/this.totalItems)
+    if (status) {
+      this.progress = this.progress + (1 / this.totalItems)
     }
     else {
-      this.progress = this.progress - (1/this.totalItems)
+      this.progress = this.progress - (1 / this.totalItems)
     }
 
-    this.progressStyle = "width: "+this.progress+"%";
+    this.progressStyle = "width: " + this.progress + "%";
 
     this.updateFilter()
   }
@@ -151,10 +150,10 @@ export class P1 {
     this.selectedRow.Done = true;
     this.statusChanged(true);
 
-    if(this.$displayData.length-1 > 0) {
+    if (this.$displayData.length - 1 > 0) {
       let current_id = this.selectedRow.Key
       let position = this.$displayData.findIndex(x => x.Key === current_id)
-      let next = this.meta[this.$displayData[position+1].Key];
+      let next = this.meta[this.$displayData[position + 1].Key];
       next.$isSelected = true;
       this.tableApi.revealItem(next);
 

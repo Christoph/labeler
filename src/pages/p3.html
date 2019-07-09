@@ -4,13 +4,22 @@
 
   <div class="container">
     <div class="row one-page">
-      <div class="col m6 offset-m3 areas">
-        <div repeat.for="class of classes">
-          <a class="class-selector" click.trigger="rowSelected(class['Title'])" href="#selection"
-            md-button="flat: true; large: true;">${class["Title"]}</a>
+      <div class="col m4 areas">
+        <md-collection view-model.ref="list">
+          <md-collection-item repeat.for="cls of classes" style="position: relative"
+            class="${ selector.isSelected ? 'selected' : '' } ${ selector.mdDisabled ? 'disabled' : '' }">
+            <p>${cls["Title"]}</p>
+            <md-collection-selector class="secondary-content" view-model.ref="selector" item.bind="cls"
+              md-on-selection-changed.delegate="onSelectionChanged($event)">
+            </md-collection-selector>
+          </md-collection-item>
+        </md-collection>
+      </div>
+      <div class="col m8 areas">
+        <div repeat.for="doc of meta">
+          ${doc["Title"]}
         </div>
       </div>
-
     </div>
     <div id="selection" class="row one-page">
       <div class="col m4 areas">

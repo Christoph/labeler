@@ -1,4 +1,4 @@
-.aut-sort::before{
+.aut-sort::before {
   font-family: "Font Awesome 5 Pro";
   padding-right: 0.5em;
   width: 1.28571429em;
@@ -6,26 +6,26 @@
   text-align: center;
 }
 
-.aut-sortable::before{
-    content: "\f0dc";
+.aut-sortable::before {
+  content: "\f0dc";
 }
 
-.aut-asc::before{
-    content: "\f160";
+.aut-asc::before {
+  content: "\f160";
 }
 
-.aut-desc::before{
-    content: "\f161";
+.aut-desc::before {
+  content: "\f161";
 }
 
-.au-target .highlight{
-    background-color: rgba(3, 155, 230, 0.20)!important;
-    color: #039be5;
+.au-target .highlight {
+  background-color: rgba(3, 155, 230, 0.20) !important;
+  color: #039be5;
 }
 
 mark {
-    background-color: rgba(3, 155, 230, 0.20)!important;
-    color: black;
+  background-color: rgba(3, 155, 230, 0.20) !important;
+  color: black;
 }
 
 [md-tabs] .waves-ripple {
@@ -41,6 +41,7 @@ mark {
 }
 
 .one-page {
+  width: 100vw;
   height: calc(100vh - 20px);
 }
 
@@ -50,7 +51,11 @@ mark {
   overflow-wrap: break-word;
 }
 
+.col m4>.class-selector {
+  width: 100%;
+}
+
 .class-selector {
-  height: 32px!important;
-  line-height: 32px!important;
+  height: 32px !important;
+  line-height: 32px !important;
 }
