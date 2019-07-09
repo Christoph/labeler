@@ -109,6 +109,10 @@ export class P2 {
     console.log(event)
   }
 
+  createEvidence(label, doc) {
+    return "test"
+  }
+
   onSelectionChanged(e) {
     let selected = this.list.getSelected();
     let names = selected.map(i => i["Title"]);

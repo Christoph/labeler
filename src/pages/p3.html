@@ -17,7 +17,17 @@
       </div>
       <div class="col m8 areas">
         <div repeat.for="doc of meta">
-          ${doc["Title"]}
+          <strong>
+            ${doc["Title"]}
+          </strong>
+          <div repeat.for="rec of doc['Clusters']">
+            ${rec}
+            <br>
+            <i>
+              ${createEvidence(rec, doc)}
+            </i>
+          </div>
+          <br>
         </div>
       </div>
     </div>
