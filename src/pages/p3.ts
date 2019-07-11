@@ -171,13 +171,14 @@ export class P2 {
     //let sim = this.engine.search(top_terms.map(x => x.term).join(" "));
     //console.log(label, this.meta[sim[1][0]])
 
-    return overlap
+    return sentences
   }
 
   getSentences(words, text) {
+    let result = text.matchAll("[^.]*" + words[0] + "[^.]*\.")
+    let arr = Array.from(result).map(x => x[0]);
 
-
-    return ""
+    return arr
   }
 
   detectOverlap(label, doc, top_words, max_out_terms = 3) {

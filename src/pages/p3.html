@@ -23,9 +23,12 @@
           <div repeat.for="rec of doc['Clusters']">
             ${rec}
             <br>
-            <i>
-              ${createEvidence(rec, doc)}
-            </i>
+            <span repeat.for="sent of createEvidence(rec, doc)">
+              <i>
+                ${sent}
+              </i>
+              <br>
+            </span>
           </div>
           <br>
         </div>
