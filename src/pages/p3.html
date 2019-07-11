@@ -9,9 +9,11 @@
           <md-collection-item repeat.for="cls of classes" style="position: relative"
             class="${ selector.isSelected ? 'selected' : '' } ${ selector.mdDisabled ? 'disabled' : '' }">
             <p>${cls["Title"]}</p>
-            <md-collection-selector class="secondary-content" view-model.ref="selector" item.bind="cls"
-              md-on-selection-changed.delegate="onSelectionChanged($event)">
-            </md-collection-selector>
+            <p>
+              <md-collection-selector class="secondary-content" view-model.ref="selector" item.bind="cls"
+                md-on-selection-changed.delegate="onSelectionChanged($event)">
+              </md-collection-selector>
+            </p>
           </md-collection-item>
         </md-collection>
       </div>
@@ -34,19 +36,6 @@
           </div>
           <br>
         </div>
-      </div>
-    </div>
-    <div id="selection" class="row one-page">
-      <div class="col m4 areas">
-        aasdfadfadf
-      </div>
-      <div class="col m4 areas">
-        <div repeat.for="doc of selected_documents">
-          ${doc["Document"]["Title"]}
-        </div>
-      </div>
-      <div class="col m4 areas">
-        cnnnnnnnnnnnnnnnnnnnnvadvanfancoaofacndh
       </div>
     </div>
   </div>
