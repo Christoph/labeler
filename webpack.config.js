@@ -4,9 +4,16 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const DuplicatePackageCheckerPlugin = require('duplicate-package-checker-webpack-plugin');
 const project = require('./aurelia_project/aurelia.json');
-const { AureliaPlugin, ModuleDependenciesPlugin } = require('aurelia-webpack-plugin');
-const { ProvidePlugin } = require('webpack');
-const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+const {
+  AureliaPlugin,
+  ModuleDependenciesPlugin
+} = require('aurelia-webpack-plugin');
+const {
+  ProvidePlugin
+} = require('webpack');
+const {
+  BundleAnalyzerPlugin
+} = require('webpack-bundle-analyzer');
 
 // config helpers:
 const ensureArray = (config) => config && (Array.isArray(config) ? config : [config]) || [];
@@ -20,17 +27,26 @@ const srcDir = path.resolve(__dirname, 'src');
 const nodeModulesDir = path.resolve(__dirname, 'node_modules');
 const baseUrl = '';
 
-const cssRules = [
-  { loader: 'css-loader' },
-];
+const cssRules = [{
+  loader: 'css-loader'
+}, ];
 
-module.exports = ({production, server, extractCss, coverage, analyze, karma} = {}) => ({
+module.exports = ({
+  production,
+  server,
+  extractCss,
+  coverage,
+  analyze,
+  karma
+} = {}) => ({
   resolve: {
     extensions: ['.ts', '.js'],
     modules: [srcDir, 'node_modules'],
     // Enforce single aurelia-binding, to avoid v1/v2 duplication due to
     // out-of-date dependencies on 3rd party aurelia plugins
-    alias: { 'aurelia-binding': path.resolve(__dirname, 'node_modules/aurelia-binding') }
+    alias: {
+      'aurelia-binding': path.resolve(__dirname, 'node_modules/aurelia-binding')
+    }
   },
   entry: {
     app: ['aurelia-bootstrapper']
@@ -86,7 +102,7 @@ module.exports = ({production, server, extractCss, coverage, analyze, karma} = {
         },
         common: { // common chunk
           name: 'common',
-          minChunks: 2,   // Creates a new chunk if a module is shared between different chunks more than twice
+          minChunks: 2, // Creates a new chunk if a module is shared between different chunks more than twice
           chunks: 'async',
           priority: 0,
           reuseExistingChunk: true,
@@ -95,7 +111,9 @@ module.exports = ({production, server, extractCss, coverage, analyze, karma} = {
       }
     }
   },
-  performance: { hints: false },
+  performance: {
+    hints: false
+  },
   devServer: {
     contentBase: outDir,
     // serve index.html for all 404 (required for push-state)
@@ -108,7 +126,11 @@ module.exports = ({production, server, extractCss, coverage, analyze, karma} = {
       // only when the issuer is a .js/.ts file, so the loaders are not applied inside html templates
       {
         test: /\.css$/i,
-        issuer: [{ not: [{ test: /\.html$/i }] }],
+        issuer: [{
+          not: [{
+            test: /\.html$/i
+          }]
+        }],
         use: extractCss ? [{
             loader: MiniCssExtractPlugin.loader
           },
@@ -117,27 +139,69 @@ module.exports = ({production, server, extractCss, coverage, analyze, karma} = {
       },
       {
         test: /\.css$/i,
-        issuer: [{ test: /\.html$/i }],
+        issuer: [{
+          test: /\.html$/i
+        }],
         // CSS required in templates cannot be extracted safely
         // because Aurelia would try to require it again in runtime
         use: cssRules
       },
-      { test: /\.html$/i, loader: 'html-loader' },
-      { test: /\.ts$/, loader: "ts-loader" },
+      {
+        test: /\.html$/i,
+        loader: 'html-loader'
+      },
+      {
+        test: /\.ts$/,
+        loader: "ts-loader"
+      },
       // use Bluebird as the global Promise implementation:
-      { test: /[\/\\]node_modules[\/\\]bluebird[\/\\].+\.js$/, loader: 'expose-loader?Promise' },
+      {
+        test: /[\/\\]node_modules[\/\\]bluebird[\/\\].+\.js$/,
+        loader: 'expose-loader?Promise'
+      },
       // embed small images and fonts as Data Urls and larger ones as files:
-      { test: /\.(png|gif|jpg|cur)$/i, loader: 'url-loader', options: { limit: 8192 } },
-      { test: /\.woff2(\?v=[0-9]\.[0-9]\.[0-9])?$/i, loader: 'url-loader', options: { limit: 10000, mimetype: 'application/font-woff2' } },
-      { test: /\.woff(\?v=[0-9]\.[0-9]\.[0-9])?$/i, loader: 'url-loader', options: { limit: 10000, mimetype: 'application/font-woff' } },
+      {
+        test: /\.(png|gif|jpg|cur)$/i,
+        loader: 'url-loader',
+        options: {
+          limit: 8192
+        }
+      },
+      {
+        test: /\.woff2(\?v=[0-9]\.[0-9]\.[0-9])?$/i,
+        loader: 'url-loader',
+        options: {
+          limit: 10000,
+          mimetype: 'application/font-woff2'
+        }
+      },
+      {
+        test: /\.woff(\?v=[0-9]\.[0-9]\.[0-9])?$/i,
+        loader: 'url-loader',
+        options: {
+          limit: 10000,
+          mimetype: 'application/font-woff'
+        }
+      },
       // load these fonts normally, as files:
-      { test: /\.(ttf|eot|svg|otf)(\?v=[0-9]\.[0-9]\.[0-9])?$/i, loader: 'file-loader' },
+      {
+        test: /\.(ttf|eot|svg|otf)(\?v=[0-9]\.[0-9]\.[0-9])?$/i,
+        loader: 'file-loader'
+      },
       ...when(coverage, {
-        test: /\.[jt]s$/i, loader: 'istanbul-instrumenter-loader',
-        include: srcDir, exclude: [/\.{spec,test}\.[jt]s$/i],
-        enforce: 'post', options: { esModules: true },
+        test: /\.[jt]s$/i,
+        loader: 'istanbul-instrumenter-loader',
+        include: srcDir,
+        exclude: [/\.{spec,test}\.[jt]s$/i],
+        enforce: 'post',
+        options: {
+          esModules: true
+        },
       })
     ]
+  },
+  node: {
+    fs: 'empty'
   },
   plugins: [
     ...when(!karma, new DuplicatePackageCheckerPlugin()),
@@ -146,21 +210,25 @@ module.exports = ({production, server, extractCss, coverage, analyze, karma} = {
       'Promise': 'bluebird'
     }),
     new ModuleDependenciesPlugin({
-      'aurelia-testing': [ './compile-spy', './view-spy' ]
+      'aurelia-testing': ['./compile-spy', './view-spy']
     }),
     new HtmlWebpackPlugin({
       template: 'index.ejs',
       metadata: {
         // available in index.ejs //
-        title, server, baseUrl
+        title,
+        server,
+        baseUrl
       }
     }),
     ...when(extractCss, new MiniCssExtractPlugin({
       filename: production ? '[contenthash].css' : '[id].css',
       allChunks: true
     })),
-    ...when(production || server, new CopyWebpackPlugin([
-      { from: 'static', to: outDir }])),
+    ...when(production || server, new CopyWebpackPlugin([{
+      from: 'static',
+      to: outDir
+    }])),
     ...when(analyze, new BundleAnalyzerPlugin())
   ]
 });
