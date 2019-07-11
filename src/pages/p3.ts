@@ -166,15 +166,24 @@ export class P2 {
       top_words += 5;
     }
 
+    let sentences = this.getSentences(overlap, doc["Abstract"])
+
     //let sim = this.engine.search(top_terms.map(x => x.term).join(" "));
     //console.log(label, this.meta[sim[1][0]])
 
     return overlap
   }
 
-  detectOverlap(label, doc, top_words) {
+  getSentences(words, text) {
+
+
+    return ""
+  }
+
+  detectOverlap(label, doc, top_words, max_out_terms = 3) {
     let doc_index = this.meta.findIndex(x => x["Title"] == doc["Title"])
-    let top_terms = this.tfidf.listTerms(doc_index).slice(0, top_words).map(x => x.term).map(x => natural.PorterStemmer.stem(x))
+    let top_terms = this.tfidf.listTerms(doc_index).slice(0, top_words)
+    let top_clean = top_terms.map(x => x.term).map(x => natural.PorterStemmer.stem(x))
     let group_terms = []
 
     for (let key in this.class_recommendation[label]) {
@@ -183,9 +192,22 @@ export class P2 {
 
     let group_set = new Set(_.flatten(group_terms).map(x => x.term).map(x => natural.PorterStemmer.stem(x)))
 
-    let intersection = top_terms.filter(x => group_set.has(x))
+    let intersection = top_clean.filter(x => group_set.has(x))
 
-    return intersection
+    let output = []
+    if (intersection.length > 0) {
+      for (let i = 0; i < top_terms.length; i++) {
+        const word = natural.PorterStemmer.stem(top_terms[i].term);
+
+        if (intersection.includes(word))
+          output.push(top_terms[i].term)
+
+        if (output.length >= max_out_terms)
+          break;
+      }
+    }
+
+    return output
   }
 
   onSelectionChanged(e) {
