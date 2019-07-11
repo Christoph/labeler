@@ -2,7 +2,7 @@
   <require from="../custom_elements/document-row.html"></require>
   <require from="../custom_elements/small-bar"></require>
 
-  <div class="container">
+  <div>
     <div class="row one-page">
       <div class="col m4 areas">
         <md-collection view-model.ref="list">
@@ -21,7 +21,9 @@
             ${doc["Title"]}
           </strong>
           <div repeat.for="rec of doc['Clusters']">
-            ${rec}
+            <strong>
+              ${rec}
+            </strong>
             <br>
             <span repeat.for="sent of createEvidence(rec, doc)">
               <i>
