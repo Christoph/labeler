@@ -59,3 +59,7 @@ mark {
   height: 32px !important;
   line-height: 32px !important;
 }
+
+md-collection-selector>div>div {
+  position: relative !important;
+}

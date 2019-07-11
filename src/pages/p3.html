@@ -8,12 +8,12 @@
         <md-collection view-model.ref="list">
           <md-collection-item repeat.for="cls of classes" style="position: relative"
             class="${ selector.isSelected ? 'selected' : '' } ${ selector.mdDisabled ? 'disabled' : '' }">
-            <p>${cls["Title"]}</p>
-            <p>
-              <md-collection-selector class="secondary-content" view-model.ref="selector" item.bind="cls"
+            <div>
+              <span style="position:relative;">${cls["Title"]}</span>
+              <md-collection-selector view-model.ref="selector" item.bind="cls"
                 md-on-selection-changed.delegate="onSelectionChanged($event)">
               </md-collection-selector>
-            </p>
+            </div>
           </md-collection-item>
         </md-collection>
       </div>
