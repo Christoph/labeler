@@ -18,7 +18,13 @@
         </md-collection>
       </div>
       <div class="col m8 areas">
-        <div repeat.for="doc of meta">
+        <input type="text" class="form-control col-md-2 search-box" value.bind="searchTerm"
+          placeholder="search..."></input>
+        <button class="btn btn-default col-md-2 clear-btn" if.bind="searchTerm.length > 0"
+          click.delegate="clearFilter()"><i class="fa fa-times"></i> clear</button>
+        <div repeat.for="doc of meta
+        | sort: { propertyName: sort_property, direction: 'ascending' }
+        | filter:searchTerm:filterFunc & debounce:1500">
           <strong>
             ${doc["Title"]}
           </strong>

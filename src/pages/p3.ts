@@ -30,6 +30,8 @@ export class P2 {
   public active_labels = [];
   public list: MdCollection;
 
+  public sort_property = "Clusters"
+
   public state: State;
 
   // nlp
@@ -335,4 +337,36 @@ export class P2 {
     //   this.rowSelected(next)
     // }
   }
+
+  filterFunc(searchExpression, value) {
+    let itemValue = value["Title"];
+
+    if (!searchExpression || !itemValue) return false;
+
+    return itemValue.toUpperCase().indexOf(searchExpression.toUpperCase()) !== -1;
+
+  }
 }
+
+export class FilterValueConverter {
+  toView(array, searchTerm, filterFunc) {
+
+    return array.filter((item) => {
+
+      let matches = searchTerm && searchTerm.length > 0 ? filterFunc(searchTerm, item) : true;
+
+      return matches;
+    });
+  }
+}
+
+export class SortValueConverter {
+  toView(array, config) {
+    let factor = (config.direction || 'ascending') === 'ascending' ? 1 : -1;
+    return array.sort((a, b) => {
+      return (a[config.propertyName] - b[config.propertyName]) * factor;
+    });
+  }
+}
+
+
