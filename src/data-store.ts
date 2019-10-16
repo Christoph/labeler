@@ -14,13 +14,14 @@ export class DataStore {
   public classes;
   public recommendations;
   public keyword_propagation;
+  public keyword_mapping;
 
   constructor(private store: Store<State>) {
     let meta = require('../datasets/reduced_meta.json')
     let fulltexts = require('../datasets/reduced_fulltext.json')
     let classes = require('../datasets/classes.json')
     let recommendation = require('../datasets/recommendation.json')
-    let keyword_mapping = require('../datasets/mapping.json')
+    let mapping = require('../datasets/mapping.json')
 
     this.dataset_size = Object.keys(meta).length
     this.data_meta = new Array();
@@ -28,6 +29,11 @@ export class DataStore {
     this.classes = new Array();
     this.recommendations = new Array();
     this.keyword_propagation = new Array();
+    this.keyword_mapping = new Array();
+
+    for (let [key, value] of Object.entries(mapping)) {
+      this.keyword_mapping[value["AuthorKeyword"]] = value["ExpertKeyword"]
+    }
 
     for (let key in meta) {
       // Fix CLusters format
@@ -48,15 +54,17 @@ export class DataStore {
       }
 
       // Propagate keywords
+      /*
       let keywords = new Array()
 
       for (let word of update["Keywords"].split(";")) {
-        if (word in keyword_mapping) {
-          keywords.push(keyword_mapping[word])
+        if (word in this.keyword_mapping) {
+          keywords.push(this.keyword_mapping[word])
         }
       }
 
       this.keyword_propagation[key] = Array.from(new Set([].concat(...keywords)))
+      */
     }
 
     for (let row in classes) {
@@ -77,17 +85,19 @@ export class DataStore {
         }
       }
 
+      /*
       for (let rec of this.keyword_propagation[row]) {
         clusters.push({
           name: rec,
           type: "Propagation",
-          used: false
+          used: true
         })
       }
+      */
 
       this.recommendations[row] = clusters;
     }
-
+    console.log(this.data_meta)
     // this.loadProjection("single keywords")
   }
 
@@ -146,6 +156,10 @@ export class DataStore {
 
   getRecommendation(id: number) {
     return this.recommendations[id]
+  }
+
+  getKeywordMapping(keyword: string) {
+    return this.keyword_mapping[keyword]
   }
 
   getFulltext(id: number) {

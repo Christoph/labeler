@@ -1,0 +1,24 @@
+<template>
+    <div class="row">
+        <div class="col m4">
+            <div style="overflow: scroll; height: 90vh;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Unknown Author Keywords</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr repeat.for="document of documents">
+                            <td>${document["Title"]}</td>
+                            <td>${document["Unknown"]}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col m8">
+        </div>
+    </div>
+</template>

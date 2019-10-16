@@ -1,6 +1,7 @@
 import { autoinject } from 'aurelia-dependency-injection';
 import { DataStore } from 'data-store';
 import * as Mark from 'mark.js';
+import * as _ from 'lodash';
 
 import { connectTo, dispatchify } from 'aurelia-store';
 import { State } from 'store/state';
@@ -26,6 +27,7 @@ export class P1 {
   public Clusters;
   public DOI;
   public Keywords;
+  public Keywords_List;
   public Fulltext;
   public selectedRow;
   public tableApi;
@@ -74,6 +76,7 @@ export class P1 {
     this.Fulltext = this.store.getFulltext(this.selectedRow.Key)
 
     this.recommendations = this.store.getRecommendation(this.selectedRow.Key)
+    this.Keywords_List = this.Keywords.split(";")
     this.loadKeywords(this.recommendations);
 
     this.marking()
@@ -162,6 +165,10 @@ export class P1 {
     }
   }
 
+  getMapping(keyword: string) {
+    return this.store.getKeywordMapping(keyword);
+  }
+
   keywords = [];
 
   loadKeywords(recommendation) {
@@ -172,11 +179,26 @@ export class P1 {
         this.keywords.push(rec)
       }
     });
+
+    this.Keywords_List.forEach(keyword => {
+      let mapping = this.getMapping(keyword);
+
+      if (mapping && mapping !== "unclear") {
+        this.keywords.push({
+          name: mapping,
+          type: "Keyword Propagation",
+          used: true
+        })
+      }
+    });
+
+    this.keywords = _.uniqBy(this.keywords, "name");
   }
 
   addKeyword(keyword) {
     this.keywords.push(keyword)
     keyword["used"] = true;
+    this.keywords = _.uniqBy(this.keywords, "name");
   }
 
   removeKeyword(keyword) {

@@ -74,7 +74,26 @@
           </li>
         </ul>
       </div>
-      <strong>Keywords:</strong>
+      <strong>Author Keywords:</strong>
+      <table>
+        <thead>
+          <tr>
+            <th>Keyword</th>
+            <th>Mapping</th>
+            <th>Add</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr repeat.for="keyword of Keywords_List">
+            <td>${keyword}</td>
+            <td>${getMapping(keyword)}</td>
+            <td>
+              <button click.trigger="addKeyword(getMapping(keyword))">Add</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <strong>Used Keywords:</strong>
       <table>
         <thead>
           <tr>
