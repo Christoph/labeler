@@ -74,6 +74,25 @@
           </li>
         </ul>
       </div>
+      <strong>Keywords:</strong>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Source</th>
+            <th>Remove</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr repeat.for="keyword of keywords">
+            <td>${keyword.name}</td>
+            <td>${keyword.type}</td>
+            <td>
+              <button click.trigger="removeKeyword(keyword)">Remove</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
       <strong>Recommendations:</strong>
       <table>
         <thead>
@@ -81,6 +100,7 @@
             <th>Used</th>
             <th>Name</th>
             <th>Source</th>
+            <th>Add</th>
           </tr>
         </thead>
         <tbody>
@@ -90,6 +110,9 @@
             </td>
             <td>${rec.name}</td>
             <td>${rec.type}</td>
+            <td>
+              <button click.trigger="addKeyword(rec)">Add</button>
+            </td>
           </tr>
         </tbody>
       </table>

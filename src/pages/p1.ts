@@ -74,6 +74,7 @@ export class P1 {
     this.Fulltext = this.store.getFulltext(this.selectedRow.Key)
 
     this.recommendations = this.store.getRecommendation(this.selectedRow.Key)
+    this.loadKeywords(this.recommendations);
 
     this.marking()
   }
@@ -158,6 +159,31 @@ export class P1 {
       this.tableApi.revealItem(next);
 
       this.rowSelected(next)
+    }
+  }
+
+  keywords = [];
+
+  loadKeywords(recommendation) {
+    this.keywords = [];
+
+    recommendation.forEach(rec => {
+      if (rec["used"]) {
+        this.keywords.push(rec)
+      }
+    });
+  }
+
+  addKeyword(keyword) {
+    this.keywords.push(keyword)
+    keyword["used"] = true;
+  }
+
+  removeKeyword(keyword) {
+    let index = this.keywords.indexOf(keyword);
+    if (index !== -1) {
+      this.keywords.splice(index, 1);
+      keyword["used"] = false;
     }
   }
 
