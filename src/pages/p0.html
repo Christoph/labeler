@@ -10,7 +10,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr repeat.for="document of documents">
+                        <tr repeat.for="document of documents | customSort: { propertyName: 'Unknown', direction: sort_property }">
                             <td>${document["Title"]}</td>
                             <td>${document["Unknown"]}</td>
                         </tr>

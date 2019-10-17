@@ -3,12 +3,10 @@ import { DataStore } from 'data-store';
 import * as Mark from 'mark.js';
 import * as _ from 'lodash';
 
-
 @autoinject()
 export class P1 {
-    public test = "Test";
-
     public documents;
+    public sort_property = "descending";
 
     constructor(public store: DataStore) {
         this.documents = store.getMeta();
@@ -27,13 +25,11 @@ export class P1 {
                 }
             }
 
-            if (unknown > 0) {
-                console.log(doc)
-            }
-
             doc["Unknown"] = unknown;
         }
     }
 
-
+    sorting() {
+        this.sort_property = "ascending";
+    }
 }
