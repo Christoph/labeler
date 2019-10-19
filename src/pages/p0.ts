@@ -6,10 +6,23 @@ import * as _ from 'lodash';
 @autoinject()
 export class P1 {
     public documents;
+    public keyword_list;
+    public autocompleteData = {
+    Apple: null,
+    Google: null,
+    Microsoft: null
+  };
+
+    // Selection
+    public selected_document;
+    public keywords;
+
+    // Temp variables
     public sort_property = "descending";
 
     constructor(public store: DataStore) {
         this.documents = store.getMeta();
+        this.keyword_list = store.getClasses();
 
         for (const doc of this.documents) {
             let unknown = 0;
@@ -26,10 +39,49 @@ export class P1 {
             }
 
             doc["Unknown"] = unknown;
-        }
+
+            // Create final keywords field
+            this.keywords = doc["Keywords"].split(";");
+
+            // Populate final keyword list
+            let final = this.keywords
+                .map(x => this.store.getKeywordMapping(x))
+                .filter(x => x !== "unclear");
+
+            final = _.uniq(final);
+
+            let temp = new Array();
+
+            for(const elem of final) {
+                temp.push({tag: elem})
+            }
+
+            doc["Final"] = temp;
+            }
+
+            // Prepare autocomplete list
+            for (const keyword of this.keyword_list) {
+                this.autocompleteData[keyword["Cluster"]] = null;
+            }
     }
 
-    sorting() {
-        this.sort_property = "ascending";
+    selectDocument(index) {
+        // Set new document
+        const doc = this.documents[index];
+        this.selected_document = doc;
+    }
+
+    getMapping(keyword) {
+        return this.store.getKeywordMapping(keyword);
+    }
+
+    removeKeyword(keyword) {
+        this.selected_document["Final"] = this.selected_document["Final"]
+            .filter(item => item !== keyword);
+    }
+
+    addKeyword(keyword) {
+        this.selected_document["Final"] = this.selected_document["Final"]
+            .concat({ tag: keyword} )
     }
 }

@@ -63,3 +63,7 @@ mark {
 md-collection-selector>div>div {
   position: relative !important;
 }
+
+.autocomplete-content {
+  width: 240px !important;
+}

@@ -5,12 +5,14 @@
                 <table>
                     <thead>
                         <tr>
+                            <th>buttin</th>
                             <th>Title</th>
                             <th>Unknown Author Keywords</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr repeat.for="document of documents | customSort: { propertyName: 'Unknown', direction: sort_property }">
+                            <td><a click.delegate="selectDocument($index)">test</a></td>
                             <td>${document["Title"]}</td>
                             <td>${document["Unknown"]}</td>
                         </tr>
@@ -19,6 +21,53 @@
             </div>
         </div>
         <div class="col m8">
+            <h2>Title: ${selected_document["Title"]} </h2>
+            <strong>Final Keywords</strong>
+            <br>
+            <div md-chips="data.two-way: selected_document['Final']; autocomplete-data.bind: autocompleteData;"></div>
+            <br>
+            <strong>Author Keyword Mapping</strong>
+            <br>
+                <div class="row">
+                    <div class="col m6">
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>Keyword Mapping</th>
+                                <th>Author Keyword</th>
+                                <th>Remove</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr repeat.for="keyword of keywords">
+                                <td>${getMapping(keyword)}</td>
+                                <td>${keyword}</td>
+                                <td>
+                                    <button click.trigger="removeKeyword(keyword)">Remove</button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col m6" style="overflow: scroll; height: 50vh;">
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>Add</th>
+                                <th>Keyword</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr repeat.for="keyword of keyword_list">
+                                <td>
+                                    <button click.trigger="addKeyword(keyword['Cluster'])">Add</button>
+                                </td>
+                                <td>${keyword['Cluster']}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
         </div>
     </div>
 </template>
