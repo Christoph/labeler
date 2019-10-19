@@ -40,12 +40,14 @@ export class P1 {
 
             doc["Unknown"] = unknown;
 
+            doc["DOI"] = "https://doi.org/" + doc["DOI"]
+
             // Create final keywords field
             this.keywords = doc["Keywords"].split(";");
 
             // Populate final keyword list
             let final = this.keywords
-                .map(x => this.store.getKeywordMapping(x))
+                .map(x => this.store.getKeywordMapping(x).replace(/[^a-zA-Z]/g, ""))
                 .filter(x => x !== "unclear");
 
             final = _.uniq(final);
@@ -57,12 +59,14 @@ export class P1 {
             }
 
             doc["Final"] = temp;
-            }
+        }
 
-            // Prepare autocomplete list
-            for (const keyword of this.keyword_list) {
-                this.autocompleteData[keyword["Cluster"]] = null;
-            }
+        // Prepare autocomplete list
+        for (const keyword of this.keyword_list) {
+            this.autocompleteData[keyword["Cluster"]] = null;
+        }
+
+        this.selectDocument(0);
     }
 
     selectDocument(index) {

@@ -21,35 +21,40 @@
             </div>
         </div>
         <div class="col m8">
-            <h2>Title: ${selected_document["Title"]} </h2>
-            <strong>Final Keywords</strong>
+            <h3>Title: ${selected_document["Title"]} </h3>
+            <span>${selected_document["Authors"]}</span>
+            <a href=${selected_document["DOI"]}>link</a>
             <br>
-            <div md-chips="data.two-way: selected_document['Final']; autocomplete-data.bind: autocompleteData;"></div>
-            <br>
-            <strong>Author Keyword Mapping</strong>
+            <table>
+                <thead>
+                <tr>
+                    <th>Author Keyword</th>
+                    <th>Keyword Mapping</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr repeat.for="keyword of keywords">
+                    <td>${keyword}</td>
+                    <td>${getMapping(keyword)}</td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="collapsible-popout">
+                <ul md-collapsible="accordion.bind: !accordion; popout: true;">
+                    <li>
+                        <div class="collapsible-header">Abstract</div>
+                        <div class="collapsible-body"><p>${selected_document["Abstract"]}</p></div>
+                    </li>
+                </ul>
+            </div>
             <br>
                 <div class="row">
                     <div class="col m6">
-                        <table>
-                            <thead>
-                            <tr>
-                                <th>Keyword Mapping</th>
-                                <th>Author Keyword</th>
-                                <th>Remove</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr repeat.for="keyword of keywords">
-                                <td>${getMapping(keyword)}</td>
-                                <td>${keyword}</td>
-                                <td>
-                                    <button click.trigger="removeKeyword(keyword)">Remove</button>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
+                        <strong>Final Keywords</strong>
+                        <div md-chips="data.two-way: selected_document['Final']; autocomplete-data.bind: autocompleteData;"></div>
                     </div>
                     <div class="col m6" style="overflow: scroll; height: 50vh;">
+                        <strong>All Keywords</strong>
                         <table>
                             <thead>
                             <tr>
