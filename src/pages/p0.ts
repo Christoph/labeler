@@ -75,6 +75,11 @@ export class P1 {
         this.selected_document = doc;
     }
 
+    nextDocument() {
+        const index = this.documents.findIndex(x => x["Key"] === this.selected_document["Key"])
+        this.selectDocument(index + 1)
+    }
+
     toggleDocuments() {
         this.showDocuments = !this.showDocuments;
     }

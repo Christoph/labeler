@@ -24,6 +24,10 @@
 
         </div>
         <div class="col m8">
+            <div class="button-row">
+                <a style="width: 49%;" md-sidenav-collapse="ref.bind: sideNav;" md-button md-waves>Toggle Documents</a>
+                <button style="width: 50%;" md-button click.delegate="nextDocument()">Done -></button>
+            </div>
             <h3>Title: ${selected_document["Title"]} </h3>
             <span>${selected_document["Authors"]}</span>
             <a href=${selected_document["DOI"]}>link</a>
@@ -36,7 +40,6 @@
                     </li>
                 </ul>
             </div>
-            <a md-sidenav-collapse="ref.bind: sideNav;" md-button md-waves>Toggle SideNav</a>
             <table>
                 <thead>
                 <tr>
