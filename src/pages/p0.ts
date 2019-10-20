@@ -7,11 +7,7 @@ import * as _ from 'lodash';
 export class P1 {
     public documents;
     public keyword_list;
-    public autocompleteData = {
-    Apple: null,
-    Google: null,
-    Microsoft: null
-  };
+    public autocompleteData = {};
 
     // Selection
     public selected_document;
