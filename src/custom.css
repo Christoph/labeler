@@ -72,3 +72,7 @@ md-collection-selector>div>div {
     height: 0px;
     width: 0px;
 }
+
+.finished {
+  background-color: #44d16f;
+}

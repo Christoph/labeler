@@ -72,6 +72,7 @@ export class P1 {
     }
 
     nextDocument() {
+        this.selected_document["Done"] = true;
         const index = this.documents.findIndex(x => x["Key"] === this.selected_document["Key"])
         this.selectDocument(index + 1)
     }
