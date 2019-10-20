@@ -15,7 +15,6 @@ export class P1 {
 
     // Selection
     public selected_document;
-    public keywords;
 
     // Temp variables
     public sort_property = "descending";
@@ -43,10 +42,10 @@ export class P1 {
             doc["DOI"] = "https://doi.org/" + doc["DOI"]
 
             // Create final keywords field
-            this.keywords = doc["Keywords"].split(";");
+            doc["Keywords"] = doc["Keywords"].split(";");
 
             // Populate final keyword list
-            let final = this.keywords
+            let final = doc["Keywords"]
                 .map(x => this.store.getKeywordMapping(x).replace(/[^a-zA-Z]/g, ""))
                 .filter(x => x !== "unclear");
 
