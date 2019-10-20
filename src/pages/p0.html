@@ -4,14 +4,12 @@
             <table>
                 <thead>
                     <tr>
-                        <th>buttin</th>
                         <th>Title</th>
                         <th>Unknown Author Keywords</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr repeat.for="document of documents | customSort: { propertyName: 'Unknown', direction: sort_property }">
-                        <td><a click.delegate="selectDocument($index)">test</a></td>
+                    <tr repeat.for="document of documents | customSort: { propertyName: 'Unknown', direction: sort_property }" click.delegate="selectDocument($index)" style="cursor: pointer;">
                         <td>${document["Title"]}</td>
                         <td>${document["Unknown"]}</td>
                     </tr>
