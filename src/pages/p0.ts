@@ -15,6 +15,7 @@ export class P1 {
 
     // Selection
     public selected_document;
+    public showDocuments = false;
 
     // Temp variables
     public sort_property = "descending";
@@ -72,6 +73,10 @@ export class P1 {
         // Set new document
         const doc = this.documents[index];
         this.selected_document = doc;
+    }
+
+    toggleDocuments() {
+        this.showDocuments = !this.showDocuments;
     }
 
     getMapping(keyword) {

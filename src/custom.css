@@ -67,3 +67,8 @@ md-collection-selector>div>div {
 .autocomplete-content {
   width: 240px !important;
 }
+
+.sidenav-overlay {
+    height: 0px;
+    width: 0px;
+}

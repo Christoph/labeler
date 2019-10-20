@@ -1,24 +1,27 @@
 <template>
+    <md-sidenav view-model.ref="sideNav">
+        <div style="overflow: scroll; height: 100vh;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>buttin</th>
+                        <th>Title</th>
+                        <th>Unknown Author Keywords</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr repeat.for="document of documents | customSort: { propertyName: 'Unknown', direction: sort_property }">
+                        <td><a click.delegate="selectDocument($index)">test</a></td>
+                        <td>${document["Title"]}</td>
+                        <td>${document["Unknown"]}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>   
+    </md-sidenav>
     <div class="row">
         <div class="col m4">
-            <div style="overflow: scroll; height: 90vh;">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>buttin</th>
-                            <th>Title</th>
-                            <th>Unknown Author Keywords</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr repeat.for="document of documents | customSort: { propertyName: 'Unknown', direction: sort_property }">
-                            <td><a click.delegate="selectDocument($index)">test</a></td>
-                            <td>${document["Title"]}</td>
-                            <td>${document["Unknown"]}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+
         </div>
         <div class="col m8">
             <h3>Title: ${selected_document["Title"]} </h3>
@@ -33,6 +36,7 @@
                     </li>
                 </ul>
             </div>
+            <a md-sidenav-collapse="ref.bind: sideNav;" md-button md-waves>Toggle SideNav</a>
             <table>
                 <thead>
                 <tr>
