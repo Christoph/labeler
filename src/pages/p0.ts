@@ -84,8 +84,15 @@ export class P1 {
         // Set new document
         const doc = this.documents[index];
         this.selected_document = doc;
-        this.selected_document_list.push(index)
+        this.selected_document_list.push(index);
         this.computeSimilarities();
+        this.computeKeywordSimilarity();
+    }
+
+    computeKeywordSimilarity() {
+        this.keyword_list.forEach(element => {
+            element["Similarity"] = this.cosine_similarity(element["Vector"], this.selected_document["Vector"])
+        });
     }
 
     computeSimilarities() {

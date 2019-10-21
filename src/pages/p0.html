@@ -71,6 +71,8 @@
                     </li>
                 </ul>
             </div>
+            <strong>Final Keywords</strong>
+            <div md-chips="data.two-way: selected_document['Final']; autocomplete-data.bind: autocompleteData;"></div>
             <table>
                 <thead>
                 <tr>
@@ -87,25 +89,23 @@
             </table>
             <br>
                 <div class="row">
-                    <div class="col m6">
-                        <strong>Final Keywords</strong>
-                        <div md-chips="data.two-way: selected_document['Final']; autocomplete-data.bind: autocompleteData;"></div>
-                    </div>
-                    <div class="col m6" style="overflow: scroll; height: 50vh;">
+                    <div class="col m12" style="overflow: scroll; height: 40vh;">
                         <strong>All Keywords</strong>
                         <table>
                             <thead>
                             <tr>
                                 <th>Add</th>
                                 <th>Keyword</th>
+                                <th>Document - Keyword Similarity</th>
                             </tr>
                             </thead>
                             <tbody>
-                            <tr repeat.for="keyword of keyword_list">
+                            <tr repeat.for="keyword of keyword_list | customSort: { propertyName: 'Similarity', direction: sort_property }">
                                 <td>
                                     <button click.trigger="addKeyword(keyword['Cluster'])">Add</button>
                                 </td>
                                 <td>${keyword['Cluster']}</td>
+                                <td as-element="small-bar" percent="${keyword['Similarity']}" orientation="horizontal"></td>
                             </tr>
                             </tbody>
                         </table>
