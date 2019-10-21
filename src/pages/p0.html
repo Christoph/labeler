@@ -22,11 +22,31 @@
     </md-sidenav>
     <div class="row">
         <div class="col m4">
-
+            <div style="overflow: scroll; height: 95vh;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th style="cursor: pointer" click.delegate="setSortProperty('text_similarity')">Text Similarity</th>
+                            <th style="cursor: pointer" click.delegate="setSortProperty('keyword_similarity')">Keyword Similarity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr repeat.for="sim of selected_similarities | customSort: { propertyName: sim_property, direction: sort_property }" 
+                        click.delegate="selectDocument($index)" 
+                        class="${document['Unknown'] < 1 || document['Done'] ? 'finished' : ''}"
+                        style="cursor: pointer;">
+                            <td>${sim.document["Title"]}</td>
+                            <td as-element="small-bar" percent="${sim.text_similarity}" orientation="vertical"></td>
+                            <td as-element="small-bar" percent="${sim.keyword_similarity}" orientation="vertical"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>   
         </div>
         <div class="col m8">
             <div class="button-row">
-                <a style="width: 49%;" md-sidenav-collapse="ref.bind: sideNav;" md-button md-waves>Toggle Documents</a>
+                <a style="width: 49%;" md-sidenav-collapse="ref.bind: sideNav;" md-button md-waves>Toggle Document Overview</a>
                 <button style="width: 50%;" md-button click.delegate="nextDocument()">Done -></button>
             </div>
             <h3>Title: ${selected_document["Title"]} </h3>

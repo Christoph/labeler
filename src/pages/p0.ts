@@ -1,6 +1,7 @@
 import { autoinject } from 'aurelia-dependency-injection';
 import { DataStore } from 'data-store';
 import * as Mark from 'mark.js';
+import * as math from 'mathjs';
 import * as _ from 'lodash';
 
 @autoinject()
@@ -12,9 +13,22 @@ export class P1 {
     // Selection
     public selected_document;
     public showDocuments = false;
+    public selected_similarities = [];
+    
+    // Similarity list
+    public sim_property = "text_similarity";
 
     // Temp variables
     public sort_property = "descending";
+
+    // Methods
+    cosine_similarity(v1, v2) {
+        return math.dot(v1, v2) / (math.norm(v1) * math.norm(v2))
+    }
+
+    jaccard_similarity(s1, s2) {
+        return math.setIntersect(s1,s2).length / math.setUnion(s1,s2).length
+    }
 
     constructor(public store: DataStore) {
         this.documents = store.getMeta();
@@ -69,6 +83,22 @@ export class P1 {
         // Set new document
         const doc = this.documents[index];
         this.selected_document = doc;
+        this.computeSimilarities();
+    }
+
+    computeSimilarities() {
+        this.selected_similarities.length = 0;
+        this.documents.forEach(element => {
+           this.selected_similarities.push({
+               document: element,
+               text_similarity: this.cosine_similarity(this.selected_document["Vector"], element["Vector"]),
+               keyword_similarity: this.jaccard_similarity(this.selected_document["Final"], element["Final"])
+           }) 
+        });
+    }
+
+    setSortProperty(property) {
+        this.sim_property = property;
     }
 
     nextDocument() {
