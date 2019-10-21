@@ -11,6 +11,7 @@ export class P1 {
     public autocompleteData = {};
 
     // Selection
+    public selected_document_list = [];
     public selected_document;
     public showDocuments = false;
     public selected_similarities = [];
@@ -83,6 +84,7 @@ export class P1 {
         // Set new document
         const doc = this.documents[index];
         this.selected_document = doc;
+        this.selected_document_list.push(index)
         this.computeSimilarities();
     }
 
@@ -105,6 +107,14 @@ export class P1 {
         this.selected_document["Done"] = true;
         const index = this.documents.findIndex(x => x["Key"] === this.selected_document["Key"])
         this.selectDocument(index + 1)
+    }
+
+    lastDocument() {
+        // Remove the current document from the list
+        this.selected_document_list.pop();
+        // Get and remove the previous element
+        const index = this.selected_document_list.pop();
+        this.selectDocument(index)
     }
 
     toggleDocuments() {
