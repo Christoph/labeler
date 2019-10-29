@@ -15,20 +15,20 @@ export class P1 {
     public selected_document;
     public showDocuments = false;
     public selected_similarities = [];
-    
+
     // Similarity list
     public sim_property = "text_similarity";
 
     // Temp variables
     public sort_property = "descending";
 
-    // Methods
+    // Distance Metrics
     cosine_similarity(v1, v2) {
         return math.dot(v1, v2) / (math.norm(v1) * math.norm(v2))
     }
 
     jaccard_similarity(s1, s2) {
-        return math.setIntersect(s1,s2).length / math.setUnion(s1,s2).length
+        return math.setIntersect(s1, s2).length / math.setUnion(s1, s2).length
     }
 
     constructor(public store: DataStore) {
@@ -65,8 +65,8 @@ export class P1 {
 
             let temp = new Array();
 
-            for(const elem of final) {
-                temp.push({tag: elem})
+            for (const elem of final) {
+                temp.push({ tag: elem })
             }
 
             doc["Final"] = temp;
@@ -98,11 +98,11 @@ export class P1 {
     computeSimilarities() {
         this.selected_similarities.length = 0;
         this.documents.forEach(element => {
-           this.selected_similarities.push({
-               document: element,
-               text_similarity: this.cosine_similarity(this.selected_document["Vector"], element["Vector"]),
-               keyword_similarity: this.jaccard_similarity(this.selected_document["Final"], element["Final"])
-           }) 
+            this.selected_similarities.push({
+                document: element,
+                text_similarity: this.cosine_similarity(this.selected_document["Vector"], element["Vector"]),
+                keyword_similarity: this.jaccard_similarity(this.selected_document["Final"], element["Final"])
+            })
         });
     }
 
@@ -139,6 +139,6 @@ export class P1 {
 
     addKeyword(keyword) {
         this.selected_document["Final"] = this.selected_document["Final"]
-            .concat({ tag: keyword} )
+            .concat({ tag: keyword })
     }
 }
