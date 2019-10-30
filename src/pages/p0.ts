@@ -24,6 +24,7 @@ export class P1 {
 
     // Distance Metrics
     cosine_similarity(v1, v2) {
+        return 1
         return math.dot(v1, v2) / (math.norm(v1) * math.norm(v2))
     }
 
@@ -37,14 +38,17 @@ export class P1 {
 
         for (const doc of this.documents) {
             let unknown = 0;
+
+            if(doc["Keywords"]) {
+                doc["Keywords"] = doc["Keywords"].toLowerCase()
+            }
+            else {
+                doc["Keywords"] = ""
+            }
+
             for (const author_key of doc["Keywords"].split(";")) {
                 let mapping = this.store.getKeywordMapping(author_key);
-                if (!mapping) {
-                    unknown++;
-                }
-
-                // Temp solution until new docs are added
-                if (mapping === "unclear") {
+                if (mapping.length < 1) {
                     unknown++;
                 }
             }
@@ -66,7 +70,7 @@ export class P1 {
             let temp = new Array();
 
             for (const elem of final) {
-                temp.push({ tag: elem })
+                if(elem.length > 0) temp.push({ tag: elem })
             }
 
             doc["Final"] = temp;

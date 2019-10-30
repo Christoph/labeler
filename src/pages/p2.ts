@@ -77,10 +77,12 @@ export class P2 {
       let temp = new Array();
 
       for (let row of this.meta) {
+        /*
         if (row["Clusters"].includes(cls["Cluster"])) {
           counter++;
           temp.push(row["Key"])
         }
+        */
       }
 
       this.class_recommendation[cls["Cluster"]] = temp;

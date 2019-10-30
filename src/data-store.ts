@@ -9,6 +9,7 @@ export class DataStore {
 
   public dataset_size;
   public data_meta;
+  public data_new;
   public data_fulltext;
   public data_projections;
   public classes;
@@ -22,6 +23,7 @@ export class DataStore {
     let classes = require('../datasets/classes.json')
     let recommendation = require('../datasets/recommendation.json')
     let mapping = require('../datasets/mapping.json')
+    let new_data = require('../datasets/new_data.json')
 
     this.dataset_size = Object.keys(meta).length
     this.data_meta = new Array();
@@ -30,6 +32,7 @@ export class DataStore {
     this.recommendations = new Array();
     this.keyword_propagation = new Array();
     this.keyword_mapping = new Array();
+    this.data_new = new Array();
 
     for (let [key, value] of Object.entries(mapping)) {
       this.keyword_mapping[value["AuthorKeyword"]] = value["ExpertKeyword"]
@@ -66,6 +69,35 @@ export class DataStore {
       this.keyword_propagation[key] = Array.from(new Set([].concat(...keywords)))
       */
     }
+
+    for (let key in new_data) {
+
+      let update = new_data[key]
+
+      update["type"] = "new";
+
+      if (update["type"] === "new") {
+        // Set meta data
+        update["Done"] = false
+        update["Key"] = parseInt(key)
+        this.data_new[key] = update
+      }
+
+      // Propagate keywords
+      /*
+      let keywords = new Array()
+
+      for (let word of update["Keywords"].split(";")) {
+        if (word in this.keyword_mapping) {
+          keywords.push(this.keyword_mapping[word])
+        }
+      }
+
+      this.keyword_propagation[key] = Array.from(new Set([].concat(...keywords)))
+      */
+    }
+
+    console.log(this.data_new)
 
     for (let row in classes) {
       this.classes.push(classes[row])
@@ -159,7 +191,12 @@ export class DataStore {
   }
 
   getKeywordMapping(keyword: string) {
-    return this.keyword_mapping[keyword]
+    if(this.keyword_mapping.hasOwnProperty(keyword)) {
+      return this.keyword_mapping[keyword]
+    }
+    else {
+      return ""
+    }
   }
 
   getFulltext(id: number) {
@@ -167,11 +204,13 @@ export class DataStore {
   }
 
   getMetaData(id: number) {
-    return this.data_meta[id];
+    //return this.data_meta[id];
+    return this.data_new[id];
   }
 
   getMeta() {
-    return this.data_meta;
+    //return this.data_meta;
+    return this.data_new;
   }
 
   getProjections() {
