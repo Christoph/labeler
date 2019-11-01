@@ -3,6 +3,7 @@ import { DataStore } from 'data-store';
 import * as Mark from 'mark.js';
 import * as math from 'mathjs';
 import * as _ from 'lodash';
+import { timingSafeEqual } from 'crypto';
 
 @autoinject()
 export class P1 {
@@ -14,6 +15,7 @@ export class P1 {
     // Selection
     public selected_document_list = [];
     public selected_document;
+    public selected_keyword;
     public showDocuments = false;
     public selected_similarities = [];
 
@@ -66,16 +68,18 @@ export class P1 {
             for (const author_key of doc["Keywords"]) {
                 if(!this.keyword_list.hasOwnProperty(author_key)) {
                     let mapping = this.store.getKeywordMapping(author_key);
-                    if (mapping.length > 0) {
+                    if (mapping.length > 0 ) {
                         this.keyword_list[author_key] = {
                             mapping: mapping,
-                            count: 0
+                            count: 0,
+                            docs: [doc]
                         }
                     }
                     else {
                         this.keyword_list[author_key] = {
                             mapping: "",
-                            count: 0
+                            count: 0,
+                            docs: [doc]
                         }
                         unknown++;
                     }
@@ -83,6 +87,7 @@ export class P1 {
                 else {
                     let keyword = this.keyword_list[author_key];
                     keyword.count++;
+                    keyword.docs.push(doc)
                     this.keyword_list[author_key] = keyword
                 }
             }
@@ -124,6 +129,25 @@ export class P1 {
         this.selected_document_list.push(index);
         this.computeSimilarities();
         this.computeKeywordSimilarity();
+    }
+    
+    selectKeyword(index) {
+        const key = this.keyword_list[index]
+        this.selected_keyword = key;
+        this.selected_document = key.docs[0]
+        this.selected_document_list.push(key.docs[0]) 
+
+        this.selected_similarities.length = 0;
+        for (const element of key.docs) {
+            this.selected_similarities.push({
+                document: element,
+                text_similarity: this.cosine_similarity(this.selected_document["Abstract_Vector"], element["Abstract_Vector"]),
+                //keyword_similarity: this.jaccard_similarity(this.selected_document["Keywords"], element["Keywords"])
+                keyword_similarity: this.cosine_similarity(this.selected_document["Keyword_Vector"], element["Keyword_Vector"])
+            })
+        }
+
+        this.toggleDocuments()
     }
 
     computeKeywordSimilarity() {
