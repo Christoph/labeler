@@ -24,8 +24,12 @@ export class P1 {
 
     // Distance Metrics
     cosine_similarity(v1, v2) {
-        return 1
-        return math.dot(v1, v2) / (math.norm(v1) * math.norm(v2))
+        if (v1 && v2) {
+            return math.dot(v1, v2) / (math.norm(v1) * math.norm(v2))
+        }
+        else {
+            return 0
+        }
     }
 
     jaccard_similarity(s1, s2) {
@@ -39,7 +43,7 @@ export class P1 {
         for (const doc of this.documents) {
             let unknown = 0;
 
-            if(doc["Keywords"]) {
+            if (doc["Keywords"]) {
                 doc["Keywords"] = doc["Keywords"].toLowerCase()
             }
             else {
@@ -70,7 +74,7 @@ export class P1 {
             let temp = new Array();
 
             for (const elem of final) {
-                if(elem.length > 0) temp.push({ tag: elem })
+                if (elem.length > 0) temp.push({ tag: elem })
             }
 
             doc["Final"] = temp;
@@ -95,7 +99,7 @@ export class P1 {
 
     computeKeywordSimilarity() {
         this.keyword_list.forEach(element => {
-            element["Similarity"] = this.cosine_similarity(element["Vector"], this.selected_document["Vector"])
+            element["Similarity"] = this.cosine_similarity(element["Abstract_Vector"], this.selected_document["Abstract_Vector"])
         });
     }
 
@@ -104,7 +108,7 @@ export class P1 {
         this.documents.forEach(element => {
             this.selected_similarities.push({
                 document: element,
-                text_similarity: this.cosine_similarity(this.selected_document["Vector"], element["Vector"]),
+                text_similarity: this.cosine_similarity(this.selected_document["Abstract_Vector"], element["Abstract_Vector"]),
                 keyword_similarity: this.jaccard_similarity(this.selected_document["Final"], element["Final"])
             })
         });
