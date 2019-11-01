@@ -99,7 +99,7 @@ export class P1 {
 
     computeKeywordSimilarity() {
         this.keyword_list.forEach(element => {
-            element["Similarity"] = this.cosine_similarity(element["Abstract_Vector"], this.selected_document["Abstract_Vector"])
+            element["Similarity"] = this.cosine_similarity(element["Keyword_Vector"], this.selected_document["Keyword_Vector"])
         });
     }
 
@@ -109,7 +109,8 @@ export class P1 {
             this.selected_similarities.push({
                 document: element,
                 text_similarity: this.cosine_similarity(this.selected_document["Abstract_Vector"], element["Abstract_Vector"]),
-                keyword_similarity: this.jaccard_similarity(this.selected_document["Final"], element["Final"])
+                //keyword_similarity: this.jaccard_similarity(this.selected_document["Keywords"], element["Keywords"])
+                keyword_similarity: this.cosine_similarity(this.selected_document["Keyword_Vector"], element["Keyword_Vector"])
             })
         });
     }
