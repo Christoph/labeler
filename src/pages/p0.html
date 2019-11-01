@@ -4,19 +4,23 @@
             <table>
                 <thead>
                     <tr>
-                        <th>Document</th>
-                        <th>Unknown Author Keywords</th>
+                        <th>Keyword</th>
+                        <th>Mapping</th>
+                        <th>Occurences</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr repeat.for="document of documents | customSort: { propertyName: 'Unknown', direction: sort_property }" 
-                    click.delegate="selectDocument($index)" 
-                    class="${document['Unknown'] < 1 || document['Done'] ? 'finished' : ''}"
+                    <tr repeat.for="keyword of keyword_list | customSort: { propertyName: 'count', direction: sort_property }" 
+                    click.delegate="selectKeyword($index)" 
+                    class="${keyword['mapping'].length > 0 ? 'finished' : ''}"
                     style="cursor: pointer;">
                         <td>
-                            ${document["Title"]}#
+                            ${keyword["keyword"]}
                         </td>
-                        <td>${document["Unknown"]}</td>
+                        <td>
+                            ${keyword["mapping"]}
+                        </td>
+                        <td>${keyword["count"]}</td>
                     </tr>
                 </tbody>
             </table>
@@ -55,7 +59,7 @@
         </div>
         <div class="col m7">
             <div class="button-row">
-                <a style="width: 49%;" md-sidenav-collapse="ref.bind: sideNav;" md-button md-waves>Toggle Document Overview</a>
+                <a style="width: 49%;" md-sidenav-collapse="ref.bind: sideNav;" md-button md-waves>Toggle Keyword Overview</a>
                 <button style="width: 19%;" md-button click.delegate="lastDocument()"><- Previous</button>
                 <button style="width: 30%;" md-button click.delegate="nextDocument()">Done -></button>
             </div>
@@ -100,7 +104,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr repeat.for="keyword of keyword_list | customSort: { propertyName: 'Similarity', direction: sort_property }">
+                            <tr repeat.for="keyword of label_list | customSort: { propertyName: 'Similarity', direction: sort_property }">
                                 <td>
                                     <button click.trigger="addKeyword(keyword['Cluster'])">Add</button>
                                 </td>

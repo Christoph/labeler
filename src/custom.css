@@ -76,3 +76,7 @@ md-collection-selector>div>div {
 .finished {
   background-color: #44d16f;
 }
+
+.sidenav {
+  width: 40vw!important;
+}

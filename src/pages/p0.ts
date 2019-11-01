@@ -7,7 +7,8 @@ import * as _ from 'lodash';
 @autoinject()
 export class P1 {
     public documents;
-    public keyword_list;
+    public label_list;
+    public keyword_list = {};
     public autocompleteData = {};
 
     // Selection
@@ -38,7 +39,7 @@ export class P1 {
 
     constructor(public store: DataStore) {
         this.documents = store.getMeta();
-        this.keyword_list = store.getClasses();
+        this.label_list = store.getClasses();
 
         for (const doc of this.documents) {
             let unknown = 0;
@@ -49,15 +50,6 @@ export class P1 {
             else {
                 doc["Keywords"] = ""
             }
-
-            for (const author_key of doc["Keywords"].split(";")) {
-                let mapping = this.store.getKeywordMapping(author_key);
-                if (mapping.length < 1) {
-                    unknown++;
-                }
-            }
-
-            doc["Unknown"] = unknown;
 
             doc["DOI"] = "https://doi.org/" + doc["DOI"]
 
@@ -71,6 +63,32 @@ export class P1 {
 
             final = _.uniq(final);
 
+            for (const author_key of doc["Keywords"]) {
+                if(!this.keyword_list.hasOwnProperty(author_key)) {
+                    let mapping = this.store.getKeywordMapping(author_key);
+                    if (mapping.length > 0) {
+                        this.keyword_list[author_key] = {
+                            mapping: mapping,
+                            count: 0
+                        }
+                    }
+                    else {
+                        this.keyword_list[author_key] = {
+                            mapping: "",
+                            count: 0
+                        }
+                        unknown++;
+                    }
+                }
+                else {
+                    let keyword = this.keyword_list[author_key];
+                    keyword.count++;
+                    this.keyword_list[author_key] = keyword
+                }
+            }
+
+            doc["Unknown"] = unknown;
+
             let temp = new Array();
 
             for (const elem of final) {
@@ -80,8 +98,19 @@ export class P1 {
             doc["Final"] = temp;
         }
 
+        // Flatten keyword list
+        let temp = new Array();
+
+        for (let [key, value] of Object.entries(this.keyword_list)) {
+            value["keyword"] = key
+            temp.push(value)
+        }
+
+        this.keyword_list = temp
+
+        console.log(this.keyword_list)
         // Prepare autocomplete list
-        for (const keyword of this.keyword_list) {
+        for (const keyword of this.label_list) {
             this.autocompleteData[keyword["Cluster"]] = null;
         }
 
@@ -98,7 +127,7 @@ export class P1 {
     }
 
     computeKeywordSimilarity() {
-        this.keyword_list.forEach(element => {
+        this.label_list.forEach(element => {
             element["Similarity"] = this.cosine_similarity(this.selected_document["Keyword_Vector"], element["Vector"])
         });
     }
