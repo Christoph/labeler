@@ -194,6 +194,11 @@ export class P1 {
         return this.store.getKeywordMapping(keyword);
     }
 
+    checkMapping(keyword) {
+        if(this.store.getKeywordMapping(keyword).length > 0) return 1
+        else return 0
+    }
+
     removeKeyword(keyword) {
         this.selected_document["Final"] = this.selected_document["Final"]
             .filter(item => item !== keyword);

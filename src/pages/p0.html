@@ -87,7 +87,13 @@
                 <tbody>
                 <tr repeat.for="keyword of selected_document['Keywords']">
                     <td>${keyword}</td>
-                    <td>${getMapping(keyword)}</td>
+                    <td if.bind="checkMapping(keyword)">${getMapping(keyword)}</td>
+                    <td else>
+                        <select md-select="enable-option-observer: true" value.bind="selectedValue">
+                            <option model.bind="null">Select your Label</option>
+                            <option repeat.for="label of label_list" model.bind="label">${label["Cluster"]}</option>
+                        </select>
+                    </td>
                 </tr>
                 </tbody>
             </table>
