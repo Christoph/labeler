@@ -99,7 +99,7 @@ export class P1 {
 
     computeKeywordSimilarity() {
         this.keyword_list.forEach(element => {
-            element["Similarity"] = this.cosine_similarity(element["Keyword_Vector"], this.selected_document["Keyword_Vector"])
+            element["Similarity"] = this.cosine_similarity(this.selected_document["Keyword_Vector"], element["Vector"])
         });
     }
 
