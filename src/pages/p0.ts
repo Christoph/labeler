@@ -77,12 +77,14 @@ export class P1 {
             this.keyword_list[author_key] = {
               mapping: mapping,
               count: 0,
+              isActive: false,
               docs: [doc]
             }
           } else {
             this.keyword_list[author_key] = {
               mapping: "",
               count: 0,
+              isActive: false,
               docs: [doc]
             }
             unknown++;
@@ -158,6 +160,9 @@ export class P1 {
       key = index
     }
 
+    if (this.selected_keyword) this.selected_keyword.isActive = false;
+    key.isActive = true;
+
     this.selected_keyword = key;
     this.selected_document = key.docs[0]
     this.selected_document_list.push(key.docs[0])
@@ -222,14 +227,14 @@ export class P1 {
   }
 
   checkMapping(keyword) {
-    if (this.store.getKeywordMapping(keyword).length > 0) return 1
+    if (keyword.mapping.length > 0) return 1
     else return 0
   }
 
   checkActiveKeyword(keyword) {
     if (this.selected_keyword) {
-      if (this.selected_keyword === keyword) return 1
-      else return 0
+      if (this.selected_keyword === keyword) return 0
+      else return 1
     }
   }
 
