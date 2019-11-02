@@ -9,7 +9,7 @@ import { timingSafeEqual } from 'crypto';
 export class P1 {
     public documents;
     public label_list;
-    public keyword_list = {};
+    public keyword_list;
     public autocompleteData = {};
 
     // Selection
@@ -42,6 +42,7 @@ export class P1 {
     constructor(public store: DataStore) {
         this.documents = store.getMeta();
         this.label_list = store.getClasses();
+        this.keyword_list = {}
 
         for (const doc of this.documents) {
             let unknown = 0;
@@ -66,9 +67,9 @@ export class P1 {
             final = _.uniq(final);
 
             for (const author_key of doc["Keywords"]) {
-                if(!this.keyword_list.hasOwnProperty(author_key)) {
+                if (!this.keyword_list.hasOwnProperty(author_key)) {
                     let mapping = this.store.getKeywordMapping(author_key);
-                    if (mapping.length > 0 ) {
+                    if (mapping.length > 0) {
                         this.keyword_list[author_key] = {
                             mapping: mapping,
                             count: 0,
@@ -113,7 +114,15 @@ export class P1 {
 
         this.keyword_list = temp
 
-        console.log(this.keyword_list)
+        // Replace keyword strings with objects
+        for (const doc of this.documents) {
+            let temp = []
+            for (const keyword of doc["Keywords"]) {
+                temp.push(this.keyword_list.filter(e => e.keyword == keyword)[0])
+            }
+            doc["Keywords"] = temp
+        }
+
         // Prepare autocomplete list
         for (const keyword of this.label_list) {
             this.autocompleteData[keyword["Cluster"]] = null;
@@ -123,19 +132,33 @@ export class P1 {
     }
 
     selectDocument(index) {
+        let doc;
         // Set new document
-        const doc = this.documents[index];
+        if (this.selected_similarities.length > 0) {
+            doc = this.selected_similarities[index].document;
+        }
+        else {
+            doc = this.documents[index]
+        }
+
         this.selected_document = doc;
         this.selected_document_list.push(index);
         this.computeSimilarities();
         this.computeKeywordSimilarity();
     }
-    
+
     selectKeyword(index) {
-        const key = this.keyword_list[index]
+        let key;
+        if (!isNaN(index)) {
+            key = this.keyword_list[index]
+        }
+        else {
+            key = index
+        }
+
         this.selected_keyword = key;
         this.selected_document = key.docs[0]
-        this.selected_document_list.push(key.docs[0]) 
+        this.selected_document_list.push(key.docs[0])
 
         this.selected_similarities.length = 0;
         for (const element of key.docs) {
@@ -146,8 +169,6 @@ export class P1 {
                 keyword_similarity: this.cosine_similarity(this.selected_document["Keyword_Vector"], element["Keyword_Vector"])
             })
         }
-
-        this.toggleDocuments()
     }
 
     computeKeywordSimilarity() {
@@ -170,6 +191,10 @@ export class P1 {
 
     setSortProperty(property) {
         this.sim_property = property;
+    }
+
+    setActiveKeyword(keyword) {
+        this.selectKeyword(keyword)
     }
 
     nextDocument() {
@@ -195,8 +220,15 @@ export class P1 {
     }
 
     checkMapping(keyword) {
-        if(this.store.getKeywordMapping(keyword).length > 0) return 1
+        if (this.store.getKeywordMapping(keyword).length > 0) return 1
         else return 0
+    }
+
+    checkActiveKeyword(keyword) {
+        if (this.selected_keyword) {
+            if (this.selected_keyword === keyword) return 1
+            else return 0
+        }
     }
 
     removeKeyword(keyword) {
@@ -207,5 +239,9 @@ export class P1 {
     addKeyword(keyword) {
         this.selected_document["Final"] = this.selected_document["Final"]
             .concat({ tag: keyword })
+    }
+
+    applyKeyword(label) {
+        this.selected_keyword.mapping = label["Cluster"]
     }
 }

@@ -10,10 +10,9 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr repeat.for="keyword of keyword_list | customSort: { propertyName: 'count', direction: sort_property }" 
-                    click.delegate="selectKeyword($index)" 
-                    class="${keyword['mapping'].length > 0 ? 'finished' : ''}"
-                    style="cursor: pointer;">
+                    <tr repeat.for="keyword of keyword_list | customSort: { propertyName: 'count', direction: sort_property }"
+                        click.delegate="selectKeyword($index)"
+                        class="${keyword['mapping'].length > 0 ? 'finished' : ''}" style="cursor: pointer;">
                         <td>
                             ${keyword["keyword"]}
                         </td>
@@ -24,7 +23,7 @@
                     </tr>
                 </tbody>
             </table>
-        </div>   
+        </div>
     </md-sidenav>
     <div class="row">
         <div class="col m5">
@@ -33,15 +32,17 @@
                     <thead>
                         <tr>
                             <th>Title</th>
-                            <th style="cursor: pointer" click.delegate="setSortProperty('text_similarity')">Text Sim</th>
-                            <th style="cursor: pointer" click.delegate="setSortProperty('keyword_similarity')">Keyword Sim</th>
+                            <th style="cursor: pointer" click.delegate="setSortProperty('text_similarity')">Text Sim
+                            </th>
+                            <th style="cursor: pointer" click.delegate="setSortProperty('keyword_similarity')">Keyword
+                                Sim</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr repeat.for="sim of selected_similarities | customSort: { propertyName: sim_property, direction: sort_property }" 
-                        click.delegate="selectDocument($index)" 
-                        class="${sim.document['Unknown'] < 1 || sim.document['Done'] ? 'finished' : ''}"
-                        style="cursor: pointer;">
+                        <tr repeat.for="sim of selected_similarities | customSort: { propertyName: sim_property, direction: sort_property }"
+                            click.delegate="selectDocument($index)"
+                            class="${sim.document['Unknown'] < 1 || sim.document['Done'] ? 'finished' : ''}"
+                            style="cursor: pointer;">
                             <td>
                                 <strong>
                                     ${sim.document["Title"]}
@@ -55,13 +56,18 @@
                         </tr>
                     </tbody>
                 </table>
-            </div>   
+            </div>
         </div>
         <div class="col m7">
             <div class="button-row">
-                <a style="width: 49%;" md-sidenav-collapse="ref.bind: sideNav;" md-button md-waves>Toggle Keyword Overview</a>
-                <button style="width: 19%;" md-button click.delegate="lastDocument()"><- Previous</button>
-                <button style="width: 30%;" md-button click.delegate="nextDocument()">Done -></button>
+                <a style="width: 49%;" md-sidenav-collapse="ref.bind: sideNav;" md-button md-waves>Toggle Keyword
+                    Overview</a>
+                <button style="width: 19%;" md-button click.delegate="lastDocument()">
+                    <- Previous</button> <button style="width: 30%;" md-button click.delegate="nextDocument()">Done ->
+                </button>
+            </div>
+            <div>
+                <h5>Active Keyword: ${selected_keyword.keyword}</h5>
             </div>
             <h3>Title: ${selected_document["Title"]} </h3>
             <span>${selected_document["Authors"]}</span>
@@ -71,7 +77,9 @@
                 <ul md-collapsible="accordion.bind: !accordion; popout: false;">
                     <li>
                         <div class="collapsible-header">Abstract</div>
-                        <div class="collapsible-body"><p>${selected_document["Abstract"]}</p></div>
+                        <div class="collapsible-body">
+                            <p>${selected_document["Abstract"]}</p>
+                        </div>
                     </li>
                 </ul>
             </div>
@@ -79,48 +87,58 @@
             <div md-chips="data.two-way: selected_document['Final']; autocomplete-data.bind: autocompleteData;"></div>
             <table>
                 <thead>
-                <tr>
-                    <th>Author Keyword</th>
-                    <th>Keyword Mapping</th>
-                </tr>
+                    <tr>
+                        <th>Author Keyword</th>
+                        <th>Keyword Mapping</th>
+                    </tr>
                 </thead>
                 <tbody>
-                <tr repeat.for="keyword of selected_document['Keywords']">
-                    <td>${keyword}</td>
-                    <td if.bind="checkMapping(keyword)">${getMapping(keyword)}</td>
-                    <td else>
-                        <select md-select="enable-option-observer: true" value.bind="selectedValue">
-                            <option model.bind="null">Select your Label</option>
-                            <option repeat.for="label of label_list" model.bind="label">${label["Cluster"]}</option>
-                        </select>
-                    </td>
-                </tr>
+                    <tr repeat.for="keyword of selected_document['Keywords']">
+                        <td>${keyword.keyword}</td>
+                        <td if.bind="checkMapping(keyword)">${getMapping(keyword)}</td>
+                        <td else>
+                            <div if.bind="checkActiveKeyword(keyword)">
+                                <strong style="color: green;">Active</strong>
+                            </div>
+                            <div else>
+                                <button md-button click.trigger="setActiveKeyword(keyword)">Activate</button>
+                            </div>
+                            <!-- <select md-select="enable-option-observer: true" value.bind="selectedValue">
+                                <option model.bind="null">Select your Label</option>
+                                <option repeat.for="label of label_list" model.bind="label"></option>
+                                ${label["Cluster"]}
+                                </option>
+                            </select> -->
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             <br>
-                <div class="row">
-                    <div class="col m12" style="overflow: scroll; height: 40vh;">
-                        <strong>All Keywords</strong>
-                        <table>
-                            <thead>
+            <div class="row">
+                <div class="col m12" style="overflow: scroll; height: 40vh;">
+                    <strong>All Keywords</strong>
+                    <table>
+                        <thead>
                             <tr>
-                                <th>Add</th>
-                                <th>Keyword</th>
-                                <th>Document - Keyword Similarity</th>
+                                <th>Apply</th>
+                                <th>Label</th>
+                                <th>Document - Label Similarity</th>
                             </tr>
-                            </thead>
-                            <tbody>
-                            <tr repeat.for="keyword of label_list | customSort: { propertyName: 'Similarity', direction: sort_property }">
+                        </thead>
+                        <tbody>
+                            <tr
+                                repeat.for="label of label_list | customSort: { propertyName: 'Similarity', direction: sort_property }">
                                 <td>
-                                    <button click.trigger="addKeyword(keyword['Cluster'])">Add</button>
+                                    <button md-button click.trigger="applyKeyword(label)">Apply</button>
                                 </td>
-                                <td>${keyword['Cluster']}</td>
-                                <td as-element="small-bar" percent="${keyword['Similarity']}" orientation="horizontal"></td>
+                                <td>${label['Cluster']}</td>
+                                <td as-element="small-bar" percent="${label['Similarity']}" orientation="horizontal">
+                                </td>
                             </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                        </tbody>
+                    </table>
                 </div>
+            </div>
         </div>
     </div>
 </template>
