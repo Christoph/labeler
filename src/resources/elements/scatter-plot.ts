@@ -1,5 +1,5 @@
 import * as d3 from "d3";
-import {inject, noView } from 'aurelia-framework';
+import { inject, noView } from 'aurelia-framework';
 import * as _ from "lodash"
 
 import { DataStore } from 'data-store';
@@ -10,7 +10,7 @@ import { State } from 'store/state';
 @inject(Element, DataStore)
 @noView()
 @connectTo()
-export class ScatterPlotCustomElement{
+export class ScatterPlotCustomElement {
   // D3 variables
   private svg;
   private x;
@@ -25,19 +25,19 @@ export class ScatterPlotCustomElement{
     this.initChart();
 
     // https://github.com/wbkd/d3-extended
-    d3.selection.prototype.moveToFront = function() {
-      return this.each(function(){
+    d3.selection.prototype.moveToFront = function () {
+      return this.each(function () {
         this.parentNode.appendChild(this);
       });
     };
 
-    d3.selection.prototype.moveToBack = function() {
-        return this.each(function() {
-            var firstChild = this.parentNode.firstChild;
-            if (firstChild) {
-                this.parentNode.insertBefore(this, firstChild);
-            }
-        });
+    d3.selection.prototype.moveToBack = function () {
+      return this.each(function () {
+        var firstChild = this.parentNode.firstChild;
+        if (firstChild) {
+          this.parentNode.insertBefore(this, firstChild);
+        }
+      });
     };
   }
 
@@ -56,7 +56,7 @@ export class ScatterPlotCustomElement{
       .attr("height", this.height + this.margin.top + this.margin.bottom)
       .append("g")
       .attr("transform",
-      "translate(" + this.margin.left + "," + this.margin.top + ")");
+        "translate(" + this.margin.left + "," + this.margin.top + ")");
 
     // set the ranges
     this.x = d3.scaleLinear()
@@ -78,11 +78,11 @@ export class ScatterPlotCustomElement{
   updateChart(state) {
     let self = this;
 
-    let data = this.store.getProjections();
+    let data = []//this.store.getProjections();
 
     // Update domains
-    this.x.domain(d3.extent(data, function(d) { return +d[state.selectedProjection][0] }));
-    this.y.domain(d3.extent(data, function(d) { return +d[state.selectedProjection][1] }));
+    this.x.domain(d3.extent(data, function (d) { return +d[state.selectedProjection][0] }));
+    this.y.domain(d3.extent(data, function (d) { return +d[state.selectedProjection][1] }));
 
     // Select chart
     let chart = this.svg.selectAll(".points")
@@ -101,36 +101,36 @@ export class ScatterPlotCustomElement{
     chart.enter()
       .append("circle")
       .attr("class", "point")
-      .attr('r', 5 )
-      .on("mouseover", function(d, i) {
+      .attr('r', 5)
+      .on("mouseover", function (d, i) {
         console.log(self.store.getMetaData(i)["Keywords"])
         // dispatchify(select)(d)
       })
       .merge(chart)
-        .transition(1000)
-        .attr('cx', function(d){ return self.x(d[state.selectedProjection][0]); })
-        .attr('cy', function(d){ return self.y(d[state.selectedProjection][1]); })
-        .style('opacity',  function(d, i){
-          let opacity;
-          if(self.store.getMetaData(i)["type"] == "new") {
-            opacity = 1
-          }
-          else {
-            opacity = 0.2
-          }
-          return opacity
-        })
-        // .style('fill',  function(d, i){
-        //   let color;
-        //   if(self.store.getMetaData(i)["type"] == "new") {
-        //     color = "steelblue"
-        //     d3.select(this).moveToFront()
-        //   }
-        //   else {
-        //     color = "lightgrey"
-        //     d3.select(this).moveToBack()
-        //   }
-        //   return color
-        // });
+      .transition(1000)
+      .attr('cx', function (d) { return self.x(d[state.selectedProjection][0]); })
+      .attr('cy', function (d) { return self.y(d[state.selectedProjection][1]); })
+      .style('opacity', function (d, i) {
+        let opacity;
+        if (self.store.getMetaData(i)["type"] == "new") {
+          opacity = 1
+        }
+        else {
+          opacity = 0.2
+        }
+        return opacity
+      })
+    // .style('fill',  function(d, i){
+    //   let color;
+    //   if(self.store.getMetaData(i)["type"] == "new") {
+    //     color = "steelblue"
+    //     d3.select(this).moveToFront()
+    //   }
+    //   else {
+    //     color = "lightgrey"
+    //     d3.select(this).moveToBack()
+    //   }
+    //   return color
+    // });
   }
 }

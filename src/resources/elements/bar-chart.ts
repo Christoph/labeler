@@ -1,5 +1,5 @@
 import * as d3 from "d3";
-import {inject, noView } from 'aurelia-framework';
+import { inject, noView } from 'aurelia-framework';
 import * as _ from "lodash"
 
 import { DataStore } from 'data-store';
@@ -11,7 +11,7 @@ import { selectProjection } from 'store/actions/data';
 @inject(Element, DataStore)
 @noView()
 @connectTo()
-export class BarChartCustomElement{
+export class BarChartCustomElement {
   public state: State;
 
   // D3 variables
@@ -43,7 +43,7 @@ export class BarChartCustomElement{
       .attr("height", this.height + this.margin.top + this.margin.bottom)
       .append("g")
       .attr("transform",
-      "translate(" + this.margin.left + "," + this.margin.top + ")");
+        "translate(" + this.margin.left + "," + this.margin.top + ")");
 
     // set the ranges
     this.x = d3.scaleBand()
@@ -66,11 +66,11 @@ export class BarChartCustomElement{
   updateChart(state) {
     let self = this;
 
-    let data = this.store.getMeta();
+    let data = this.store.getNew();
 
     // Update domains
-    this.x.domain(data.map(function(d) { return d["party"]; }));
-    this.y.domain(d3.extent(data, function(d) {
+    this.x.domain(data.map(function (d) { return d["party"]; }));
+    this.y.domain(d3.extent(data, function (d) {
       return +d["total"]
     }));
 
@@ -80,10 +80,10 @@ export class BarChartCustomElement{
       .enter()
       .append("g")
       .attr("class", "bar")
-      .attr("transform", function(d) {
+      .attr("transform", function (d) {
         return "translate(" + (self.x(d["party"])) + ",0)"
       })
-      .on("click", function(d) {
+      .on("click", function (d) {
         dispatchify(selectProjection)(d["party"])
       })
 
@@ -99,18 +99,18 @@ export class BarChartCustomElement{
       //   // dispatchify(select)(d)
       // })
       .merge(chart)
-        .transition(1000)
-        .attr("width", self.x.bandwidth())
-        .attr("y", function(d) { return self.y(d["total"]); })
-        .attr("height", function(d) { return self.height - self.y(d["total"]); });
+      .transition(1000)
+      .attr("width", self.x.bandwidth())
+      .attr("y", function (d) { return self.y(d["total"]); })
+      .attr("height", function (d) { return self.height - self.y(d["total"]); });
 
     chart.append("text")
       .merge(chart)
-        .transition(1000)
-        // .attr("width", self.x.bandwidth())
-        .attr("y", function(d) { return self.y(d["total"]) - 3; })
-        // .attr("height", function(d) { return self.height - self.y(d["total"]); });
-        .text(function(d) { return d["total"]; })
+      .transition(1000)
+      // .attr("width", self.x.bandwidth())
+      .attr("y", function (d) { return self.y(d["total"]) - 3; })
+      // .attr("height", function(d) { return self.height - self.y(d["total"]); });
+      .text(function (d) { return d["total"]; })
 
     // Remove points
     chart.exit().remove();

@@ -11,6 +11,7 @@ import * as _ from 'lodash';
 @autoinject()
 export class P1 {
     public documents;
+    public labeled_documents;
     public label_list;
     public label_docs;
     public keyword_list;
@@ -43,7 +44,8 @@ export class P1 {
     }
 
     constructor(public store: DataStore) {
-        this.documents = store.getMeta();
+        this.documents = store.getNew();
+        this.labeled_documents = store.getLabeled();
         this.label_list = store.getClasses();
         this.label_docs = {}
         this.keyword_list = {}
@@ -52,6 +54,10 @@ export class P1 {
         for (const label of this.label_list) {
             this.label_docs[label["Cluster"]] = []
         }
+
+        // for (const doc of this.labeled_documents) {
+
+        // }
 
         for (const doc of this.documents) {
             let unknown = 0;
