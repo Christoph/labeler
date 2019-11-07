@@ -133,25 +133,25 @@
             <thead>
               <tr>
                 <th>Apply</th>
-                <th>
-                  Label
-                  <br>
-                  Similarity to Selected Document
-                </th>
+                <th>Label</th>
+                <th>Count</th>
+                <th>Avg Sim</th>
+                <th>Sim Hist</th>
               </tr>
             </thead>
             <tbody>
               <tr
-                repeat.for="label of label_list | customSort: { propertyName: 'Similarity', direction: sort_property }">
+                repeat.for="label_object of label_docs | customSort: { propertyName: 'keyword_avg_similarity', direction: sort_property }">
                 <td>
-                  <button md-button click.trigger="applyKeyword(label)">Apply</button>
+                  <button md-button click.trigger="applyKeyword(label_object)">Apply</button>
                 </td>
                 <td style="word-break: break-all;">
-                  ${label['Cluster']}
-                  <br>
-                  <small-bar percent="${label['Similarity']}" orientation="horizontal"></small-bar>
+                  ${label_object['label']}
                 </td>
+                <td>${label_object['n_docs']}</td>
+                <td as-element="small-bar" percent="${label_object.keyword_avg_similarity}" orientation="horizontal">
                 </td>
+                <td as-element="bar-chart" data="${label_object['keyword_similarities']}"></td>
               </tr>
             </tbody>
           </table>

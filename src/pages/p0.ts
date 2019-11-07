@@ -7,6 +7,7 @@ import {
 import * as Mark from 'mark.js';
 import * as math from 'mathjs';
 import * as _ from 'lodash';
+import { templateController } from 'aurelia-framework';
 
 @autoinject()
 export class P1 {
@@ -55,7 +56,6 @@ export class P1 {
             this.label_docs[label["Cluster"]] = []
         }
 
-        console.log(this.labeled_documents[1])
         for (const doc of this.labeled_documents) {
             for (const label of doc["Clusters"].split(";")) {
                 if (this.label_docs.hasOwnProperty(label)) {
@@ -65,6 +65,19 @@ export class P1 {
                 }
             }
         }
+
+        let temp_labels = new Array();
+
+        for (let [key, value] of Object.entries(this.label_docs)) {
+            let o = {}
+            o["label"] = key
+            o["docs"] = value
+            o["n_docs"] = o["docs"].length
+
+            temp_labels.push(o)
+        }
+
+        this.label_docs = temp_labels
         console.log(this.label_docs)
 
         for (const doc of this.documents) {
@@ -166,6 +179,7 @@ export class P1 {
         this.selected_document = doc;
         this.selected_document_list.push(index);
         this.computeSimilarities();
+        this.computeLabelSimilarities();
         //this.computeKeywordSimilarity();
     }
 
@@ -211,6 +225,19 @@ export class P1 {
                 keyword_similarity: this.cosine_similarity(this.selected_document["Keyword_Vector"], element["Keyword_Vector"])
             })
         });
+    }
+
+    computeLabelSimilarities() {
+        for (const label of this.label_docs) {
+            let similarities = [];
+
+            for (const doc of label.docs) {
+                similarities.push(this.cosine_similarity(this.selected_document.Keyword_Vector, doc.Keyword_Vector))
+            }
+
+            label["keyword_similarities"] = similarities;
+            label["keyword_avg_similarity"] = similarities.reduce((a, b) => a + b, 0) / similarities.length
+        }
     }
 
     setSortProperty(property) {
