@@ -29,7 +29,7 @@
     <h4>Title: ${selected_document["Title"]} </h4>
   </div>
   <div class="row">
-    <div class="col m5">
+    <div class="col m4">
       <span>${selected_document["Authors"]}</span>
       <a href=${selected_document["DOI"]}>link</a>
       <br>
@@ -44,7 +44,7 @@
         </ul>
       </div>
     </div>
-    <div class="col m7">
+    <div class="col m8">
       <div class="button-row">
         <a style="width: 49%;" md-sidenav-collapse="ref.bind: sideNav;" md-button md-waves>Toggle Keyword
           Overview</a>
@@ -104,7 +104,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr repeat.for="keyword of selected_document['Keywords']">
+              <tr repeat.for="keyword of selected_document['Keywords_Processed']">
                 <td>${keyword.keyword}</td>
                 <td style="word-break: break-all;">${keyword.mapping}</td>
                 <td>
