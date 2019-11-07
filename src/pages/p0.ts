@@ -55,9 +55,17 @@ export class P1 {
             this.label_docs[label["Cluster"]] = []
         }
 
-        // for (const doc of this.labeled_documents) {
-
-        // }
+        console.log(this.labeled_documents[1])
+        for (const doc of this.labeled_documents) {
+            for (const label of doc["Clusters"].split(";")) {
+                if (this.label_docs.hasOwnProperty(label)) {
+                    let doc_list = this.label_docs[label]
+                    doc_list.push(doc)
+                    this.label_docs[label] = doc_list
+                }
+            }
+        }
+        console.log(this.label_docs)
 
         for (const doc of this.documents) {
             let unknown = 0;
