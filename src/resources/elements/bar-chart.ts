@@ -6,7 +6,7 @@ import * as _ from "lodash"
 @inject(Element)
 @noView()
 export class BarChartCustomElement {
-  @bindable data: [];
+  @bindable data: Array<number>;
   @bindable property: string;
   @bindable bins: string = "10";
   @bindable xSize: string = "150";
@@ -33,7 +33,9 @@ export class BarChartCustomElement {
     this.updateChart();
   }
 
-  dataChanged(data: []) {
+  dataChanged(data) {
+    // Convert string to array of numbers
+    this.data = data.split(",").map(Number)
     if (this.isInitialized) {
       this.updateChart();
     }
@@ -53,7 +55,7 @@ export class BarChartCustomElement {
 
     // set the ranges
     this.x = d3.scaleLinear()
-      .domain([-1, 1])
+      .domain([0, 1])
       .range([0, this.width])
 
     this.y = d3.scaleLinear()
@@ -74,14 +76,11 @@ export class BarChartCustomElement {
 
     // Compute histogram
     let histogram = d3.histogram()
-      .value(function (d) { return +d })
-      // .value(function (d) { return d[self.property] })
+      .value(d => +d)
       .domain(self.x.domain())
       .thresholds(self.x.ticks(parseInt(self.bins)));
 
-    console.log(self.data)
     let bins = histogram(self.data);
-    console.log(bins)
 
     // Update domains
     this.y.domain([0, d3.max(bins, function (d) { return d.length })]);

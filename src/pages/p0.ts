@@ -34,7 +34,7 @@ export class P1 {
     // Distance Metrics
     cosine_similarity(v1, v2) {
         if (v1 && v2) {
-            return math.dot(v1, v2) / (math.norm(v1) * math.norm(v2))
+            return math.abs(math.dot(v1, v2) / (math.norm(v1) * math.norm(v2)))
         } else {
             return 0
         }
