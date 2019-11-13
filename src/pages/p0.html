@@ -85,8 +85,10 @@
                 <br>
                 ${sim.document["Keywords"]}
               </td>
-              <td as-element="small-bar" percent="${sim.text_similarity}" orientation="vertical"></td>
-              <td as-element="small-bar" percent="${sim.keyword_similarity}" orientation="vertical"></td>
+              <td as-element="small-bar" percent="${sim.text_similarity}" orientation="vertical" xSize="20" ySize="100">
+              </td>
+              <td as-element="small-bar" percent="${sim.keyword_similarity}" orientation="vertical" xsize="20"
+                ysize="100"></td>
             </tr>
           </tbody>
         </table>
@@ -149,7 +151,8 @@
                   ${label_object['label']}
                 </td>
                 <td>${label_object['n_docs']}</td>
-                <td as-element="small-bar" percent="${label_object.keyword_avg_similarity}" orientation="horizontal">
+                <td as-element="small-bar" percent="${label_object.keyword_avg_similarity}" orientation="vertical"
+                  xSize="15" , ySize="60">
                 </td>
                 <td as-element="bar-chart" data="${label_object['keyword_similarities']}"></td>
               </tr>

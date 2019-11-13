@@ -13,8 +13,8 @@ export class SmallBarCustomElement {
 
   @bindable percent: string;
   @bindable orientation: string = "horizontal";
-  @bindable xSize: string;
-  @bindable ySize: string;
+  @bindable xsize: string;
+  @bindable ysize: string;
 
   // set the dimensions and margins of the graph
   margin = { top: 0, right: 0, bottom: 0, left: 0 };
@@ -25,17 +25,8 @@ export class SmallBarCustomElement {
   }
 
   attached() {
-    if(this.orientation == "horizontal") {
-      this.xSize = "100";
-      this.ySize = "20";
-    }
-    else{
-      this.xSize = "20";
-      this.ySize = "100";
-    }
-
-    this.width = parseInt(this.xSize) - this.margin.left - this.margin.right;
-    this.height = parseInt(this.ySize) - this.margin.top - this.margin.bottom;
+    this.width = parseInt(this.xsize) - this.margin.left - this.margin.right;
+    this.height = parseInt(this.ysize) - this.margin.top - this.margin.bottom;
 
     this.initChart();
     this.isInitialized = true;
@@ -43,7 +34,7 @@ export class SmallBarCustomElement {
   }
 
   percentChanged(percent: string) {
-    if(this.isInitialized) {
+    if (this.isInitialized) {
       this.updateChart();
     }
   }
@@ -58,12 +49,12 @@ export class SmallBarCustomElement {
         "translate(" + this.margin.left + "," + this.margin.top + ")");
 
     // set the ranges
-    if(this.orientation == "horizontal") {
+    if (this.orientation == "horizontal") {
       this.x = d3.scaleLinear()
         .range([0, this.width])
         .domain([0, 1])
     }
-    else{
+    else {
       this.x = d3.scaleLinear()
         .range([this.height, 0])
         .domain([0, 1])
@@ -78,7 +69,7 @@ export class SmallBarCustomElement {
   updateChart() {
     let self = this;
 
-    if(this.orientation == "horizontal") {
+    if (this.orientation == "horizontal") {
       this.svg.append("rect")
         .style("fill", "lightgrey")
         .attr("x", 0)
@@ -95,7 +86,7 @@ export class SmallBarCustomElement {
         .attr("y", 0)
         .attr("height", self.height);
     }
-    else{
+    else {
       this.svg.append("rect")
         .style("fill", "lightgrey")
         .attr("x", 0)
