@@ -1,34 +1,24 @@
 <template>
   <md-sidenav view-model.ref="sideNav">
-    <div style="overflow: scroll; height: 100vh;">
-      <table>
-        <thead>
-          <tr>
-            <th>Keyword</th>
-            <th>Mapping</th>
-            <th>Occurences</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr repeat.for="keyword of keyword_list | customSort: { propertyName: 'count', direction: sort_property }"
-            click.delegate="selectKeyword($index)" class="${keyword['mapping'].length > 0 ? 'finished' : ''}"
-            style="cursor: pointer;">
-            <td>
-              ${keyword["keyword"]}
-            </td>
-            <td>
-              ${keyword["mapping"]}
-            </td>
-            <td>${keyword["count"]}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
   </md-sidenav>
   <div class="row">
     <h4>Title: ${selected_document["Title"]} </h4>
   </div>
   <div class="row">
+    <div class="col m8">
+      <div class="button-row">
+        <a style="width: 49%;" md-sidenav-collapse="ref.bind: sideNav;" md-button md-waves>Toggle Keyword
+          Overview</a>
+        <button style="width: 19%;" md-button click.delegate="lastDocument()">
+          <- Previous</button> <button style="width: 30%;" md-button click.delegate="nextDocument()">Done ->
+        </button>
+      </div>
+      <div>
+        <h5>Active Keyword: ${selected_keyword.keyword}</h5>
+      </div>
+      <!-- <strong>Final Keywords</strong>
+      <div md-chips="data.two-way: selected_document['Final']; autocomplete-data.bind: autocompleteData;"></div> -->
+    </div>
     <div class="col m4">
       <span>${selected_document["Authors"]}</span>
       <a href=${selected_document["DOI"]}>link</a>
@@ -44,59 +34,37 @@
         </ul>
       </div>
     </div>
-    <div class="col m8">
-      <div class="button-row">
-        <a style="width: 49%;" md-sidenav-collapse="ref.bind: sideNav;" md-button md-waves>Toggle Keyword
-          Overview</a>
-        <button style="width: 19%;" md-button click.delegate="lastDocument()">
-          <- Previous</button> <button style="width: 30%;" md-button click.delegate="nextDocument()">Done ->
-        </button>
-      </div>
-      <div>
-        <h5>Active Keyword: ${selected_keyword.keyword}</h5>
-      </div>
-      <!-- <strong>Final Keywords</strong>
-      <div md-chips="data.two-way: selected_document['Final']; autocomplete-data.bind: autocompleteData;"></div> -->
-    </div>
   </div>
   <div class="row">
     <div class="col m3" style="word-break: break-all;">
-      <div style="overflow: scroll; height: 95vh;">
+      <div style="overflow: scroll; height: 100vh;">
         <table>
           <thead>
             <tr>
-              <th>Title</th>
-              <th style="cursor: pointer" click.delegate="setSortProperty('text_similarity')">Text Sim
-              </th>
-              <th style="cursor: pointer" click.delegate="setSortProperty('keyword_similarity')">Keyword
-                Sim</th>
+              <th>Keyword</th>
+              <th>Mapping</th>
+              <th>#</th>
             </tr>
           </thead>
           <tbody>
-            <tr
-              repeat.for="sim of selected_similarities | customSort: { propertyName: sim_property, direction: sort_property }"
-              click.delegate="selectDocument($index)"
-              class="${sim.document['Unknown'] < 1 || sim.document['Done'] ? 'finished' : ''}" style="cursor: pointer;">
+            <tr repeat.for="keyword of keyword_list | customSort: { propertyName: 'count', direction: sort_property }"
+              click.delegate="selectKeyword($index)" class="${keyword['mapping'].length > 0 ? 'finished' : ''}"
+              style="cursor: pointer;">
               <td>
-                <strong>
-                  ${sim.document["Title"]}
-                </strong>
-                <br>
-                <br>
-                ${sim.document["Keywords"]}
+                ${keyword["keyword"]}
               </td>
-              <td as-element="small-bar" percent="${sim.text_similarity}" orientation="vertical" xSize="20" ySize="100">
+              <td>
+                ${keyword["mapping"]}
               </td>
-              <td as-element="small-bar" percent="${sim.keyword_similarity}" orientation="vertical" xsize="20"
-                ysize="100"></td>
+              <td>${keyword["count"]}</td>
             </tr>
           </tbody>
         </table>
       </div>
     </div>
-    <div class="col m9">
+    <div class="col m5">
       <div class="row">
-        <div class="col m4">
+        <div class="row">
           <table>
             <thead>
               <tr>
@@ -130,7 +98,7 @@
             </tbody>
           </table>
         </div>
-        <div class="col m8" style="overflow: scroll; height: 90vh;">
+        <div class="row" style="overflow: scroll; height: 90vh;">
           <table>
             <thead>
               <tr>
@@ -158,8 +126,41 @@
               </tr>
             </tbody>
           </table>
-
         </div>
+      </div>
+    </div>
+    <div class="col m4">
+      <div style="overflow: scroll; height: 95vh;">
+        <table>
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th style="cursor: pointer" click.delegate="setSortProperty('text_similarity')">Text Sim
+              </th>
+              <th style="cursor: pointer" click.delegate="setSortProperty('keyword_similarity')">Keyword
+                Sim</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              repeat.for="sim of selected_similarities | customSort: { propertyName: sim_property, direction: sort_property }"
+              click.delegate="selectDocument($index)"
+              class="${sim.document['Unknown'] < 1 || sim.document['Done'] ? 'finished' : ''}" style="cursor: pointer;">
+              <td>
+                <strong>
+                  ${sim.document["Title"]}
+                </strong>
+                <br>
+                <br>
+                ${sim.document["Keywords"]}
+              </td>
+              <td as-element="small-bar" percent="${sim.text_similarity}" orientation="vertical" xSize="20" ySize="100">
+              </td>
+              <td as-element="small-bar" percent="${sim.keyword_similarity}" orientation="vertical" xsize="20"
+                ysize="100"></td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
     <br>
