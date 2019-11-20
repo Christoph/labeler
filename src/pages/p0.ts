@@ -22,6 +22,7 @@ export class P1 {
     public selected_document_list = [];
     public selected_document;
     public selected_keyword;
+    public selected_label;
     public showDocuments = false;
     public selected_similarities = [];
 
@@ -121,14 +122,14 @@ export class P1 {
                     if (mapping.length > 0) {
                         this.keyword_list[author_key] = {
                             mapping: mapping,
-                            count: 0,
+                            count: 1,
                             isActive: false,
                             docs: [doc]
                         }
                     } else {
                         this.keyword_list[author_key] = {
                             mapping: "",
-                            count: 0,
+                            count: 1,
                             isActive: false,
                             docs: [doc]
                         }
@@ -199,7 +200,7 @@ export class P1 {
     }
 
     selectLabel(index) {
-        console.log(this.label_list[index])
+        this.selected_label = this.label_docs[index];
     }
 
     selectKeyword(index) {
@@ -260,7 +261,7 @@ export class P1 {
 
             for (const doc of label.docs) {
                 for (const key_doc of this.selected_keyword.docs) {
-                    similarities.push(this.cosine_similarity(key_doc.Keyword_Vector, doc.Keyword_Vector))
+                    similarities.push(this.cosine_similarity(key_doc.Abstract_Vector, doc.Abstract_Vector))
                 }
             }
 
@@ -377,7 +378,7 @@ export class P1 {
             })
     }
 
-    applyKeyword(label) {
-        this.selected_keyword.mapping = label["Cluster"]
+    applyLabel() {
+        this.selected_keyword.mapping = this.selected_label.label
     }
 }
