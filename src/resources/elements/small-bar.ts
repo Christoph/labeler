@@ -72,8 +72,6 @@ export class SmallBarCustomElement {
   updateChart() {
     let self = this;
 
-    console.log(this.percent)
-
     if (this.orientation == "horizontal") {
       this.svg.append("rect")
         .style("fill", "lightgrey")
