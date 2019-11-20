@@ -68,6 +68,8 @@ export class P1 {
                     this.label_docs[label] = doc_list
                 }
             }
+
+            doc["type"] = "old";
         }
 
         let temp_labels = new Array();
@@ -103,6 +105,7 @@ export class P1 {
             // }
 
             doc["DOI"] = "https://doi.org/" + doc["DOI"]
+            doc["type"] = "new"
 
             // Create final keywords field
             // TODO: fix casing in preprocessing
@@ -203,6 +206,8 @@ export class P1 {
 
     selectLabel(index) {
         this.selected_label = this.label_docs[index];
+
+        this.updateSelectedSimilarities();
     }
 
     selectKeyword(index) {
@@ -221,19 +226,37 @@ export class P1 {
         this.selected_document = key.docs[0]
         // this.selected_document_list.push(key.docs[0])
 
-        // Prepare Document List
-        this.selected_similarities.length = 0;
-        for (const element of key.docs) {
-            this.selected_similarities.push({
-                document: element,
-                text_similarity: this.cosine_similarity(this.selected_document["Abstract_Vector"], element["Abstract_Vector"]),
-                //keyword_similarity: this.jaccard_similarity(this.selected_document["Keywords"], element["Keywords"])
-                keyword_similarity: this.cosine_similarity(this.selected_document["Keyword_Vector"], element["Keyword_Vector"])
-            })
-        }
+        this.updateSelectedSimilarities();
 
         // Update Labels List
         this.computeLabelSimilarities();
+    }
+
+    updateSelectedSimilarities() {
+        // Prepare Document List
+        this.selected_similarities.length = 0;
+
+        if (this.selected_keyword) {
+            for (const element of this.selected_keyword.docs) {
+                this.selected_similarities.push({
+                    document: element,
+                    text_similarity: this.cosine_similarity(this.selected_document["Abstract_Vector"], element["Abstract_Vector"]),
+                    //keyword_similarity: this.jaccard_similarity(this.selected_document["Keywords"], element["Keywords"])
+                    keyword_similarity: this.cosine_similarity(this.selected_document["Keyword_Vector"], element["Keyword_Vector"])
+                })
+            }
+        }
+
+        if (this.selected_label) {
+            for (const element of this.selected_label.docs) {
+                this.selected_similarities.push({
+                    document: element,
+                    text_similarity: this.cosine_similarity(this.selected_document["Abstract_Vector"], element["Abstract_Vector"]),
+                    //keyword_similarity: this.jaccard_similarity(this.selected_document["Keywords"], element["Keywords"])
+                    keyword_similarity: this.cosine_similarity(this.selected_document["Keyword_Vector"], element["Keyword_Vector"])
+                })
+            }
+        }
     }
 
     computeKeywordSimilarity() {

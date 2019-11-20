@@ -60,7 +60,8 @@
           <tbody>
             <tr
               repeat.for="sim of selected_similarities | customSort: { propertyName: sim_property, direction: sort_property }"
-              click.delegate="selectDocument($index)" style="cursor: pointer;">
+              click.delegate="selectDocument($index)"
+              css="cursor: pointer; background-color: ${sim.document['type'] == 'old' ? 'lightgrey' : none}">
               <td>
                 <strong>
                   ${sim.document["Title"]}
@@ -116,10 +117,12 @@
       <hr>
       <!-- Document Info View -->
       <div class="row" style="overflow: scroll; height: 40vh;">
-        <h6>Title: ${selected_document["Title"]} </h6>
-        <span>${selected_document["Authors"]}</span>
-        <a href=${selected_document["DOI"]}>link</a>
+        <h6>${selected_document["Title"]} </h6>
+        <strong>Authors: </strong> ${selected_document["Authors"]}
         <br>
+        <a href=${selected_document["DOI"]}>Link to the official Source (DOI)</a>
+        <br>
+        <strong>Author Keywords: </strong> ${selected_document["Keywords"]}
         <div class="collapsible-basic-use">
           <ul md-collapsible="accordion.bind: !accordion; popout: false;">
             <li>
