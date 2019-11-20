@@ -1,136 +1,36 @@
 <template>
-  <md-sidenav view-model.ref="sideNav">
-  </md-sidenav>
   <div class="row">
-    <h4>Title: ${selected_document["Title"]} </h4>
-  </div>
-  <div class="row">
-    <div class="col m8">
-      <div class="button-row">
-        <a style="width: 49%;" md-sidenav-collapse="ref.bind: sideNav;" md-button md-waves>Toggle Keyword
-          Overview</a>
-        <button style="width: 19%;" md-button click.delegate="lastDocument()">
-          <- Previous</button> <button style="width: 30%;" md-button click.delegate="nextDocument()">Done ->
-        </button>
-      </div>
-      <div>
-        <h5>Active Keyword: ${selected_keyword.keyword}</h5>
-      </div>
-      <!-- <strong>Final Keywords</strong>
-      <div md-chips="data.two-way: selected_document['Final']; autocomplete-data.bind: autocompleteData;"></div> -->
-    </div>
-    <div class="col m4">
-      <span>${selected_document["Authors"]}</span>
-      <a href=${selected_document["DOI"]}>link</a>
-      <br>
-      <div class="collapsible-basic-use">
-        <ul md-collapsible="accordion.bind: !accordion; popout: false;">
-          <li>
-            <div class="collapsible-header">Abstract</div>
-            <div class="collapsible-body">
-              <p>${selected_document["Abstract"]}</p>
-            </div>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col m3" style="word-break: break-all;">
-      <div style="overflow: scroll; height: 100vh;">
-        <table>
-          <thead>
-            <tr>
-              <th>Keyword</th>
-              <th>Mapping</th>
-              <th>#</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr repeat.for="keyword of keyword_list | customSort: { propertyName: 'count', direction: sort_property }"
-              click.delegate="selectKeyword($index)" class="${keyword['mapping'].length > 0 ? 'finished' : ''}"
-              style="cursor: pointer;">
-              <td>
-                ${keyword["keyword"]}
-              </td>
-              <td>
-                ${keyword["mapping"]}
-              </td>
-              <td>${keyword["count"]}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+    <div class="col m3" style="overflow: scroll; height: 100vh;">
+      <!-- Keyword View -->
+      <table>
+        <thead>
+          <tr>
+            <th>Keyword</th>
+            <th>Mapping</th>
+            <th>#</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr repeat.for="keyword of keyword_list | customSort: { propertyName: 'count', direction: sort_property }"
+            click.delegate="selectKeyword($index)" class="${keyword['mapping'].length > 0 ? 'finished' : ''}"
+            style="cursor: pointer;">
+            <td>
+              ${keyword["keyword"]}
+            </td>
+            <td style="word-break: break-all;">
+              ${keyword["mapping"]}
+            </td>
+            <td>${keyword["count"]}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
     <div class="col m5">
-      <div class="row">
-        <div class="row">
-          <table>
-            <thead>
-              <tr>
-                <th>Author Keyword</th>
-                <th>Keyword Mapping</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr repeat.for="keyword of selected_document['Keywords_Processed']">
-                <td>${keyword.keyword}</td>
-                <td style="word-break: break-all;">${keyword.mapping}</td>
-                <td>
-                  <span if.bind="keyword.isActive">
-                    Active
-                  </span>
-                  <button else md-button click.trigger="setActiveKeyword(keyword)">Activate</button>
-                </td>
-                <!-- <td if.bind="keyword.mapping">
-                </td>
-                <td else>
-                  <!-- <div if.bind="checkActiveKeyword(keyword)">
-                    <strong style="color: green;">Active</strong>
-                  </div>
-                  <div else>
-                    <button if.bind="" md-button click.trigger="setActiveKeyword(keyword)">Activate</button>
-                    <button md-button click.trigger="setActiveKeyword(keyword)">Activate</button>
-                  </div> -->
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="row" style="overflow: scroll; height: 90vh;">
-          <table>
-            <thead>
-              <tr>
-                <th>Apply</th>
-                <th>Label</th>
-                <th>Count</th>
-                <th>Avg Sim</th>
-                <th>Sim Hist</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                repeat.for="label_object of label_docs | customSort: { propertyName: 'keyword_avg_similarity', direction: sort_property }">
-                <td>
-                  <button md-button click.trigger="applyKeyword(label_object)">Apply</button>
-                </td>
-                <td style="word-break: break-all;">
-                  ${label_object['label']}
-                </td>
-                <td>${label_object['n_docs']}</td>
-                <td as-element="small-bar" percent="${label_object.keyword_avg_similarity}" orientation="vertical"
-                  xSize="15" , ySize="60">
-                </td>
-                <td as-element="bar-chart" data="${label_object['keyword_similarities']}"></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+      <div class="row" style="height: 60vh;">
+        <!-- Graph View -->
       </div>
-    </div>
-    <div class="col m4">
-      <div style="overflow: scroll; height: 95vh;">
+      <div class="row" style="overflow: scroll; height: 40vh;">
+        <!-- Document View -->
         <table>
           <thead>
             <tr>
@@ -163,31 +63,54 @@
         </table>
       </div>
     </div>
-    <br>
-    <div class="row">
-      <div class="col m12" style="overflow: scroll; height: 40vh;">
-        <!-- <strong>All Labels</strong>
+    <div class="col m4">
+      <div class="row" style="overflow: scroll; height: 60vh;">
+        <!-- Labels View -->
         <table>
           <thead>
             <tr>
               <th>Apply</th>
               <th>Label</th>
-              <th>Document - Label Similarity</th>
+              <th>Count</th>
+              <th>Avg Sim</th>
+              <th>Sim Hist</th>
             </tr>
           </thead>
           <tbody>
-            <tr repeat.for="label of label_list | customSort: { propertyName: 'Similarity', direction: sort_property }">
+            <tr
+              repeat.for="label_object of label_docs | customSort: { propertyName: 'keyword_avg_similarity', direction: sort_property }">
               <td>
-                <button md-button click.trigger="applyKeyword(label)">Apply</button>
+                <button md-button click.trigger="applyKeyword(label_object)">Apply</button>
               </td>
-              <td>${label['Cluster']}</td>
-              <td as-element="small-bar" percent="${label['Similarity']}" orientation="horizontal">
+              <td style="word-break: break-all;">
+                ${label_object['label']}
               </td>
+              <td>${label_object['n_docs']}</td>
+              <td as-element="small-bar" percent="${label_object.keyword_avg_similarity}" orientation="vertical"
+                xSize="15" , ySize="60">
+              </td>
+              <td as-element="bar-chart" data="${label_object['keyword_similarities']}"></td>
             </tr>
           </tbody>
-        </table> -->
+        </table>
+      </div>
+      <div class="row" style="height: 40vh;">
+        <!-- Document Info View -->
+        <h4>Title: ${selected_document["Title"]} </h4>
+        <span>${selected_document["Authors"]}</span>
+        <a href=${selected_document["DOI"]}>link</a>
+        <br>
+        <div class="collapsible-basic-use">
+          <ul md-collapsible="accordion.bind: !accordion; popout: false;">
+            <li>
+              <div class="collapsible-header">Abstract</div>
+              <div class="collapsible-body">
+                <p>${selected_document["Abstract"]}</p>
+              </div>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
-  </div>
   </div>
 </template>
