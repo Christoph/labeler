@@ -2,6 +2,7 @@
   <div class="row">
     <!-- Keyword View -->
     <div class="col m3" style="overflow: scroll; height: 100vh;">
+      <h5 style="width: 100%; text-align: center;">Author Keywords</h5>
       <table>
         <thead>
           <tr>
@@ -35,8 +36,10 @@
         <span>Number of Documents: ${selected_keyword.docs.length}</span>
 
       </div>
-      <!-- Document View -->
+      <hr>
+      <!-- Document List View -->
       <div class="row" style="overflow: scroll; height: 40vh;">
+        <h5 style="width: 100%; text-align: center;">Documents</h5>
         <table>
           <thead>
             <tr>
@@ -72,6 +75,7 @@
     <div class="col m4">
       <!-- Labels View -->
       <div class="row" style="overflow: scroll; height: 60vh;">
+        <h5 style="width: 100%; text-align: center;">Labels</h5>
         <table>
           <thead>
             <tr>
@@ -100,9 +104,10 @@
           </tbody>
         </table>
       </div>
+      <hr>
       <!-- Document Info View -->
-      <div class="row" style="height: 40vh;">
-        <h4>Title: ${selected_document["Title"]} </h4>
+      <div class="row" style="overflow: scroll; height: 40vh;">
+        <h6>Title: ${selected_document["Title"]} </h6>
         <span>${selected_document["Authors"]}</span>
         <a href=${selected_document["DOI"]}>link</a>
         <br>
