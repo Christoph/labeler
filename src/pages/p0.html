@@ -12,9 +12,9 @@
           </tr>
         </thead>
         <tbody>
-          <tr repeat.for="keyword of keyword_list | customSort: { propertyName: 'count', direction: sort_property }"
-            click.delegate="selectKeyword($index)" class="${keyword['mapping'].length > 0 ? 'finished' : ''}"
-            style="cursor: pointer;">
+          <tr repeat.for="keyword of keyword_list | customSort: { propertyName: 'isDone', direction: 'ascending' }"
+            click.delegate="selectKeyword($index)" class="${keyword.isActive ? 'activeRow' : ''}"
+            css="cursor: pointer; background-color: ${keyword.isDone ? '#44d16f' : none};">
             <td>
               ${keyword["keyword"]}
             </td>
@@ -28,19 +28,24 @@
     </div>
     <div class="col m5">
       <!-- Graph View -->
-      <div class="row" style="height: 60vh;">
-        <span>Active Keyword: ${selected_keyword["keyword"]}</span>
-        <br>
-        <span>Label: ${selected_keyword["mapping"]}</span>
-        <br>
-        <span>Active Label: ${selected_label.label}</span>
-        <br>
-        <button md-button click.delegate="applyLabel()">Apply Label to Keyword</button>
+      <div class="row" style="height: 60vh; margin-left: 10px; margin-right: 10px">
+        <div class="row">
+          <div class="col m6">
+            Active Keyword
+            <br>
+            <h5>${selected_keyword["keyword"]}</h5>
+          </div>
+          <div class="col m6">
+            <span style="float: right">Selected Label</span>
+            <h5 style="float: right; word-break: break-all">${selected_label.label}</h5>
+          </div>
+          <button md-button style="width: 100%" click.delegate="applyLabel()">Apply Label to Keyword</button>
+        </div>
 
       </div>
       <hr>
       <!-- Document List View -->
-      <div class="row" style="overflow: scroll; height: 40vh;">
+      <div class="row" style="overflow: scroll; height: 40vh; margin-left: 10px; margin-right: 10px;">
         <h5 style="width: 100%; text-align: center;">Documents</h5>
         <table>
           <thead>
@@ -55,8 +60,7 @@
           <tbody>
             <tr
               repeat.for="sim of selected_similarities | customSort: { propertyName: sim_property, direction: sort_property }"
-              click.delegate="selectDocument($index)"
-              class="${sim.document['Unknown'] < 1 || sim.document['Done'] ? 'finished' : ''}" style="cursor: pointer;">
+              click.delegate="selectDocument($index)" style="cursor: pointer;">
               <td>
                 <strong>
                   ${sim.document["Title"]}

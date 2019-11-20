@@ -124,14 +124,16 @@ export class P1 {
                             mapping: mapping,
                             count: 1,
                             isActive: false,
-                            docs: [doc]
+                            docs: [doc],
+                            isDone: true
                         }
                     } else {
                         this.keyword_list[author_key] = {
                             mapping: "",
                             count: 1,
                             isActive: false,
-                            docs: [doc]
+                            docs: [doc],
+                            isDone: false
                         }
                         unknown++;
                     }
