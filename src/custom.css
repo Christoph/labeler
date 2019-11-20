@@ -69,14 +69,15 @@ md-collection-selector>div>div {
 }
 
 .sidenav-overlay {
-    height: 0px;
-    width: 0px;
+  height: 0px;
+  width: 0px;
 }
 
-.finished {
-  background-color: #44d16f;
+.activeRow {
+  border-style: solid;
+  border-width: 2px;
 }
 
 .sidenav {
-  width: 40vw!important;
+  width: 40vw !important;
 }
