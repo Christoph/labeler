@@ -27,6 +27,7 @@ export class P1 {
 
     // Similarity list
     public sim_property = "text_similarity";
+    public label_sort_property = "n_docs";
 
     // Temp variables
     public sort_property = "descending";
@@ -73,6 +74,8 @@ export class P1 {
             o["label"] = key
             o["docs"] = value
             o["n_docs"] = o["docs"].length
+            o["substring_similarity"] = 0.0
+            o["keyword_avg_similarity"] = 0.0
 
             temp_labels.push(o)
         }
@@ -90,7 +93,8 @@ export class P1 {
             doc["DOI"] = "https://doi.org/" + doc["DOI"]
 
             // Create final keywords field
-            doc["Keywords_Processed"] = doc["Keywords_Processed"].split(";");
+            // TODO: fix casing in preprocessing
+            doc["Keywords_Processed"] = doc["Keywords_Processed"].toLowerCase().split(";");
 
             // Populate final keyword list
             let final = doc["Keywords_Processed"]
@@ -183,6 +187,10 @@ export class P1 {
         // this.computeKeywordSimilarity();
     }
 
+    selectLabel(index) {
+        console.log(this.label_list[index])
+    }
+
     selectKeyword(index) {
         let key;
         if (!isNaN(index)) {
@@ -233,7 +241,10 @@ export class P1 {
     }
 
     computeLabelSimilarities() {
-        for (const label of this.label_docs) {
+        let highest_sim_type = "n_docs"
+        let highest_sim = 0;
+
+        for (let label of this.label_docs) {
             let similarities = [];
 
             for (const doc of label.docs) {
@@ -244,11 +255,45 @@ export class P1 {
 
             label["keyword_similarities"] = similarities;
             label["keyword_avg_similarity"] = math.median(similarities)
+
+            if (label["keyword_avg_similarity"] > highest_sim) {
+                highest_sim = label["keyword_avg_similarity"]
+                highest_sim_type = "keyword_avg_similarity"
+            }
+
+            // Edit Distance
+
+            // Substring
+            let substring_dist = 0
+            let keywords = this.selected_keyword.keyword.split(" ")
+            for (const keyword of keywords) {
+                if (label.label.toLowerCase().includes(keyword)) {
+                    substring_dist++;
+                }
+            }
+            if (substring_dist > 0) {
+                label["substring_similarity"] = substring_dist / keywords.length;
+            } else {
+                label["substring_similarity"] = 0
+            }
+
+            if (label["substring_similarity"] >= highest_sim) {
+                highest_sim = label["substring_similarity"]
+                highest_sim_type = "substring_similarity"
+            }
         }
+
+        // Set sort property
+        this.label_sort_property = ""
+        this.label_sort_property = highest_sim_type
     }
 
     setSortProperty(property) {
         this.sim_property = property;
+    }
+
+    setLabelSortProperty(property) {
+        this.label_sort_property = property;
     }
 
     setActiveKeyword(keyword) {

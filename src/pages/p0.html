@@ -79,24 +79,21 @@
         <table>
           <thead>
             <tr>
-              <th>Apply</th>
               <th>Label</th>
-              <th>Count</th>
-              <th>Avg Sim</th>
-              <th>Sim Hist</th>
+              <th style="cursor: pointer" click.delegate="setLabelSortProperty('n_docs')">Count</th>
+              <th style="cursor: pointer" click.delegate="setLabelSortProperty('substring_similarity')">Substring</th>
+              <th style="cursor: pointer" click.delegate="setLabelSortProperty('keyword_avg_similarity')">Sim Hist</th>
             </tr>
           </thead>
           <tbody>
             <tr
-              repeat.for="label_object of label_docs | customSort: { propertyName: 'keyword_avg_similarity', direction: sort_property }">
-              <td>
-                <button md-button click.trigger="applyKeyword(label_object)">Apply</button>
-              </td>
+              repeat.for="label_object of label_docs | customSort: { propertyName: label_sort_property, direction: 'descending' }"
+              style="cursor: pointer;" click.delegate="selectLabel($index)">
               <td style="word-break: break-all;">
                 ${label_object['label']}
               </td>
               <td>${label_object['n_docs']}</td>
-              <td as-element="small-bar" percent="${label_object.keyword_avg_similarity}" orientation="vertical"
+              <td as-element="small-bar" percent="${label_object['substring_similarity']}" orientation="vertical"
                 xSize="15" , ySize="60">
               </td>
               <td as-element="bar-chart" data="${label_object['keyword_similarities']}"></td>
