@@ -191,6 +191,7 @@ export class P1 {
             key = index
         }
 
+        // Set active keyword
         if (this.selected_keyword) this.selected_keyword.isActive = false;
         key.isActive = true;
 
@@ -198,6 +199,7 @@ export class P1 {
         this.selected_document = key.docs[0]
         // this.selected_document_list.push(key.docs[0])
 
+        // Prepare Document List
         this.selected_similarities.length = 0;
         for (const element of key.docs) {
             this.selected_similarities.push({
@@ -207,6 +209,9 @@ export class P1 {
                 keyword_similarity: this.cosine_similarity(this.selected_document["Keyword_Vector"], element["Keyword_Vector"])
             })
         }
+
+        // Update Labels List
+        this.computeLabelSimilarities();
     }
 
     computeKeywordSimilarity() {
@@ -232,11 +237,13 @@ export class P1 {
             let similarities = [];
 
             for (const doc of label.docs) {
-                similarities.push(this.cosine_similarity(this.selected_document.Keyword_Vector, doc.Keyword_Vector))
+                for (const key_doc of this.selected_keyword.docs) {
+                    similarities.push(this.cosine_similarity(key_doc.Keyword_Vector, doc.Keyword_Vector))
+                }
             }
 
             label["keyword_similarities"] = similarities;
-            label["keyword_avg_similarity"] = similarities.reduce((a, b) => a + b, 0) / similarities.length
+            label["keyword_avg_similarity"] = math.median(similarities)
         }
     }
 
