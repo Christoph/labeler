@@ -49,6 +49,8 @@ export class P1 {
         this.documents = store.getNew();
         this.labeled_documents = store.getLabeled();
         this.label_list = store.getClasses();
+        let mapping = store.getMapping();
+
         this.label_docs = {}
         this.keyword_list = {}
 
@@ -71,11 +73,20 @@ export class P1 {
 
         for (let [key, value] of Object.entries(this.label_docs)) {
             let o = {}
+            let keywords = []
+
             o["label"] = key
             o["docs"] = value
             o["n_docs"] = o["docs"].length
             o["substring_similarity"] = 0.0
             o["keyword_avg_similarity"] = 0.0
+
+
+            for (let [k, l] of Object.entries(_.pickBy(mapping, x => x === key))) {
+                keywords.push(k)
+            }
+
+            o["keywords"] = keywords.join(" ")
 
             temp_labels.push(o)
         }
@@ -261,26 +272,46 @@ export class P1 {
                 highest_sim_type = "keyword_avg_similarity"
             }
 
-            // Edit Distance
 
-            // Substring
+            // Keyword Substring
+            // Label Substring
             let substring_dist = 0
+            let keyword_substring_dist = 0
             let keywords = this.selected_keyword.keyword.split(" ")
+
             for (const keyword of keywords) {
                 if (label.label.toLowerCase().includes(keyword)) {
                     substring_dist++;
                 }
             }
-            if (substring_dist > 0) {
-                label["substring_similarity"] = substring_dist / keywords.length;
-            } else {
-                label["substring_similarity"] = 0
+
+            n_gram_loop:
+            for (let n_gram_size = math.min(keywords.length - 1, 4); n_gram_size > 0; n_gram_size--) {
+                for (let index = 0; index < n_gram_size; index++) {
+                    let n_gram = keywords.slice(index, index + n_gram_size + 1).join(" ")
+
+                    if (label.keywords.includes(n_gram)) {
+                        keyword_substring_dist = n_gram_size;
+                        // Stop after finding highest n_gram
+                        break n_gram_loop;
+                    }
+                }
             }
+
+            label["substring_similarity"] = substring_dist / keywords.length;
 
             if (label["substring_similarity"] >= highest_sim) {
                 highest_sim = label["substring_similarity"]
                 highest_sim_type = "substring_similarity"
             }
+
+            label["keyword_substring_similarity"] = keyword_substring_dist / keywords.length;
+
+            if (label["keyword_substring_similarity"] > highest_sim) {
+                highest_sim = label["keyword_substring_similarity"]
+                highest_sim_type = "keyword_substring_similarity"
+            }
+
         }
 
         // Set sort property

@@ -194,6 +194,10 @@ export class DataStore {
     }
   }
 
+  getMapping() {
+    return this.keyword_mapping
+  }
+
   // getFulltext(id: number) {
   //   return this.data_fulltext[id]
   // }
