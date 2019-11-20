@@ -177,10 +177,10 @@ export class P1 {
         }
 
         this.selected_document = doc;
-        this.selected_document_list.push(index);
-        this.computeSimilarities();
-        this.computeLabelSimilarities();
-        //this.computeKeywordSimilarity();
+        // this.selected_document_list.push(index);
+        // this.computeSimilarities();
+        // this.computeLabelSimilarities();
+        // this.computeKeywordSimilarity();
     }
 
     selectKeyword(index) {
@@ -196,7 +196,7 @@ export class P1 {
 
         this.selected_keyword = key;
         this.selected_document = key.docs[0]
-        this.selected_document_list.push(key.docs[0])
+        // this.selected_document_list.push(key.docs[0])
 
         this.selected_similarities.length = 0;
         for (const element of key.docs) {

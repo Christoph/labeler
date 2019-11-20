@@ -1,7 +1,7 @@
 <template>
   <div class="row">
+    <!-- Keyword View -->
     <div class="col m3" style="overflow: scroll; height: 100vh;">
-      <!-- Keyword View -->
       <table>
         <thead>
           <tr>
@@ -26,11 +26,17 @@
       </table>
     </div>
     <div class="col m5">
+      <!-- Graph View -->
       <div class="row" style="height: 60vh;">
-        <!-- Graph View -->
+        <span>Active Keyword: ${selected_keyword["keyword"]}</span>
+        <br>
+        <span>Mapping: ${selected_keyword["mapping"]}</span>
+        <br>
+        <span>Number of Documents: ${selected_keyword.docs.length}</span>
+
       </div>
+      <!-- Document View -->
       <div class="row" style="overflow: scroll; height: 40vh;">
-        <!-- Document View -->
         <table>
           <thead>
             <tr>
@@ -64,8 +70,8 @@
       </div>
     </div>
     <div class="col m4">
+      <!-- Labels View -->
       <div class="row" style="overflow: scroll; height: 60vh;">
-        <!-- Labels View -->
         <table>
           <thead>
             <tr>
@@ -94,8 +100,8 @@
           </tbody>
         </table>
       </div>
+      <!-- Document Info View -->
       <div class="row" style="height: 40vh;">
-        <!-- Document Info View -->
         <h4>Title: ${selected_document["Title"]} </h4>
         <span>${selected_document["Authors"]}</span>
         <a href=${selected_document["DOI"]}>link</a>
