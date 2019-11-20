@@ -29,8 +29,8 @@ export class SmallBarCustomElement {
     this.height = parseInt(this.ysize) - this.margin.top - this.margin.bottom;
 
     this.initChart();
+    // this.updateChart();
     this.isInitialized = true;
-    this.updateChart();
   }
 
   percentChanged(percent: string) {
