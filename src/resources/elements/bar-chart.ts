@@ -29,15 +29,20 @@ export class BarChartCustomElement {
     this.height = parseInt(this.ySize) - this.margin.top - this.margin.bottom;
 
     this.initChart();
+    // this.updateChart();
     this.isInitialized = true;
-    this.updateChart();
   }
 
   dataChanged(data) {
-    // Convert string to array of numbers
-    this.data = data.split(",").map(Number)
-    if (this.isInitialized) {
-      this.updateChart();
+    if (data.length) {
+      // Convert string to array of numbers
+      if (typeof data === "string") {
+        this.data = data.split(",").map(Number)
+      }
+
+      if (this.isInitialized) {
+        this.updateChart();
+      }
     }
   }
 
