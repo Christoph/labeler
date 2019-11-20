@@ -11,7 +11,7 @@ export class SmallBarCustomElement {
 
   private isInitialized = false;
 
-  @bindable percent: string;
+  @bindable percent: number;
   @bindable orientation: string = "horizontal";
   @bindable xsize: string;
   @bindable ysize: string;
@@ -29,12 +29,15 @@ export class SmallBarCustomElement {
     this.height = parseInt(this.ysize) - this.margin.top - this.margin.bottom;
 
     this.initChart();
-    // this.updateChart();
     this.isInitialized = true;
+    this.updateChart();
   }
 
   percentChanged(percent: string) {
     if (this.isInitialized) {
+      if (typeof percent === "string") {
+        this.percent = parseFloat(percent)
+      }
       this.updateChart();
     }
   }
@@ -69,6 +72,8 @@ export class SmallBarCustomElement {
   updateChart() {
     let self = this;
 
+    console.log(this.percent)
+
     if (this.orientation == "horizontal") {
       this.svg.append("rect")
         .style("fill", "lightgrey")
@@ -82,7 +87,7 @@ export class SmallBarCustomElement {
         .append("rect")
         .attr("class", "small-bar")
         .attr("x", 0)
-        .attr("width", self.x(parseFloat(self.percent)))
+        .attr("width", self.x(self.percent))
         .attr("y", 0)
         .attr("height", self.height);
     }
@@ -99,8 +104,8 @@ export class SmallBarCustomElement {
         .append("rect")
         .attr("class", "small-bar")
         .attr("x", 0)
-        .attr("height", self.height - self.x(parseFloat(self.percent)))
-        .attr("y", self.x(parseFloat(self.percent)))
+        .attr("height", self.height - self.x(self.percent))
+        .attr("y", self.x(self.percent))
         .attr("width", self.height);
     }
     // this.svg.selectAll(".xAxis")
