@@ -29,6 +29,7 @@ export class P1 {
     // Similarity list
     public sim_property = "text_similarity";
     public label_sort_property = "n_docs";
+    public label_sort_value = 0;
 
     // Temp variables
     public sort_property = "descending";
@@ -128,7 +129,13 @@ export class P1 {
                             count: 1,
                             isActive: false,
                             docs: [doc],
-                            isDone: true
+                            isDone: true,
+                            highest_property: "",
+                            highest_value: 0,
+                            sub_label: 0,
+                            sub_key: 0,
+                            sims: []
+
                         }
                     } else {
                         this.keyword_list[author_key] = {
@@ -136,7 +143,12 @@ export class P1 {
                             count: 1,
                             isActive: false,
                             docs: [doc],
-                            isDone: false
+                            isDone: false,
+                            highest_property: "",
+                            highest_value: 0,
+                            sub_label: 0,
+                            sub_key: 0,
+                            sims: []
                         }
                         unknown++;
                     }
@@ -170,6 +182,18 @@ export class P1 {
         }
 
         this.keyword_list = temp
+
+        // Compuate all similarities for all new keywords
+        for (const keyword of this.keyword_list) {
+            if (!keyword["isDone"]) {
+                // Populate global variables
+                this.computeLabelSimilarities(this.label_docs, keyword)
+
+                // Set values for the keyword
+                keyword["highest_value"] = this.label_sort_value;
+                keyword["highest_property"] = this.label_sort_property;
+            }
+        }
 
         // Replace keyword strings with objects
         for (const doc of this.documents) {
@@ -229,7 +253,8 @@ export class P1 {
         this.updateSelectedSimilarities();
 
         // Update Labels List
-        this.computeLabelSimilarities();
+        this.computeLabelSimilarities(this.label_docs, this.selected_keyword);
+        this.populateLabels(this.label_docs, this.selected_keyword)
     }
 
     updateSelectedSimilarities() {
@@ -277,72 +302,100 @@ export class P1 {
         });
     }
 
-    computeLabelSimilarities() {
-        let highest_sim_type = "n_docs"
-        let highest_sim = 0;
 
-        for (let label of this.label_docs) {
-            let similarities = [];
+    populateLabels(labels, keyword) {
+        for (const label of labels) {
+            label["keyword_similarities"] = keyword["sims"][label.label]
+            label["keyword_avg_similarity"] = math.median(keyword["sims"][label.label])
 
-            for (const doc of label.docs) {
-                for (const key_doc of this.selected_keyword.docs) {
-                    similarities.push(this.cosine_similarity(key_doc.Abstract_Vector, doc.Abstract_Vector))
-                }
-            }
+            label["substring_similarity"] = keyword["sub_label"][label.label]
+            label["keyword_substring_similarity"] = keyword["sub_key"][label.label]
+        }
+    }
 
-            label["keyword_similarities"] = similarities;
-            label["keyword_avg_similarity"] = math.median(similarities)
+    computeLabelSimilarities(labels, keyword) {
+        // Only compute if not already computed
+        if (!keyword["highest_property"]) {
+            let highest_sim_type = "n_docs"
+            let highest_sim = 0;
 
-            if (label["keyword_avg_similarity"] > highest_sim) {
-                highest_sim = label["keyword_avg_similarity"]
-                highest_sim_type = "keyword_avg_similarity"
-            }
+            let sub_label_obj = {}
+            let sub_key_obj = {}
+            let sims_obj = {}
 
+            for (let label of labels) {
+                let similarities = [];
 
-            // Keyword Substring
-            // Label Substring
-            let substring_dist = 0
-            let keyword_substring_dist = 0
-            let keywords = this.selected_keyword.keyword.split(" ")
-
-            for (const keyword of keywords) {
-                if (label.label.toLowerCase().includes(keyword)) {
-                    substring_dist++;
-                }
-            }
-
-            n_gram_loop:
-            for (let n_gram_size = math.min(keywords.length - 1, 4); n_gram_size > 0; n_gram_size--) {
-                for (let index = 0; index < n_gram_size; index++) {
-                    let n_gram = keywords.slice(index, index + n_gram_size + 1).join(" ")
-
-                    if (label.keywords.includes(n_gram)) {
-                        keyword_substring_dist = n_gram_size;
-                        // Stop after finding highest n_gram
-                        break n_gram_loop;
+                for (const doc of labels) {
+                    for (const key_doc of keyword.docs) {
+                        similarities.push(this.cosine_similarity(key_doc.Abstract_Vector, doc.Abstract_Vector))
                     }
                 }
+
+                sims_obj[label.label] = similarities
+                let avg_sim = math.median(similarities)
+
+                if (avg_sim > highest_sim) {
+                    highest_sim = avg_sim
+                    highest_sim_type = "keyword_avg_similarity"
+                }
+
+
+                // Keyword Substring
+                // Label Substring
+                let substring_dist = 0
+                let keyword_substring_dist = 0
+                let keywords = keyword.keyword.split(" ")
+
+                for (const keyword of keywords) {
+                    if (label.label.toLowerCase().includes(keyword)) {
+                        substring_dist++;
+                    }
+                }
+
+                n_gram_loop:
+                for (let n_gram_size = math.min(keywords.length - 1, 4); n_gram_size > 0; n_gram_size--) {
+                    for (let index = 0; index < n_gram_size; index++) {
+                        let n_gram = keywords.slice(index, index + n_gram_size + 1).join(" ")
+
+                        if (label.keywords.includes(n_gram)) {
+                            keyword_substring_dist = n_gram_size;
+                            // Stop after finding highest n_gram
+                            break n_gram_loop;
+                        }
+                    }
+                }
+
+                let substring_avg_dist = substring_dist / keywords.length;
+                sub_label_obj[label.label] = substring_avg_dist
+
+                if (substring_avg_dist >= highest_sim) {
+                    highest_sim = substring_avg_dist
+                    highest_sim_type = "substring_similarity"
+                }
+
+                let substring_avg_dist_keyword = keyword_substring_dist / keywords.length;
+                sub_key_obj[label.label] = substring_avg_dist_keyword
+
+                if (substring_avg_dist_keyword > highest_sim) {
+                    highest_sim = substring_avg_dist_keyword
+                    highest_sim_type = "keyword_substring_similarity"
+                }
             }
 
-            label["substring_similarity"] = substring_dist / keywords.length;
+            keyword["sub_label"] = sub_label_obj
+            keyword["sub_key"] = sub_key_obj
+            keyword["sims"] = sims_obj
 
-            if (label["substring_similarity"] >= highest_sim) {
-                highest_sim = label["substring_similarity"]
-                highest_sim_type = "substring_similarity"
-            }
+            // Set sort property
+            this.label_sort_value = highest_sim;
+            this.label_sort_property = "";
+            this.label_sort_property = highest_sim_type;
 
-            label["keyword_substring_similarity"] = keyword_substring_dist / keywords.length;
-
-            if (label["keyword_substring_similarity"] > highest_sim) {
-                highest_sim = label["keyword_substring_similarity"]
-                highest_sim_type = "keyword_substring_similarity"
-            }
-
+            // Set property in object
+            keyword["highest_property"] = highest_sim_type
+            keyword["highest_value"] = highest_sim
         }
-
-        // Set sort property
-        this.label_sort_property = ""
-        this.label_sort_property = highest_sim_type
     }
 
     setSortProperty(property) {
