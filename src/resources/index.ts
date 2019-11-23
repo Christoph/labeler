@@ -1,5 +1,5 @@
-import {FrameworkConfiguration} from 'aurelia-framework';
-import {PLATFORM} from 'aurelia-pal';
+import { FrameworkConfiguration } from 'aurelia-framework';
+import { PLATFORM } from 'aurelia-pal';
 
 export function configure(config: FrameworkConfiguration) {
   config.globalResources([
@@ -8,5 +8,6 @@ export function configure(config: FrameworkConfiguration) {
     PLATFORM.moduleName("./elements/small-bar"),
     PLATFORM.moduleName("./converters/number-format"),
     PLATFORM.moduleName("./converters/custom-sort"),
+    PLATFORM.moduleName("./converters/filter"),
   ]);
 }

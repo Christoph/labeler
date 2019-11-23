@@ -1,37 +1,39 @@
 <template>
   <div class="row">
     <!-- Keyword View -->
-    <div class="col m3" style="overflow: scroll; height: 100vh;">
+    <div class="col m3">
       <h5 style="width: 100%; text-align: center;">Author Keywords</h5>
-      <table>
-        <thead>
-          <tr>
-            <th>Keyword</th>
-            <th>Mapping</th>
-            <th>#</th>
-            <th>Highest Sim
-            <th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr repeat.for="keyword of keyword_list | customSort: { propertyName: 'isDone', direction: 'ascending' }"
-            click.delegate="selectKeyword($index)" class="${keyword.isActive ? 'activeRow' : ''}"
-            css="cursor: pointer; background-color: ${keyword.isDone ? '#44d16f' : none};">
-            <td>
-              ${keyword["keyword"]}
-            </td>
-            <td style="word-break: break-all;">
-              ${keyword["mapping"]}
-            </td>
-            <td>${keyword["count"]}</td>
-            <td>
-              ${keyword["highest_property"]}
-              <br>
-              ${keyword["highest_value"]}
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <input type="text" class="form-control search-box" value.bind="searchKeywordsTerm"
+        placeholder="search Keywords..."></input>
+      <div class="row" style="overflow: scroll; height: 100vh;">
+        <table>
+          <thead>
+            <tr>
+              <th>Keyword</th>
+              <th>Mapping</th>
+              <th>#</th>
+              <th>Sim</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              repeat.for="keyword of keyword_list | customSort: { propertyName: 'isDone', direction: 'ascending' } | filter:searchKeywordsTerm:filterKeywordsFunc"
+              click.delegate="selectKeyword($index)" class="${keyword.isActive ? 'activeRow' : ''}"
+              css="cursor: pointer; background-color: ${keyword.isDone ? '#44d16f' : none};">
+              <td>
+                ${keyword["keyword"]}
+              </td>
+              <td style="word-break: break-all;">
+                ${keyword["mapping"]}
+              </td>
+              <td>${keyword["count"]}</td>
+              <td as-element="small-bar" percent="${keyword['highest_value']}" orientation="vertical" xSize="20"
+                ySize="100">
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
     <div class="col m5">
       <!-- Graph View -->
@@ -88,8 +90,10 @@
     </div>
     <div class="col m4">
       <!-- Labels View -->
+      <h5 style="width: 100%; text-align: center;">Labels</h5>
+      <input type="text" class="form-control search-box" value.bind="searchLabelsTerm"
+        placeholder="search Labels..."></input>
       <div class="row" style="overflow: scroll; height: 60vh;">
-        <h5 style="width: 100%; text-align: center;">Labels</h5>
         <table>
           <thead>
             <tr>
@@ -104,7 +108,7 @@
           </thead>
           <tbody>
             <tr
-              repeat.for="label_object of label_docs | customSort: { propertyName: label_sort_property, direction: 'descending' }"
+              repeat.for="label_object of label_docs | customSort: { propertyName: label_sort_property, direction: 'descending' } | filter:searchLabelsTerm:filterLabelsFunc"
               style="cursor: pointer;" click.delegate="selectLabel($index)">
               <td style="word-break: break-all;">
                 ${label_object['label']}

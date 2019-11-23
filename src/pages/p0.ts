@@ -10,13 +10,17 @@ import * as _ from 'lodash';
 import { templateController } from 'aurelia-framework';
 
 @autoinject()
-export class P1 {
+export class P0 {
     public documents;
     public labeled_documents;
     public label_list;
     public label_docs;
     public keyword_list;
     public autocompleteData = {};
+
+    // Filter
+    public searchKeywordsTerm = "";
+    public searchLabelsTerm = "";
 
     // Selection
     public selected_document_list = [];
@@ -184,16 +188,16 @@ export class P1 {
         this.keyword_list = temp
 
         // Compuate all similarities for all new keywords
-        for (const keyword of this.keyword_list) {
-            if (!keyword["isDone"]) {
-                // Populate global variables
-                this.computeLabelSimilarities(this.label_docs, keyword)
+        // for (const keyword of this.keyword_list) {
+        //     if (!keyword["isDone"]) {
+        //         // Populate global variables
+        //         this.computeLabelSimilarities(this.label_docs, keyword)
 
-                // Set values for the keyword
-                keyword["highest_value"] = this.label_sort_value;
-                keyword["highest_property"] = this.label_sort_property;
-            }
-        }
+        //         // Set values for the keyword
+        //         keyword["highest_value"] = this.label_sort_value;
+        //         keyword["highest_property"] = this.label_sort_property;
+        //     }
+        // }
 
         // Replace keyword strings with objects
         for (const doc of this.documents) {
@@ -311,6 +315,11 @@ export class P1 {
             label["substring_similarity"] = keyword["sub_label"][label.label]
             label["keyword_substring_similarity"] = keyword["sub_key"][label.label]
         }
+
+        // Sort labels list
+        this.label_sort_value = keyword["highest_value"]
+        this.label_sort_property = "";
+        this.label_sort_property = keyword["highest_property"];
     }
 
     computeLabelSimilarities(labels, keyword) {
@@ -383,16 +392,11 @@ export class P1 {
                 }
             }
 
+            // Set property in object
             keyword["sub_label"] = sub_label_obj
             keyword["sub_key"] = sub_key_obj
             keyword["sims"] = sims_obj
 
-            // Set sort property
-            this.label_sort_value = highest_sim;
-            this.label_sort_property = "";
-            this.label_sort_property = highest_sim_type;
-
-            // Set property in object
             keyword["highest_property"] = highest_sim_type
             keyword["highest_value"] = highest_sim
         }
@@ -458,5 +462,19 @@ export class P1 {
 
     applyLabel() {
         this.selected_keyword.mapping = this.selected_label.label
+    }
+
+    filterKeywordsFunc(searchExpression, value) {
+        let itemValue = value["keyword"];
+        if (!searchExpression || !itemValue) return false;
+
+        return itemValue.toUpperCase().indexOf(searchExpression.toUpperCase()) !== -1;
+    }
+
+    filterLabelsFunc(searchExpression, value) {
+        let itemValue = value["label"];
+        if (!searchExpression || !itemValue) return false;
+
+        return itemValue.toUpperCase().indexOf(searchExpression.toUpperCase()) !== -1;
     }
 }
