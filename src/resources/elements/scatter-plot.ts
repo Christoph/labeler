@@ -2,14 +2,9 @@ import * as d3 from "d3";
 import { inject, noView } from 'aurelia-framework';
 import * as _ from "lodash"
 
-import { DataStore } from 'data-store';
 
-import { connectTo } from 'aurelia-store';
-import { State } from 'store/state';
-
-@inject(Element, DataStore)
+@inject(Element)
 @noView()
-@connectTo()
 export class ScatterPlotCustomElement {
   // D3 variables
   private svg;
@@ -21,7 +16,7 @@ export class ScatterPlotCustomElement {
   width = 600 - this.margin.left - this.margin.right;
   height = 500 - this.margin.top - this.margin.bottom;
 
-  constructor(public element: Element, public store: DataStore) {
+  constructor(public element: Element) {
     this.initChart();
 
     // https://github.com/wbkd/d3-extended
@@ -39,11 +34,6 @@ export class ScatterPlotCustomElement {
         }
       });
     };
-  }
-
-  stateChanged(newState: State) {
-    this.svg.selectAll(".point").remove();
-    this.updateChart(newState);
   }
 
   initChart() {
@@ -81,8 +71,8 @@ export class ScatterPlotCustomElement {
     let data = []//this.store.getProjections();
 
     // Update domains
-    this.x.domain(d3.extent(data, function (d) { return +d[state.selectedProjection][0] }));
-    this.y.domain(d3.extent(data, function (d) { return +d[state.selectedProjection][1] }));
+    // this.x.domain(d3.extent(data, function (d) { return +d[state.selectedProjection][0] }));
+    // this.y.domain(d3.extent(data, function (d) { return +d[state.selectedProjection][1] }));
 
     // Select chart
     let chart = this.svg.selectAll(".points")
@@ -103,21 +93,13 @@ export class ScatterPlotCustomElement {
       .attr("class", "point")
       .attr('r', 5)
       .on("mouseover", function (d, i) {
-        console.log(self.store.getMetaData(i)["Keywords"])
-        // dispatchify(select)(d)
       })
       .merge(chart)
       .transition(1000)
-      .attr('cx', function (d) { return self.x(d[state.selectedProjection][0]); })
-      .attr('cy', function (d) { return self.y(d[state.selectedProjection][1]); })
+      // .attr('cx', function (d) { return self.x(d[state.selectedProjection][0]); })
+      // .attr('cy', function (d) { return self.y(d[state.selectedProjection][1]); })
       .style('opacity', function (d, i) {
         let opacity;
-        if (self.store.getMetaData(i)["type"] == "new") {
-          opacity = 1
-        }
-        else {
-          opacity = 0.2
-        }
         return opacity
       })
     // .style('fill',  function(d, i){

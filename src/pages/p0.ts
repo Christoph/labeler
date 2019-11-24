@@ -503,6 +503,17 @@ export class P0 {
     getMapping = (keyword) => this.store.getKeywordMapping(keyword);
     checkMapping = (keyword) => keyword.mapping.length > 0 ? 1 : 0;
     applyLabel = () => this.selected_keyword.mapping = this.selected_label.label;
+    // applyLabel() {
+    //     this.graph_data = {
+    //         nodes: [],
+    //         links: []
+    //     }
+
+    //     this.graph_data.nodes.push({
+    //         "id": 112,
+    //         "name": "X"
+    //     })
+    // }
 
     checkActiveKeyword(keyword) {
         if (this.selected_keyword) {
