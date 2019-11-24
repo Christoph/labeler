@@ -13,13 +13,13 @@
             <tr>
               <th>Keyword</th>
               <th>Mapping</th>
-              <th>#</th>
-              <th>Sim</th>
+              <th style="cursor: pointer" click.delegate="setKeywordSortProperty('count')">#</th>
+              <th style="cursor: pointer" click.delegate="setKeywordSortProperty('highest_value')">Sim</th>
             </tr>
           </thead>
           <tbody>
             <tr
-              repeat.for="keyword of keyword_list | customSort: { propertyName: key_property, direction: 'ascending' } | filter:searchKeywordsTerm:filterKeywordsFunc | filterProperty: finishedKeywords:'isDone'"
+              repeat.for="keyword of keyword_list | customSort: { propertyName: key_property, direction: 'descending' } | filter:searchKeywordsTerm:filterKeywordsFunc | filterProperty: finishedKeywords:'isDone'"
               click.delegate="selectKeyword(keyword)" class="${keyword.isActive ? 'activeRow' : ''}"
               css="cursor: pointer; background-color: ${keyword.isDone ? '#44d16f' : none};">
               <td>

@@ -33,7 +33,7 @@ export class P0 {
 
     // Similarity list
     public sim_property = "text_similarity";
-    public key_property = "isDone";
+    public key_property = "highest_value";
     public label_sort_property = "n_docs";
     public label_sort_value = 0;
 
@@ -385,18 +385,6 @@ export class P0 {
         }
     }
 
-    setSortProperty(property) {
-        this.sim_property = property;
-    }
-
-    setLabelSortProperty(property) {
-        this.label_sort_property = property;
-    }
-
-    setActiveKeyword(keyword) {
-        this.selectKeyword(keyword)
-    }
-
     nextDocument() {
         this.selected_document["Done"] = true;
         const index = this.documents.findIndex(x => x["Key"] === this.selected_document["Key"])
@@ -411,18 +399,15 @@ export class P0 {
         this.selectDocument(index)
     }
 
-    toggleDocuments() {
-        this.showDocuments = !this.showDocuments;
-    }
+    // Sort Function
+    setSortProperty = (property) => this.sim_property = property;
+    setKeywordSortProperty = (property) => this.key_property = property;
+    setLabelSortProperty = (property) => this.label_sort_property = property;
 
-    getMapping(keyword) {
-        return this.store.getKeywordMapping(keyword);
-    }
-
-    checkMapping(keyword) {
-        if (keyword.mapping.length > 0) return 1
-        else return 0
-    }
+    setActiveKeyword = (keyword) => this.selectKeyword(keyword);
+    getMapping = (keyword) => this.store.getKeywordMapping(keyword);
+    checkMapping = (keyword) => keyword.mapping.length > 0 ? 1 : 0;
+    applyLabel = () => this.selected_keyword.mapping = this.selected_label.label;
 
     checkActiveKeyword(keyword) {
         if (this.selected_keyword) {
@@ -443,9 +428,6 @@ export class P0 {
             })
     }
 
-    applyLabel() {
-        this.selected_keyword.mapping = this.selected_label.label
-    }
 
     filterKeywordsFunc(searchExpression, value) {
         let itemValue = value["keyword"];
