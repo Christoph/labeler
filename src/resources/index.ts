@@ -10,5 +10,6 @@ export function configure(config: FrameworkConfiguration) {
     PLATFORM.moduleName("./converters/number-format"),
     PLATFORM.moduleName("./converters/custom-sort"),
     PLATFORM.moduleName("./converters/filter"),
+    PLATFORM.moduleName("./converters/filter-property"),
   ]);
 }

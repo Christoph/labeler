@@ -5,6 +5,8 @@
       <h5 style="width: 100%; text-align: center;">Author Keywords</h5>
       <input type="text" class="form-control search-box" value.bind="searchKeywordsTerm"
         placeholder="search Keywords..."></input>
+      <md-checkbox checked.bind="finishedKeywords">Show finished
+      </md-checkbox>
       <div class="row" style="overflow: scroll; height: 100vh;">
         <table>
           <thead>
@@ -17,7 +19,7 @@
           </thead>
           <tbody>
             <tr
-              repeat.for="keyword of keyword_list | customSort: { propertyName: 'isDone', direction: 'ascending' } | filter:searchKeywordsTerm:filterKeywordsFunc"
+              repeat.for="keyword of keyword_list | customSort: { propertyName: key_property, direction: 'ascending' } | filter:searchKeywordsTerm:filterKeywordsFunc | filterProperty: finishedKeywords:'isDone'"
               click.delegate="selectKeyword(keyword)" class="${keyword.isActive ? 'activeRow' : ''}"
               css="cursor: pointer; background-color: ${keyword.isDone ? '#44d16f' : none};">
               <td>

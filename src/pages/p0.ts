@@ -20,6 +20,7 @@ export class P0 {
 
     // Filter
     public searchKeywordsTerm = "";
+    public finishedKeywords = false;
     public searchLabelsTerm = "";
 
     // Selection
@@ -32,6 +33,7 @@ export class P0 {
 
     // Similarity list
     public sim_property = "text_similarity";
+    public key_property = "isDone";
     public label_sort_property = "n_docs";
     public label_sort_value = 0;
 
