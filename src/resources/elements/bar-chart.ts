@@ -123,7 +123,9 @@ export class BarChartCustomElement {
       .transition(1000)
       .attr("x", 1)
       .attr("transform", function (d) { return "translate(" + self.x(d.x0) + "," + self.y(d.length) + ")"; })
-      .attr("width", function (d) { return self.x(d.x1) - self.x(d.x0) - 1; })
+      .attr("width", function (d) {
+        return self.x(d.x1) - self.x(d.x0);
+      })
       .attr("height", function (d) { return self.height - self.y(d.length); })
       .style("fill", "steelblue")
 
