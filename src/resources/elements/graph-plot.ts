@@ -16,11 +16,10 @@ export class GraphPlotCustomElement {
 
   // set the dimensions and margins of the graph
   margin = { top: 20, right: 20, bottom: 30, left: 40 };
-  width = 600 - this.margin.left - this.margin.right;
-  height = 500 - this.margin.top - this.margin.bottom;
+  width = 300 - this.margin.left - this.margin.right;
+  height = 300 - this.margin.top - this.margin.bottom;
 
   constructor(public element: Element) {
-    this.initChart();
 
     // https://github.com/wbkd/d3-extended
     d3.selection.prototype.moveToFront = function () {
@@ -39,43 +38,63 @@ export class GraphPlotCustomElement {
     };
   }
 
+  dataChanged(data) {
+    this.initChart();
+  }
+
   initChart() {
     // append the svg object to the chart div of the page
     // append a 'group' element to 'svg'
     // moves the 'group' element to the top left margin
+    // this.svg = d3.create("svg")
+    //   .attr("viewBox", [-100 / 2, -100 / 2, 100, 100]);
+
     this.svg = d3.select(this.element)
       .append("svg")
       .attr("width", this.width + this.margin.left + this.margin.right)
       .attr("height", this.height + this.margin.top + this.margin.bottom)
-      .append("g")
-      .attr("transform",
-        "translate(" + this.margin.left + "," + this.margin.top + ")");
+    //   .append("g")
+    //   .attr("transform",
+    //     "translate(" + this.margin.left + "," + this.margin.top + ")");
 
-    const links = this.data["links"].map(d => Object.create(d));
-    const nodes = this.data["nodes"].map(d => Object.create(d));
+    const links = this.data["links"].map(d => d);
+    const nodes = this.data["nodes"].map(d => d);
 
-    const simulation = d3.forceSimulation()
-      .force("link", d3.forceLink().id(function (d) { return d["id"]; }))
-      .force("charge", d3.forceManyBody().strength(-400))
-      .force("center", d3.forceCenter(this.width / 2, this.height / 2));
+    console.log(links, nodes)
 
-    graph.links.forEach(function (d) {
-      d.source = d.source_id;
-      d.target = d.target_id;
-    });
+    const simulation = d3.forceSimulation(nodes)
+      .force("link", d3.forceLink(links).id(function (d) { return d["id"]; }))
+      .force("charge", d3.forceManyBody())
+      .force("center", d3.forceCenter(this.width / 2, this.height / 2))
+    // .force("x", d3.forceX())
+    // .force("y", d3.forceY());
 
-    var link = this.svg.append("g")
-      .style("stroke", "#aaa")
+    const link = this.svg.append("g")
+      .attr("stroke", "#999")
+      .attr("stroke-opacity", 0.6)
       .selectAll("line")
-      .data(graph.links)
-      .enter().append("line");
+      .data(links)
+      .enter()
+      .append("line")
+      .attr("stroke-width", 5);
 
-    var node = this.svg.append("g")
-      .attr("class", "nodes")
+    const node = this.svg.append("g")
+      .attr("stroke", "#fff")
+      .attr("stroke-width", 1.5)
       .selectAll("circle")
-      .data(graph.nodes)
-      .enter().append("circle")
-      .attr("r", 6);
+      .data(nodes)
+      .enter()
+      .append("circle")
+      .attr("r", 5)
+      // .join("circle")
+      .attr("fill", "green")
+
+    // var node = this.svg.append("g")
+    //   .attr("class", "nodes")
+    //   .selectAll("circle")
+    //   .data(nodes)
+    //   .enter().append("circle")
+    //   .attr("r", 6);
 
     // var label = svg.append("g")
     //   .attr("class", "labels")
@@ -85,16 +104,15 @@ export class GraphPlotCustomElement {
     //   .attr("class", "label")
     //   .text(function (d) { return d.name; });
 
-    simulation.nodes(graph.nodes)
-
-    simulation.force("link").links(graph.links);
+    simulation.nodes(nodes)
+    // this.svg.node()
 
     simulation.on("tick", () => {
       link
-        .attr("x1", d => d.source.x)
-        .attr("y1", d => d.source.y)
-        .attr("x2", d => d.target.x)
-        .attr("y2", d => d.target.y);
+        .attr("x1", d => d["source"].x)
+        .attr("y1", d => d["source"].y)
+        .attr("x2", d => d["target"].x)
+        .attr("y2", d => d["target"].y);
 
       node
         .attr("cx", d => d.x)

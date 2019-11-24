@@ -39,6 +39,7 @@ export class P0 {
 
     // Temp variables
     public sort_property = "descending";
+    public graph_data;
 
     // Distance Metrics
     cosine_similarity(v1, v2) {
@@ -216,6 +217,100 @@ export class P0 {
         }
 
         this.selectDocument(0);
+
+        this.graph_data = {
+            "nodes": [
+                {
+                    "id": 1,
+                    "name": "A"
+                },
+                {
+                    "id": 2,
+                    "name": "B"
+                },
+                {
+                    "id": 3,
+                    "name": "C"
+                },
+                {
+                    "id": 4,
+                    "name": "D"
+                },
+                {
+                    "id": 5,
+                    "name": "E"
+                },
+                {
+                    "id": 6,
+                    "name": "F"
+                },
+                {
+                    "id": 7,
+                    "name": "G"
+                },
+                {
+                    "id": 8,
+                    "name": "H"
+                },
+                {
+                    "id": 9,
+                    "name": "I"
+                },
+                {
+                    "id": 10,
+                    "name": "J"
+                }
+            ],
+            "links": [
+
+                {
+                    "source": 1,
+                    "target": 2
+                },
+                {
+                    "source": 1,
+                    "target": 5
+                },
+                {
+                    "source": 1,
+                    "target": 6
+                },
+
+                {
+                    "source": 2,
+                    "target": 3
+                },
+                {
+                    "source": 2,
+                    "target": 7
+                }
+                ,
+
+                {
+                    "source": 3,
+                    "target": 4
+                },
+                {
+                    "source": 8,
+                    "target": 3
+                }
+                ,
+                {
+                    "source": 4,
+                    "target": 5
+                }
+                ,
+
+                {
+                    "source": 4,
+                    "target": 9
+                },
+                {
+                    "source": 5,
+                    "target": 10
+                }
+            ]
+        }
     }
 
     selectDocument(doc) {
@@ -443,97 +538,4 @@ export class P0 {
         return itemValue.toUpperCase().indexOf(searchExpression.toUpperCase()) !== -1;
     }
 
-    graph_data = {
-        "nodes": [
-            {
-                "id": 1,
-                "name": "A"
-            },
-            {
-                "id": 2,
-                "name": "B"
-            },
-            {
-                "id": 3,
-                "name": "C"
-            },
-            {
-                "id": 4,
-                "name": "D"
-            },
-            {
-                "id": 5,
-                "name": "E"
-            },
-            {
-                "id": 6,
-                "name": "F"
-            },
-            {
-                "id": 7,
-                "name": "G"
-            },
-            {
-                "id": 8,
-                "name": "H"
-            },
-            {
-                "id": 9,
-                "name": "I"
-            },
-            {
-                "id": 10,
-                "name": "J"
-            }
-        ],
-        "links": [
-
-            {
-                "source_id": 1,
-                "target_id": 2
-            },
-            {
-                "source_id": 1,
-                "target_id": 5
-            },
-            {
-                "source_id": 1,
-                "target_id": 6
-            },
-
-            {
-                "source_id": 2,
-                "target_id": 3
-            },
-            {
-                "source_id": 2,
-                "target_id": 7
-            }
-            ,
-
-            {
-                "source_id": 3,
-                "target_id": 4
-            },
-            {
-                "source_id": 8,
-                "target_id": 3
-            }
-            ,
-            {
-                "source_id": 4,
-                "target_id": 5
-            }
-            ,
-
-            {
-                "source_id": 4,
-                "target_id": 9
-            },
-            {
-                "source_id": 5,
-                "target_id": 10
-            }
-        ]
-    }
 }

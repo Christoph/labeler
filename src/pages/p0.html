@@ -52,7 +52,7 @@
           </div>
           <button md-button style="width: 100%" click.delegate="applyLabel()">Apply Label to Keyword</button>
         </div>
-        <graph-plot data=${graph_data}></graph-plot>
+        <graph-plot data.bind="graph_data"></graph-plot>
       </div>
       <hr>
       <!-- Document List View -->
