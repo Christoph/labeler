@@ -323,7 +323,7 @@ export class P0 {
         this.updateSelectedSimilarities();
 
         // Update graph
-        this.createGraphData();
+        // this.createGraphData();
     }
 
     selectKeyword(key) {
@@ -342,7 +342,7 @@ export class P0 {
         this.populateLabels(this.label_docs, this.selected_keyword);
 
         // Update graph
-        this.createGraphData();
+        // this.createGraphData();
     }
 
     updateSelectedSimilarities() {
