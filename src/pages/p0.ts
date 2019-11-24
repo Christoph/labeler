@@ -321,6 +321,9 @@ export class P0 {
         this.selected_label = label
 
         this.updateSelectedSimilarities();
+
+        // Update graph
+        this.createGraphData();
     }
 
     selectKeyword(key) {
@@ -336,7 +339,10 @@ export class P0 {
 
         // Update Labels List
         this.computeLabelSimilarities(this.label_docs, this.selected_keyword);
-        this.populateLabels(this.label_docs, this.selected_keyword)
+        this.populateLabels(this.label_docs, this.selected_keyword);
+
+        // Update graph
+        this.createGraphData();
     }
 
     updateSelectedSimilarities() {
@@ -480,20 +486,6 @@ export class P0 {
         }
     }
 
-    nextDocument() {
-        this.selected_document["Done"] = true;
-        const index = this.documents.findIndex(x => x["Key"] === this.selected_document["Key"])
-        this.selectDocument(index + 1)
-    }
-
-    lastDocument() {
-        // Remove the current document from the list
-        this.selected_document_list.pop();
-        // Get and remove the previous element
-        const index = this.selected_document_list.pop();
-        this.selectDocument(index)
-    }
-
     // Sort Function
     setSortProperty = (property) => this.sim_property = property;
     setKeywordSortProperty = (property) => this.key_property = property;
@@ -514,6 +506,42 @@ export class P0 {
     //         "name": "X"
     //     })
     // }
+
+    createGraphData() {
+        // Reset graph data for easiest view update
+        const temp = {
+            nodes: [],
+            links: []
+        }
+        let all_docs = this.selected_similarities;
+
+        for (let index = 0; index < all_docs.length; index++) {
+            const doc = all_docs[index].document;
+
+            // Add doc as node
+            temp.nodes.push(doc)
+
+            for (let j = index + 1; j < all_docs.length; j++) {
+                const check = all_docs[j].document;
+
+                let overlap = _.intersectionBy(doc["Keywords_Processed"], check["Keywords_Processed"])
+                let union = _.union(doc["Keywords_Processed"], check["Keywords_Processed"])
+
+                let strength = overlap.length / union.length
+
+                if (overlap.length >= 1) {
+                    temp.links.push({
+                        source: doc,
+                        target: check,
+                        strength: strength
+                    })
+                }
+            }
+        }
+
+        console.log(temp)
+        this.graph_data = temp;
+    }
 
     checkActiveKeyword(keyword) {
         if (this.selected_keyword) {

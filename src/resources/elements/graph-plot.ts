@@ -42,6 +42,7 @@ export class GraphPlotCustomElement {
   dataChanged(data) {
     this.svg.selectAll("line").remove();
     this.svg.selectAll("circle").remove();
+
     this.updateChart();
   }
 
@@ -69,7 +70,9 @@ export class GraphPlotCustomElement {
     const nodes = this.data["nodes"].map(d => d);
 
     const simulation = d3.forceSimulation(nodes)
-      .force("link", d3.forceLink(links).id(function (d) { return d["id"]; }))
+      // .force("link", d3.forceLink(links).id(function (d) { return d["id"]; }).strength(function (d) { return d["strength"]; })
+      // .distance(100))
+      .force("links", d3.forceLink(links))
       .force("charge", d3.forceManyBody())
       .force("center", d3.forceCenter(this.width / 2, this.height / 2))
     // .force("x", d3.forceX())
@@ -81,7 +84,8 @@ export class GraphPlotCustomElement {
       .selectAll("line")
       .data(links)
       .join("line")
-      .attr("stroke-width", 5);
+      .attr("stroke-width", d => d.strength * 10);
+    // .attr("stroke-width", d => Math.sqrt(d.value));
 
     const node = this.svg.append("g")
       .attr("stroke", "#fff")
