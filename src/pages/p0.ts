@@ -216,36 +216,17 @@ export class P0 {
         this.selectDocument(0);
     }
 
-    selectDocument(index) {
-        let doc;
-        // Set new document
-        if (this.selected_similarities.length > 0) {
-            doc = this.selected_similarities[index].document;
-        } else {
-            doc = this.documents[index]
-        }
-
+    selectDocument(doc) {
         this.selected_document = doc;
-        // this.selected_document_list.push(index);
-        // this.computeSimilarities();
-        // this.computeLabelSimilarities();
-        // this.computeKeywordSimilarity();
     }
 
-    selectLabel(index) {
-        this.selected_label = this.label_docs[index];
+    selectLabel(label) {
+        this.selected_label = label
 
         this.updateSelectedSimilarities();
     }
 
-    selectKeyword(index) {
-        let key;
-        if (!isNaN(index)) {
-            key = this.keyword_list[index]
-        } else {
-            key = index
-        }
-
+    selectKeyword(key) {
         // Set active keyword
         if (this.selected_keyword) this.selected_keyword.isActive = false;
         key.isActive = true;

@@ -18,7 +18,7 @@
           <tbody>
             <tr
               repeat.for="keyword of keyword_list | customSort: { propertyName: 'isDone', direction: 'ascending' } | filter:searchKeywordsTerm:filterKeywordsFunc"
-              click.delegate="selectKeyword($index)" class="${keyword.isActive ? 'activeRow' : ''}"
+              click.delegate="selectKeyword(keyword)" class="${keyword.isActive ? 'activeRow' : ''}"
               css="cursor: pointer; background-color: ${keyword.isDone ? '#44d16f' : none};">
               <td>
                 ${keyword["keyword"]}
@@ -50,7 +50,7 @@
           </div>
           <button md-button style="width: 100%" click.delegate="applyLabel()">Apply Label to Keyword</button>
         </div>
-
+        <graph-plot data=${graph_data}></graph-plot>
       </div>
       <hr>
       <!-- Document List View -->
@@ -69,7 +69,7 @@
           <tbody>
             <tr
               repeat.for="sim of selected_similarities | customSort: { propertyName: sim_property, direction: sort_property }"
-              click.delegate="selectDocument($index)"
+              click.delegate="selectDocument(sim.document)"
               css="cursor: pointer; background-color: ${sim.document['type'] == 'old' ? 'lightgrey' : none}">
               <td>
                 <strong>
@@ -109,7 +109,7 @@
           <tbody>
             <tr
               repeat.for="label_object of label_docs | customSort: { propertyName: label_sort_property, direction: 'descending' } | filter:searchLabelsTerm:filterLabelsFunc"
-              style="cursor: pointer;" click.delegate="selectLabel($index)">
+              style="cursor: pointer;" click.delegate="selectLabel(label_object)">
               <td style="word-break: break-all;">
                 ${label_object['label']}
               </td>
