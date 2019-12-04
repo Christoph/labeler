@@ -16,6 +16,7 @@ export class P0 {
     public label_list;
     public label_docs;
     public keyword_list;
+    public keyword_mapping;
     public autocompleteData = {};
 
     // Filter
@@ -61,7 +62,8 @@ export class P0 {
         let mapping = store.getMapping();
 
         this.label_docs = {}
-        this.keyword_list = {}
+        this.keyword_mapping = {}
+        this.keyword_list = []
 
         // Initialize the label document mapping
         for (const label of this.label_list) {
@@ -123,15 +125,15 @@ export class P0 {
             let final = doc["Keywords_Processed"]
                 // .map(x => this.store.getKeywordMapping(x).replace(/[^a-zA-Z]/g, ""))
                 .map(x => this.store.getKeywordMapping(x))
-                .filter(x => x !== "unclear");
+            // .filter(x => x !== "unclear");
 
             final = _.uniq(final);
 
             for (const author_key of doc["Keywords_Processed"]) {
-                if (!this.keyword_list.hasOwnProperty(author_key)) {
+                if (!this.keyword_mapping.hasOwnProperty(author_key)) {
                     let mapping = this.store.getKeywordMapping(author_key);
                     if (mapping.length > 0) {
-                        this.keyword_list[author_key] = {
+                        this.keyword_mapping[author_key] = {
                             mapping: mapping,
                             count: 1,
                             isActive: false,
@@ -141,11 +143,11 @@ export class P0 {
                             highest_value: 0,
                             sub_label: 0,
                             sub_key: 0,
-                            sims: []
-
+                            sims: [],
+                            co_oc: []
                         }
                     } else {
-                        this.keyword_list[author_key] = {
+                        this.keyword_mapping[author_key] = {
                             mapping: "",
                             count: 1,
                             isActive: false,
@@ -155,15 +157,16 @@ export class P0 {
                             highest_value: 0,
                             sub_label: 0,
                             sub_key: 0,
-                            sims: []
+                            sims: [],
+                            co_oc: []
                         }
                         unknown++;
                     }
                 } else {
-                    let keyword = this.keyword_list[author_key];
+                    let keyword = this.keyword_mapping[author_key];
                     keyword.count++;
                     keyword.docs.push(doc)
-                    this.keyword_list[author_key] = keyword
+                    this.keyword_mapping[author_key] = keyword
                 }
             }
 
@@ -180,15 +183,14 @@ export class P0 {
             doc["Final"] = temp;
         }
 
+        // Create coocurrence informations
+
+
         // Flatten keyword list
-        let temp = new Array();
-
-        for (let [key, value] of Object.entries(this.keyword_list)) {
+        for (let [key, value] of Object.entries(this.keyword_mapping)) {
             value["keyword"] = key
-            temp.push(value)
+            this.keyword_list.push(value)
         }
-
-        this.keyword_list = temp
 
         // Compuate all similarities for all new keywords
         // for (const keyword of this.keyword_list) {
@@ -209,7 +211,28 @@ export class P0 {
                 temp.push(this.keyword_list.filter(e => e.keyword == keyword)[0])
             }
             doc["Keywords_Processed"] = temp
+
+            // Build coocurrence information
+            for (const keyword of temp) {
+                for (const co of temp) {
+                    if (keyword != co) {
+                        let found = co.co_oc.find(x => x.keyword.keyword == keyword.keyword)
+
+                        if (found) {
+                            found.count = found.count + 1
+                        }
+                        else {
+                            co.co_oc.push({
+                                keyword: keyword,
+                                count: 1
+                            })
+                        }
+                    }
+                }
+            }
         }
+
+        console.log(this.keyword_list)
 
         // Prepare autocomplete list
         for (const keyword of this.label_list) {
@@ -217,100 +240,6 @@ export class P0 {
         }
 
         this.selectDocument(0);
-
-        this.graph_data = {
-            "nodes": [
-                {
-                    "id": 1,
-                    "name": "A"
-                },
-                {
-                    "id": 2,
-                    "name": "B"
-                },
-                {
-                    "id": 3,
-                    "name": "C"
-                },
-                {
-                    "id": 4,
-                    "name": "D"
-                },
-                {
-                    "id": 5,
-                    "name": "E"
-                },
-                {
-                    "id": 6,
-                    "name": "F"
-                },
-                {
-                    "id": 7,
-                    "name": "G"
-                },
-                {
-                    "id": 8,
-                    "name": "H"
-                },
-                {
-                    "id": 9,
-                    "name": "I"
-                },
-                {
-                    "id": 10,
-                    "name": "J"
-                }
-            ],
-            "links": [
-
-                {
-                    "source": 1,
-                    "target": 2
-                },
-                {
-                    "source": 1,
-                    "target": 5
-                },
-                {
-                    "source": 1,
-                    "target": 6
-                },
-
-                {
-                    "source": 2,
-                    "target": 3
-                },
-                {
-                    "source": 2,
-                    "target": 7
-                }
-                ,
-
-                {
-                    "source": 3,
-                    "target": 4
-                },
-                {
-                    "source": 8,
-                    "target": 3
-                }
-                ,
-                {
-                    "source": 4,
-                    "target": 5
-                }
-                ,
-
-                {
-                    "source": 4,
-                    "target": 9
-                },
-                {
-                    "source": 5,
-                    "target": 10
-                }
-            ]
-        }
     }
 
     selectDocument(doc) {
