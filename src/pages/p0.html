@@ -39,7 +39,7 @@
     </div>
     <div class="col m5">
       <!-- Graph View -->
-      <div class="row" style="height: 60vh; margin-left: 10px; margin-right: 10px">
+      <div class="row" style="margin-left: 10px; margin-right: 10px">
         <div class="row">
           <div class="col m6">
             Active Keyword
@@ -52,8 +52,34 @@
           </div>
           <button md-button style="width: 100%" click.delegate="applyLabel()">Apply Label to Keyword</button>
         </div>
-        <!-- <graph-plot data.bind="graph_data"></graph-plot> -->
       </div>
+      <div class="row" style="overflow: scroll; height: 40vh;">
+        <table>
+          <thead>
+            <tr>
+              <th>Keyword</th>
+              <th>Label Mapping</th>
+              <th>#</th>
+              <th>Co-Oc Sim</th>
+          </thead>
+          <tbody>
+            <tr repeat.for="cooc of selected_similar_keywords | customSort: { propertyName: 'count',
+              direction: 'descending' }">
+              <td>
+                ${cooc.keyword.keyword}
+              </td>
+              <td style="word-break: break-all">
+                ${cooc.keyword.mapping}
+              </td>
+              <td>
+                ${cooc.count}
+              </td>
+              <td as-element="small-bar" percent="${cooc.cooc_sim}" orientation="horizontal" xSize="100" ySize="20">
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- <graph-plot data.bind="graph_data"></graph-plot> -->
       <hr>
       <!-- Document List View -->
       <div class="row" style="overflow: scroll; height: 40vh; margin-left: 10px; margin-right: 10px;">

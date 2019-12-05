@@ -31,6 +31,7 @@ export class P0 {
     public selected_label;
     public showDocuments = false;
     public selected_similarities = [];
+    public selected_similar_keywords = [];
 
     // Similarity list
     public sim_property = "text_similarity";
@@ -52,7 +53,13 @@ export class P0 {
     }
 
     jaccard_similarity(s1, s2) {
-        return math.setIntersect(s1, s2).length / math.setUnion(s1, s2).length
+        // return math.setIntersect(s1, s2).length / math.setUnion(s1, s2).length
+        return _.intersection(s1, s2).length / _.union(s1, s2).length
+    }
+
+    jaccard_similarityBy(s1, s2, property) {
+        // return math.setIntersect(s1, s2).length / math.setUnion(s1, s2).length
+        return _.intersectionBy(s1, s2, property).length / _.unionBy(s1, s2, property).length
     }
 
     constructor(public store: DataStore) {
@@ -76,6 +83,46 @@ export class P0 {
                     let doc_list = this.label_docs[label]
                     doc_list.push(doc)
                     this.label_docs[label] = doc_list
+                }
+            }
+
+            for (const author_key of doc["Keywords"].split(";")) {
+                if (!this.keyword_mapping.hasOwnProperty(author_key)) {
+                    let mapping = this.store.getKeywordMapping(author_key);
+                    if (mapping.length > 0) {
+                        this.keyword_mapping[author_key] = {
+                            mapping: mapping,
+                            count: 1,
+                            isActive: false,
+                            docs: [doc],
+                            isDone: true,
+                            highest_property: "",
+                            highest_value: 0,
+                            sub_label: 0,
+                            sub_key: 0,
+                            sims: [],
+                            co_oc: []
+                        }
+                    } else {
+                        this.keyword_mapping[author_key] = {
+                            mapping: "",
+                            count: 1,
+                            isActive: false,
+                            docs: [doc],
+                            isDone: false,
+                            highest_property: "",
+                            highest_value: 0,
+                            sub_label: 0,
+                            sub_key: 0,
+                            sims: [],
+                            co_oc: []
+                        }
+                    }
+                } else {
+                    let keyword = this.keyword_mapping[author_key];
+                    keyword.count++;
+                    keyword.docs.push(doc)
+                    this.keyword_mapping[author_key] = keyword
                 }
             }
 
@@ -232,6 +279,33 @@ export class P0 {
             }
         }
 
+        for (const doc of this.labeled_documents) {
+            let temp = []
+            for (const keyword of doc["Keywords"].split(";")) {
+                temp.push(this.keyword_list.filter(e => e.keyword == keyword)[0])
+            }
+            doc["Keywords_Processed"] = temp
+
+            // Build coocurrence information
+            for (const keyword of temp) {
+                for (const co of temp) {
+                    if (keyword != co) {
+                        let found = co.co_oc.find(x => x.keyword.keyword == keyword.keyword)
+
+                        if (found) {
+                            found.count = found.count + 1
+                        }
+                        else {
+                            co.co_oc.push({
+                                keyword: keyword,
+                                count: 1
+                            })
+                        }
+                    }
+                }
+            }
+        }
+
         console.log(this.keyword_list)
 
         // Prepare autocomplete list
@@ -277,6 +351,7 @@ export class P0 {
     updateSelectedSimilarities() {
         // Prepare Document List
         this.selected_similarities.length = 0;
+        this.selected_similar_keywords.length = 0;
 
         if (this.selected_keyword) {
             for (const element of this.selected_keyword.docs) {
@@ -285,6 +360,15 @@ export class P0 {
                     text_similarity: this.cosine_similarity(this.selected_document["Abstract_Vector"], element["Abstract_Vector"]),
                     //keyword_similarity: this.jaccard_similarity(this.selected_document["Keywords"], element["Keywords"])
                     keyword_similarity: this.cosine_similarity(this.selected_document["Keyword_Vector"], element["Keyword_Vector"])
+                })
+            }
+
+            // Populate similar keywords
+            for (const element of this.selected_keyword.co_oc) {
+                this.selected_similar_keywords.push({
+                    keyword: element.keyword,
+                    count: element.keyword.count,
+                    cooc_sim: this.jaccard_similarityBy(element.keyword.co_oc, this.selected_keyword.co_oc, "keyword")
                 })
             }
         }
