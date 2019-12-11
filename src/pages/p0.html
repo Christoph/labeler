@@ -1,5 +1,20 @@
 <template>
   <div class="row">
+    <div class="col m3">
+      Mapped Keywords/New Keywords:
+      <br>
+      ${keywords_done}/${keywords_todo}
+    </div>
+    <div class="col m4">
+      <button md-button style="width: 100%" click.delegate="applyLabel()">Apply Label to Keyword</button>
+    </div>
+    <div class="col m5">
+      Finished Documents/New Documents:
+      <br>
+      ${docs_done}/${docs_todo}
+    </div>
+  </div>
+  <div class="row">
     <!-- Keyword View -->
     <div class="col m3">
       <input type="text" class="form-control search-box" value.bind="searchKeywordsTerm"
@@ -105,7 +120,6 @@
       <hr>
     </div>
     <div class="col m5">
-      <button md-button style="width: 100%" click.delegate="applyLabel()">Apply Label to Keyword</button>
       <!-- Document List View -->
       <div class="row" style="overflow: scroll; height: 60vh; margin-left: 10px; margin-right: 10px;">
         <table>

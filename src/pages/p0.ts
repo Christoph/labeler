@@ -7,7 +7,7 @@ import {
 import * as Mark from 'mark.js';
 import * as math from 'mathjs';
 import * as _ from 'lodash';
-import { templateController } from 'aurelia-framework';
+import { computedFrom } from 'aurelia-framework';
 
 @autoinject()
 export class P0 {
@@ -38,6 +38,12 @@ export class P0 {
     public key_property = "highest_value";
     public label_sort_property = "n_docs";
     public label_sort_value = 0;
+
+    // Status variables
+    public docs_todo = 0;
+    public docs_done = 0;
+    public keywords_todo = 0;
+    public keywords_done = 0;
 
     // Temp variables
     public sort_property = "descending";
@@ -246,6 +252,9 @@ export class P0 {
             }
             doc["Keywords_Processed"] = temp
 
+            // Check if doc is already done
+            if (temp.every(x => x["mapping"].length > 0)) doc["isDone"] = true;
+
             // Build coocurrence information
             for (const keyword of temp) {
                 for (const co of temp) {
@@ -306,6 +315,8 @@ export class P0 {
         console.log(this.keyword_list)
         console.log(this.label_docs)
 
+        this.updateDocumentStats();
+        this.updateKeywordStats();
         // Prepare autocomplete list
         // for (const keyword of this.label_list) {
         //     this.autocompleteData[keyword["Cluster"]] = null;
@@ -329,7 +340,7 @@ export class P0 {
         // this.createGraphData();
     }
 
-    selectKeyword(key) {
+    async selectKeyword(key) {
         // Set active keyword
         if (this.selected_keyword) this.selected_keyword.isActive = false;
         key.isActive = true;
@@ -486,18 +497,23 @@ export class P0 {
     setActiveKeyword = (keyword) => this.selectKeyword(keyword);
     getMapping = (keyword) => this.store.getKeywordMapping(keyword);
     checkMapping = (keyword) => keyword.mapping.length > 0 ? 1 : 0;
-    applyLabel = () => this.selected_keyword.mapping = this.selected_label.label;
-    // applyLabel() {
-    //     this.graph_data = {
-    //         nodes: [],
-    //         links: []
-    //     }
 
-    //     this.graph_data.nodes.push({
-    //         "id": 112,
-    //         "name": "X"
-    //     })
-    // }
+    async applyLabel() {
+        this.selected_keyword.mapping = this.selected_label.label;
+        this.selected_keyword.isDone = true;
+
+        // Update keyword list view
+        this.finishedKeywords = !this.finishedKeywords;
+        this.finishedKeywords = !this.finishedKeywords;
+
+        // this.selected_keyword = this.keyword_list.filter(x => !x.isDone)[0]
+        // let index = this.keyword_list.indexOf(this.selected_keyword)
+
+        await this.selectKeyword(this.keyword_list.filter(x => !x.isDone)[0])
+        this.selectLabel(this.label_docs[0])
+
+        this.updateKeywordStats();
+    }
 
     createGraphData() {
         // Reset graph data for easiest view update
@@ -531,7 +547,6 @@ export class P0 {
             }
         }
 
-        console.log(temp)
         this.graph_data = temp;
     }
 
@@ -569,4 +584,13 @@ export class P0 {
         return itemValue.toUpperCase().indexOf(searchExpression.toUpperCase()) !== -1;
     }
 
+    updateDocumentStats() {
+        this.docs_todo = this.documents.filter(x => !x.isDone).length
+        this.docs_done = this.documents.filter(x => x.isDone).length + this.labeled_documents.length
+    }
+
+    updateKeywordStats() {
+        this.keywords_todo = this.keyword_list.filter(x => x["mapping"].length == 0).length
+        this.keywords_done = this.keyword_list.filter(x => x["mapping"].length > 0).length
+    }
 }
