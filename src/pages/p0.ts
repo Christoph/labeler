@@ -86,7 +86,10 @@ export class P0 {
                 }
             }
 
-            for (const author_key of doc["Keywords"].split(";")) {
+            // TODO: fix casing in preprocessing
+            doc["Keywords_Processed"] = doc["Keywords_Processed"].toLowerCase().split(";");
+
+            for (const author_key of doc["Keywords_Processed"]) {
                 if (!this.keyword_mapping.hasOwnProperty(author_key)) {
                     let mapping = this.store.getKeywordMapping(author_key);
                     if (mapping.length > 0) {
@@ -103,13 +106,14 @@ export class P0 {
                             sims: [],
                             co_oc: []
                         }
-                    } else {
+                    }
+                    else {
                         this.keyword_mapping[author_key] = {
-                            mapping: "",
+                            mapping: "ERROR IN PREPROCESSING",
                             count: 1,
                             isActive: false,
                             docs: [doc],
-                            isDone: false,
+                            isDone: true,
                             highest_property: "",
                             highest_value: 0,
                             sub_label: 0,
@@ -128,6 +132,7 @@ export class P0 {
 
             doc["type"] = "old";
         }
+
 
         let temp_labels = new Array();
 
@@ -168,13 +173,13 @@ export class P0 {
             // TODO: fix casing in preprocessing
             doc["Keywords_Processed"] = doc["Keywords_Processed"].toLowerCase().split(";");
 
-            // Populate final keyword list
-            let final = doc["Keywords_Processed"]
-                // .map(x => this.store.getKeywordMapping(x).replace(/[^a-zA-Z]/g, ""))
-                .map(x => this.store.getKeywordMapping(x))
-            // .filter(x => x !== "unclear");
+            // // Populate final keyword list
+            // let final = doc["Keywords_Processed"]
+            //     // .map(x => this.store.getKeywordMapping(x).replace(/[^a-zA-Z]/g, ""))
+            //     .map(x => this.store.getKeywordMapping(x))
+            // // .filter(x => x !== "unclear");
 
-            final = _.uniq(final);
+            // final = _.uniq(final);
 
             for (const author_key of doc["Keywords_Processed"]) {
                 if (!this.keyword_mapping.hasOwnProperty(author_key)) {
@@ -215,15 +220,15 @@ export class P0 {
 
             doc["Unknown"] = unknown;
 
-            let temp = new Array();
+            // let temp = new Array();
 
-            for (const elem of final) {
-                if (elem.length > 0) temp.push({
-                    tag: elem
-                })
-            }
+            // for (const elem of final) {
+            //     if (elem.length > 0) temp.push({
+            //         tag: elem
+            //     })
+            // }
 
-            doc["Final"] = temp;
+            // doc["Final"] = temp;
         }
 
         // Flatten keyword list
@@ -232,17 +237,6 @@ export class P0 {
             this.keyword_list.push(value)
         }
 
-        // Compuate all similarities for all new keywords
-        // for (const keyword of this.keyword_list) {
-        //     if (!keyword["isDone"]) {
-        //         // Populate global variables
-        //         this.computeLabelSimilarities(this.label_docs, keyword)
-
-        //         // Set values for the keyword
-        //         keyword["highest_value"] = this.label_sort_value;
-        //         keyword["highest_property"] = this.label_sort_property;
-        //     }
-        // }
 
         // Replace keyword strings with objects
         for (const doc of this.documents) {
@@ -274,7 +268,7 @@ export class P0 {
 
         for (const doc of this.labeled_documents) {
             let temp = []
-            for (const keyword of doc["Keywords"].split(";")) {
+            for (const keyword of doc["Keywords_Processed"]) {
                 temp.push(this.keyword_list.filter(e => e.keyword == keyword)[0])
             }
             doc["Keywords_Processed"] = temp
@@ -296,6 +290,14 @@ export class P0 {
                         }
                     }
                 }
+            }
+        }
+
+        // Compuate all similarities for all new keywords
+        for (const keyword of this.keyword_list) {
+            if (!keyword["isDone"]) {
+                // Populate global variables
+                this.computeLabelSimilarities(this.label_docs, keyword)
             }
         }
 
