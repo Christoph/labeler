@@ -140,6 +140,7 @@ export class P0 {
             o["n_docs"] = o["docs"].length
             o["substring_similarity"] = 0.0
             o["keyword_avg_similarity"] = 0.0
+            o["isActive"] = false
 
 
             for (let [k, l] of Object.entries(_.pickBy(mapping, x => x === key))) {
@@ -321,7 +322,9 @@ export class P0 {
     }
 
     selectLabel(label) {
+        if (this.selected_label) this.selected_label["isActive"] = false;
         this.selected_label = label
+        this.selected_label["isActive"] = true
 
         this.updateSelectedSimilarities();
 

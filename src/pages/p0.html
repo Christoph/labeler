@@ -21,8 +21,8 @@
           <tbody>
             <tr
               repeat.for="keyword of keyword_list | customSort: { propertyName: key_property, direction: 'descending' } | filter:searchKeywordsTerm:filterKeywordsFunc | filterProperty: finishedKeywords:'isDone'"
-              click.delegate="selectKeyword(keyword)" class="${keyword.isActive ? 'activeRow' : ''}"
-              css="cursor: pointer; background-color: ${keyword.isDone ? '#44d16f' : none};">
+              click.delegate="selectKeyword(keyword)"
+              css="cursor: pointer; background-color: ${keyword.isActive ? '#50c6f1' : keyword.isDone ? '#0df2c9' : None};">
               <td>
                 ${keyword["keyword"]}
               </td>
@@ -58,7 +58,8 @@
           <tbody>
             <tr
               repeat.for="label_object of label_docs | customSort: { propertyName: label_sort_property, direction: 'descending' } | filter:searchLabelsTerm:filterLabelsFunc"
-              style="cursor: pointer;" click.delegate="selectLabel(label_object)">
+              css="cursor: pointer; background-color: ${label_object['isActive'] ? '#50c6f1' : None};"
+              click.delegate="selectLabel(label_object)">
               <td style="word-break: break-all;">
                 ${label_object['label']}
               </td>
