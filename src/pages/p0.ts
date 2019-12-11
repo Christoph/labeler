@@ -513,6 +513,13 @@ export class P0 {
         this.selectLabel(this.label_docs[0])
 
         this.updateKeywordStats();
+
+        // Check if some documents are now finished
+        for (const doc of this.documents) {
+            if (doc["Keywords_Processed"].every(x => x["mapping"].length > 0)) doc["isDone"] = true;
+        }
+
+        this.updateDocumentStats();
     }
 
     createGraphData() {
