@@ -153,7 +153,6 @@ export class P0 {
         }
 
         this.label_docs = temp_labels
-        console.log(this.label_docs)
 
         for (const doc of this.documents) {
             let unknown = 0;
@@ -180,36 +179,32 @@ export class P0 {
             for (const author_key of doc["Keywords_Processed"]) {
                 if (!this.keyword_mapping.hasOwnProperty(author_key)) {
                     let mapping = this.store.getKeywordMapping(author_key);
+                    let new_obj = {
+                        mapping: "",
+                        count: 1,
+                        isActive: false,
+                        docs: [doc],
+                        isDone: false,
+                        highest_property: "",
+                        highest_value: 0,
+                        sub_label: 0,
+                        sub_key: 0,
+                        sims: [],
+                        co_oc: []
+                    }
+
                     if (mapping.length > 0) {
-                        this.keyword_mapping[author_key] = {
-                            mapping: mapping,
-                            count: 1,
-                            isActive: false,
-                            docs: [doc],
-                            isDone: true,
-                            highest_property: "",
-                            highest_value: 0,
-                            sub_label: 0,
-                            sub_key: 0,
-                            sims: [],
-                            co_oc: []
-                        }
-                    } else {
-                        this.keyword_mapping[author_key] = {
-                            mapping: "",
-                            count: 1,
-                            isActive: false,
-                            docs: [doc],
-                            isDone: false,
-                            highest_property: "",
-                            highest_value: 0,
-                            sub_label: 0,
-                            sub_key: 0,
-                            sims: [],
-                            co_oc: []
-                        }
+                        new_obj.isDone = true
+                        new_obj.mapping = mapping
+                    }
+                    else {
+                        new_obj.isDone = false
+                        new_obj.mapping = ""
                         unknown++;
                     }
+
+                    this.keyword_mapping[author_key] = new_obj;
+
                 } else {
                     let keyword = this.keyword_mapping[author_key];
                     keyword.count++;
@@ -230,9 +225,6 @@ export class P0 {
 
             doc["Final"] = temp;
         }
-
-        // Create coocurrence informations
-
 
         // Flatten keyword list
         for (let [key, value] of Object.entries(this.keyword_mapping)) {
@@ -307,14 +299,17 @@ export class P0 {
             }
         }
 
+        console.log(this.labeled_documents)
+        console.log(this.documents)
         console.log(this.keyword_list)
+        console.log(this.label_docs)
 
         // Prepare autocomplete list
-        for (const keyword of this.label_list) {
-            this.autocompleteData[keyword["Cluster"]] = null;
-        }
+        // for (const keyword of this.label_list) {
+        //     this.autocompleteData[keyword["Cluster"]] = null;
+        // }
 
-        this.selectDocument(0);
+        // this.selectDocument(0);
     }
 
     selectDocument(doc) {
@@ -376,8 +371,6 @@ export class P0 {
             }
         }
 
-        console.log(this.selected_similarities)
-
         if (this.selected_label) {
             for (const element of this.selected_label.docs) {
                 this.selected_similarities.push({
@@ -411,9 +404,6 @@ export class P0 {
 
     populateLabels(labels, keyword) {
         for (const label of labels) {
-            label["keyword_similarities"] = keyword["sims"][label.label]
-            label["keyword_avg_similarity"] = math.median(keyword["sims"][label.label])
-
             label["substring_similarity"] = keyword["sub_label"][label.label]
             label["keyword_substring_similarity"] = keyword["sub_key"][label.label]
         }
@@ -435,23 +425,6 @@ export class P0 {
             let sims_obj = {}
 
             for (let label of labels) {
-                let similarities = [];
-
-                for (const doc of labels) {
-                    for (const key_doc of keyword.docs) {
-                        similarities.push(this.cosine_similarity(key_doc.Abstract_Vector, doc.Abstract_Vector))
-                    }
-                }
-
-                sims_obj[label.label] = similarities
-                let avg_sim = math.median(similarities)
-
-                if (avg_sim > highest_sim) {
-                    highest_sim = avg_sim
-                    highest_sim_type = "keyword_avg_similarity"
-                }
-
-
                 // Keyword Substring
                 // Label Substring
                 let substring_dist = 0
@@ -465,7 +438,7 @@ export class P0 {
                 }
 
                 n_gram_loop:
-                for (let n_gram_size = math.min(keywords.length - 1, 4); n_gram_size > 0; n_gram_size--) {
+                for (let n_gram_size = math.min(keywords.length - 1, 2); n_gram_size > 0; n_gram_size--) {
                     for (let index = 0; index < n_gram_size; index++) {
                         let n_gram = keywords.slice(index, index + n_gram_size + 1).join(" ")
 
@@ -497,7 +470,6 @@ export class P0 {
             // Set property in object
             keyword["sub_label"] = sub_label_obj
             keyword["sub_key"] = sub_key_obj
-            keyword["sims"] = sims_obj
 
             keyword["highest_property"] = highest_sim_type
             keyword["highest_value"] = highest_sim
