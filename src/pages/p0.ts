@@ -522,39 +522,38 @@ export class P0 {
         this.updateDocumentStats();
     }
 
-    createGraphData() {
-        // Reset graph data for easiest view update
-        const temp = {
-            nodes: [],
-            links: []
-        }
-        let all_docs = this.selected_similarities;
+    downloadData() {
+        let rows = [
+            ["title", "keywords", "authors", "doi", "labels"]
+        ];
 
-        for (let index = 0; index < all_docs.length; index++) {
-            const doc = all_docs[index].document;
+        for (const doc of this.documents) {
+            let labels = _.uniq(doc["Keywords_Processed"].map(x => x.mapping).filter(x => x.length > 0)).join(";").replace(/,/g, ";")
 
-            // Add doc as node
-            temp.nodes.push(doc)
+            let keywords = "";
+            if (doc["Keywords"]) keywords = doc["Keywords"].replace(/,/g, ";")
 
-            for (let j = index + 1; j < all_docs.length; j++) {
-                const check = all_docs[j].document;
-
-                let overlap = _.intersectionBy(doc["Keywords_Processed"], check["Keywords_Processed"])
-                let union = _.union(doc["Keywords_Processed"], check["Keywords_Processed"])
-
-                let strength = overlap.length / union.length
-
-                if (overlap.length >= 1) {
-                    temp.links.push({
-                        source: doc,
-                        target: check,
-                        strength: strength
-                    })
-                }
-            }
+            rows.push([
+                doc["Title"].replace(/,/g, ";"),
+                keywords,
+                doc["Authors"].replace(/,/g, ";"),
+                doc["DOI"],
+                labels
+            ])
         }
 
-        this.graph_data = temp;
+        let csvContent = "data:text/csv;charset=utf-8,"
+            + rows.map(e => e.join(",")).join("\n");
+
+        // var encodedUri = encodeURI(csvContent);
+        // window.open(encodedUri);
+        var encodedUri = encodeURI(csvContent);
+        var link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "labeled_data.csv");
+        document.body.appendChild(link);
+
+        link.click();
     }
 
     checkActiveKeyword(keyword) {

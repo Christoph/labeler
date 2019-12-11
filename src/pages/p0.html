@@ -9,7 +9,8 @@
       <button md-button style="width: 100%" click.delegate="applyLabel()">Apply Label to Keyword</button>
     </div>
     <div class="col m5">
-      Finished Documents/New Documents:
+      Documents Finished/New
+      <button md-button style="float: right" click.delegate="downloadData()">Download</button>
       <br>
       ${docs_done}/${docs_todo}
     </div>
