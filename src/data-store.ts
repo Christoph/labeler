@@ -46,8 +46,6 @@ export class DataStore {
       this.data_new.push(update)
     }
 
-    console.log(this.data_new)
-
     for (let row in classes) {
       this.classes.push(classes[row])
     }
