@@ -2,7 +2,6 @@
   <div class="row">
     <!-- Keyword View -->
     <div class="col m3">
-      <h5 style="width: 100%; text-align: center;">Author Keywords</h5>
       <input type="text" class="form-control search-box" value.bind="searchKeywordsTerm"
         placeholder="search Keywords..."></input>
       <md-checkbox checked.bind="finishedKeywords">Show finished
@@ -11,10 +10,12 @@
         <table>
           <thead>
             <tr>
-              <th>Keyword</th>
+              <th>
+                <span style="font-size: x-large">Author Keywords</span>
+              </th>
               <th>Mapping</th>
               <th style="cursor: pointer" click.delegate="setKeywordSortProperty('count')">#</th>
-              <th style="cursor: pointer" click.delegate="setKeywordSortProperty('highest_value')">Sim</th>
+              <th style="cursor: pointer" click.delegate="setKeywordSortProperty('highest_value')">Highest Sim</th>
             </tr>
           </thead>
           <tbody>
@@ -29,38 +30,59 @@
                 ${keyword["mapping"]}
               </td>
               <td>${keyword["count"]}</td>
-              <td as-element="small-bar" percent="${keyword['highest_value']}" orientation="vertical" xSize="20"
-                ySize="100">
+              <td as-element="small-bar" percent="${keyword['highest_value']}" orientation="horizontal" xSize="100"
+                ySize="20">
               </td>
             </tr>
           </tbody>
         </table>
       </div>
     </div>
-    <div class="col m5">
-      <!-- Graph View -->
-      <div class="row" style="margin-left: 10px; margin-right: 10px">
-        <div class="row">
-          <div class="col m6">
-            Active Keyword
-            <br>
-            <h5>${selected_keyword["keyword"]}</h5>
-          </div>
-          <div class="col m6">
-            <span style="float: right">Selected Label</span>
-            <h5 style="float: right; word-break: break-all">${selected_label.label}</h5>
-          </div>
-          <button md-button style="width: 100%" click.delegate="applyLabel()">Apply Label to Keyword</button>
-        </div>
+    <div class="col m4">
+      <!-- Labels View -->
+      <input type="text" class="form-control search-box" value.bind="searchLabelsTerm"
+        placeholder="search Labels..."></input>
+      <div class="row" style="overflow: scroll; height: 60vh;">
+        <table>
+          <thead>
+            <tr>
+              <th><span style="font-size: x-large">Labels</span></th>
+              <th style="cursor: pointer" click.delegate="setLabelSortProperty('n_docs')">Count</th>
+              <th style="cursor: pointer" click.delegate="setLabelSortProperty('substring_similarity')">Label Substring
+              </th>
+              <th style="cursor: pointer" click.delegate="setLabelSortProperty('keyword_substring_similarity')">Keyword
+                Substring</th>
+              <!-- <th style="cursor: pointer" click.delegate="setLabelSortProperty('keyword_avg_similarity')">Sim Hist</th> -->
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              repeat.for="label_object of label_docs | customSort: { propertyName: label_sort_property, direction: 'descending' } | filter:searchLabelsTerm:filterLabelsFunc"
+              style="cursor: pointer;" click.delegate="selectLabel(label_object)">
+              <td style="word-break: break-all;">
+                ${label_object['label']}
+              </td>
+              <td>${label_object['n_docs']}</td>
+              <td as-element="small-bar" percent="${label_object['substring_similarity']}" orientation="vertical"
+                xSize="15" , ySize="40">
+              </td>
+              <td as-element="small-bar" percent="${label_object['keyword_substring_similarity']}"
+                orientation="vertical" xSize="15" , ySize="40">
+              </td>
+              <!-- <td as-element="bar-chart" data="${label_object['keyword_similarities']}"></td> -->
+            </tr>
+          </tbody>
+        </table>
       </div>
+      <hr style="margin: 0">
       <div class="row" style="overflow: scroll; height: 40vh;">
         <table>
           <thead>
             <tr>
-              <th>Keyword</th>
-              <th>Label Mapping</th>
+              <th>Co-Occurring Keywords</th>
+              <th>Label</th>
               <th>#</th>
-              <th>Co-Oc Sim</th>
+              <th>Co-Occurrence Similarity</th>
           </thead>
           <tbody>
             <tr repeat.for="cooc of selected_similar_keywords | customSort: { propertyName: 'count',
@@ -79,15 +101,16 @@
           </tbody>
         </table>
       </div>
-      <!-- <graph-plot data.bind="graph_data"></graph-plot> -->
       <hr>
+    </div>
+    <div class="col m5">
+      <button md-button style="width: 100%" click.delegate="applyLabel()">Apply Label to Keyword</button>
       <!-- Document List View -->
-      <div class="row" style="overflow: scroll; height: 40vh; margin-left: 10px; margin-right: 10px;">
-        <h5 style="width: 100%; text-align: center;">Documents</h5>
+      <div class="row" style="overflow: scroll; height: 60vh; margin-left: 10px; margin-right: 10px;">
         <table>
           <thead>
             <tr>
-              <th>Title</th>
+              <th><span style="font-size: x-large">Documents</span></th>
               <th style="cursor: pointer" click.delegate="setSortProperty('text_similarity')">Text Sim
               </th>
               <th style="cursor: pointer" click.delegate="setSortProperty('keyword_similarity')">Keyword
@@ -115,45 +138,6 @@
           </tbody>
         </table>
       </div>
-    </div>
-    <div class="col m4">
-      <!-- Labels View -->
-      <h5 style="width: 100%; text-align: center;">Labels</h5>
-      <input type="text" class="form-control search-box" value.bind="searchLabelsTerm"
-        placeholder="search Labels..."></input>
-      <div class="row" style="overflow: scroll; height: 60vh;">
-        <table>
-          <thead>
-            <tr>
-              <th>Label</th>
-              <th style="cursor: pointer" click.delegate="setLabelSortProperty('n_docs')">Count</th>
-              <th style="cursor: pointer" click.delegate="setLabelSortProperty('substring_similarity')">Label Substring
-              </th>
-              <th style="cursor: pointer" click.delegate="setLabelSortProperty('keyword_substring_similarity')">Keyword
-                Substring</th>
-              <th style="cursor: pointer" click.delegate="setLabelSortProperty('keyword_avg_similarity')">Sim Hist</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              repeat.for="label_object of label_docs | customSort: { propertyName: label_sort_property, direction: 'descending' } | filter:searchLabelsTerm:filterLabelsFunc"
-              style="cursor: pointer;" click.delegate="selectLabel(label_object)">
-              <td style="word-break: break-all;">
-                ${label_object['label']}
-              </td>
-              <td>${label_object['n_docs']}</td>
-              <td as-element="small-bar" percent="${label_object['substring_similarity']}" orientation="vertical"
-                xSize="15" , ySize="60">
-              </td>
-              <td as-element="small-bar" percent="${label_object['keyword_substring_similarity']}"
-                orientation="vertical" xSize="15" , ySize="60">
-              </td>
-              <td as-element="bar-chart" data="${label_object['keyword_similarities']}"></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <hr>
       <!-- Document Info View -->
       <div class="row" style="overflow: scroll; height: 40vh;">
         <h6>${selected_document["Title"]} </h6>

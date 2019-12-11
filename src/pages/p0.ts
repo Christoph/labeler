@@ -373,6 +373,8 @@ export class P0 {
             }
         }
 
+        console.log(this.selected_similarities)
+
         if (this.selected_label) {
             for (const element of this.selected_label.docs) {
                 this.selected_similarities.push({
