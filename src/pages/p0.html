@@ -29,9 +29,9 @@
               <th>
                 <span style="font-size: x-large">Author Keywords</span>
               </th>
-              <th>Mapping</th>
               <th style="cursor: pointer" click.delegate="setKeywordSortProperty('count')">#</th>
               <th style="cursor: pointer" click.delegate="setKeywordSortProperty('highest_value')">Highest Sim</th>
+              <th>Mapping</th>
             </tr>
           </thead>
           <tbody>
@@ -42,12 +42,12 @@
               <td>
                 ${keyword["keyword"]}
               </td>
+              <td>${keyword["count"]}</td>
+              <td as-element="small-bar" percent="${keyword['highest_value']}" orientation="horizontal" xSize="60"
+                ySize="20">
+              </td>
               <td style="word-break: break-all;">
                 ${keyword["mapping"]}
-              </td>
-              <td>${keyword["count"]}</td>
-              <td as-element="small-bar" percent="${keyword['highest_value']}" orientation="horizontal" xSize="100"
-                ySize="20">
               </td>
             </tr>
           </tbody>
