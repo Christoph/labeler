@@ -363,6 +363,7 @@ export class P0 {
         // Prepare Document List
         this.selected_similarities.length = 0;
         this.selected_similar_keywords.length = 0;
+        let groups = {}
 
         if (this.selected_keyword) {
             for (const element of this.selected_keyword.docs) {
@@ -376,13 +377,40 @@ export class P0 {
 
             // Populate similar keywords
             for (const element of this.selected_keyword.co_oc) {
+                // this.selected_similar_keywords.push({
+                //     keyword: element.keyword,
+                //     count: element.keyword.count,
+                //     cooc_sim: this.jaccard_similarityBy(element.keyword.co_oc, this.selected_keyword.co_oc, "keyword")
+                // })
+
+                // Populate groups
+                if (groups.hasOwnProperty(element.keyword.mapping)) {
+                    groups[element.keyword.mapping].push(element.keyword)
+                }
+                else {
+                    let temp = []
+                    temp.push(element.keyword)
+                    groups[element.keyword.mapping] = temp
+                }
+            }
+
+            for (const [key, value] of Object.entries(groups)) {
                 this.selected_similar_keywords.push({
-                    keyword: element.keyword,
-                    count: element.keyword.count,
-                    cooc_sim: this.jaccard_similarityBy(element.keyword.co_oc, this.selected_keyword.co_oc, "keyword")
+                    label: key,
+                    keywords: value,
                 })
             }
+
+            // Sort elements by length of keyword array
+            this.selected_similar_keywords.sort((a, b) => b.keywords.length - a.keywords.length)
+
+            // Move empty label element to the end of the list
+            this.selected_similar_keywords.push(
+                this.selected_similar_keywords.splice(
+                    this.selected_similar_keywords.findIndex(x => x.label === ""), 1)[0])
         }
+
+        console.log(this.selected_similar_keywords)
 
         if (this.selected_label) {
             for (const element of this.selected_label.docs) {
