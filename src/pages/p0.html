@@ -96,24 +96,18 @@
         <table>
           <thead>
             <tr>
-              <th>Co-Occurring Keywords</th>
               <th>Label</th>
-              <th>#</th>
-              <th>Co-Occurrence Similarity</th>
+              <th>Co-Occurring Keywords</th>
           </thead>
           <tbody>
             <tr repeat.for="cooc of selected_similar_keywords | customSort: { propertyName: 'count',
               direction: 'descending' }">
-              <td>
-                ${cooc.keyword.keyword}
-              </td>
               <td style="word-break: break-all">
-                ${cooc.keyword.mapping}
+                ${cooc.label}
               </td>
               <td>
-                ${cooc.count}
+                <span repeat.for="keyword of cooc.keywords">${keyword.keyword} <br> </span>
               </td>
-              <td as-element="small-bar" percent="${cooc.cooc_sim}" orientation="horizontal" xSize="100" ySize="20">
             </tr>
           </tbody>
         </table>
