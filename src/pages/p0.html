@@ -100,13 +100,24 @@
               <th>Co-Occurring Keywords</th>
           </thead>
           <tbody>
-            <tr repeat.for="cooc of selected_similar_keywords | customSort: { propertyName: 'count',
-              direction: 'descending' }">
+            <tr repeat.for="cooc of selected_similar_keywords
+            | customFilterSortLength: {
+              propertyName: 'keywords',
+              direction: 'descending',
+              filterName: 'label',
+              filterValue: ''
+            }">
               <td style="word-break: break-all">
                 ${cooc.label}
               </td>
               <td>
-                <span repeat.for="keyword of cooc.keywords">${keyword.keyword} <br> </span>
+                <span style="white-space: nowrap" repeat.for="keyword of cooc.keywords | customSort: {
+                  propertyName: 'count', direction: 'descending'
+                }">
+                  <span md-badge>${keyword.count}</span>
+                  ${keyword.keyword}
+                  <br>
+                </span>
               </td>
             </tr>
           </tbody>

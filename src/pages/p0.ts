@@ -400,14 +400,6 @@ export class P0 {
                     keywords: value,
                 })
             }
-
-            // Sort elements by length of keyword array
-            this.selected_similar_keywords.sort((a, b) => b.keywords.length - a.keywords.length)
-
-            // Move empty label element to the end of the list
-            this.selected_similar_keywords.push(
-                this.selected_similar_keywords.splice(
-                    this.selected_similar_keywords.findIndex(x => x.label === ""), 1)[0])
         }
 
         console.log(this.selected_similar_keywords)
