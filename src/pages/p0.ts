@@ -340,6 +340,12 @@ export class P0 {
         // this.createGraphData();
     }
 
+    selectLabelName(label_name) {
+        let index = this.label_docs.findIndex(x => x.label === label_name)
+
+        if (index) this.selectLabel(this.label_docs[index])
+    }
+
     async selectKeyword(key) {
         // Set active keyword
         if (this.selected_keyword) this.selected_keyword.isActive = false;
@@ -401,8 +407,6 @@ export class P0 {
                 })
             }
         }
-
-        console.log(this.selected_similar_keywords)
 
         if (this.selected_label) {
             for (const element of this.selected_label.docs) {

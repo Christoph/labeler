@@ -72,8 +72,9 @@
             </tr>
           </thead>
           <tbody>
-            <tr
-              repeat.for="label_object of label_docs | customSort: { propertyName: label_sort_property, direction: 'descending' } | filter:searchLabelsTerm:filterLabelsFunc"
+            <tr repeat.for="label_object of label_docs | customSort: { propertyName: label_sort_property,
+                direction: 'descending',
+              } | filter:searchLabelsTerm:filterLabelsFunc"
               css="cursor: pointer; background-color: ${label_object['isActive'] ? '#50c6f1' : None};"
               click.delegate="selectLabel(label_object)">
               <td style="word-break: break-all;">
@@ -106,7 +107,7 @@
               direction: 'descending',
               filterName: 'label',
               filterValue: ''
-            }">
+            }" style="cursor: pointer;" click.delegate="selectLabelName(cooc.label)">
               <td style="word-break: break-all">
                 ${cooc.label}
               </td>
