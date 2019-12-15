@@ -1,5 +1,5 @@
 <template>
-  <div class="row">
+  <div class="row" style="height: 3vh">
     <div class="col m3">
       Mapped Keywords/New Keywords:
       <br>
@@ -22,7 +22,7 @@
         placeholder="search Keywords..."></input>
       <md-checkbox checked.bind="finishedKeywords">Show finished
       </md-checkbox>
-      <div class="row" style="overflow: scroll; height: 100vh;">
+      <div class="row" style="overflow: scroll; height: 84vh;">
         <table>
           <thead>
             <tr>
@@ -59,7 +59,7 @@
       <!-- Labels View -->
       <input type="text" class="form-control search-box" value.bind="searchLabelsTerm"
         placeholder="search Labels..."></input>
-      <div class="row" style="overflow: scroll; height: 60vh;">
+      <div class="row" style="overflow: scroll; height: 50vh">
         <table>
           <thead>
             <tr>
@@ -93,8 +93,7 @@
           </tbody>
         </table>
       </div>
-      <hr style="margin: 0">
-      <div class="row" style="overflow: scroll; height: 40vh;">
+      <div class="row" style="overflow: scroll; height: 35vh;">
         <table>
           <thead>
             <tr>
@@ -126,11 +125,10 @@
           </tbody>
         </table>
       </div>
-      <hr>
     </div>
     <div class="col m4">
       <!-- Document List View -->
-      <div class="row" style="overflow: scroll; height: 60vh; margin-left: 10px; margin-right: 10px;">
+      <div class="row" style="overflow: scroll; height: 55vh;">
         <table>
           <thead>
             <tr>
@@ -163,7 +161,7 @@
         </table>
       </div>
       <!-- Document Info View -->
-      <div class="row" style="overflow: scroll; height: 40vh;">
+      <div class="row" style="overflow: scroll; height: 35vh;">
         <h6>${selected_document["Title"]} </h6>
         <strong>Authors: </strong> ${selected_document["Authors"]}
         <br>
