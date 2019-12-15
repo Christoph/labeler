@@ -401,8 +401,11 @@ export class P0 {
             }
 
             for (const [key, value] of Object.entries(groups)) {
+                let norm_key = key.replace(/[^A-Za-z0-9]/g, "")
+                let label_obj = this.label_docs.find(x => x.label === norm_key)
                 this.selected_similar_keywords.push({
-                    label: key,
+                    label: norm_key,
+                    label_object: label_obj,
                     keywords: value,
                 })
             }

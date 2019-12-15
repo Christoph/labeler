@@ -30,7 +30,8 @@
                 <span style="font-size: x-large">Author Keywords</span>
               </th>
               <th style="cursor: pointer" click.delegate="setKeywordSortProperty('count')">#</th>
-              <th style="cursor: pointer" click.delegate="setKeywordSortProperty('highest_value')">Highest Sim</th>
+              <th style="cursor: pointer" click.delegate="setKeywordSortProperty('highest_value')">Highest
+                Recommendation</th>
               <th>Mapping</th>
             </tr>
           </thead>
@@ -107,7 +108,8 @@
               direction: 'descending',
               filterName: 'label',
               filterValue: ''
-            }" style="cursor: pointer;" click.delegate="selectLabelName(cooc.label)">
+            }" css="cursor: pointer; background-color: ${cooc['label_object']['isActive'] ? '#50c6f1' : None};"
+              click.delegate="selectLabelName(cooc.label)">
               <td style="word-break: break-all">
                 ${cooc.label}
               </td>
