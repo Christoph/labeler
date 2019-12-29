@@ -1,4 +1,40 @@
 <template>
+  <md-sidenav view-model.ref="sideNav" edge="left" close-on-click="true">
+    <div style="overflow: scroll; height: 84vh;">
+      <table>
+        <thead>
+          <tr>
+            <th>
+              Author Keywords
+            </th>
+            <th style="cursor: pointer" click.delegate="setKeywordSortProperty('count')">#</th>
+            <th>Mapping</th>
+            <th style="cursor: pointer" click.delegate="setKeywordSortProperty('highest_value')">Highest
+              Recommendation</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            repeat.for="keyword of keyword_list | customSort: { propertyName: key_property, direction: 'descending' } | filter:searchKeywordsTerm:filterKeywordsFunc | filterProperty: finishedKeywords:'isDone'"
+            click.delegate="selectKeyword(keyword)"
+            css="cursor: pointer; background-color: ${keyword.isActive ? '#50c6f1' : keyword.isDone ? '#0df2c9' : None};"
+            class="sidenav-close">
+            <td>
+              ${keyword["keyword"]}
+            </td>
+            <td>${keyword["count"]}</td>
+            <td style="word-break: break-all;">
+              ${keyword["mapping"]}
+            </td>
+            <td as-element="small-bar" percent="${keyword['highest_value']}" orientation="horizontal" xSize="60"
+              ySize="20">
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </md-sidenav>
+  </div>
   <div class="row" style="height: 3vh">
     <div class="col m3">
       Mapped Keywords/New Keywords:
@@ -6,7 +42,7 @@
       ${keywords_done}/${keywords_todo}
     </div>
     <div class="col m5">
-      <button md-button style="width: 100%" click.delegate="applyLabel()">Apply Label to Keyword</button>
+      <button md-button style="width: 50%" click.delegate="applyLabel()">Apply Label to Keyword</button>
     </div>
     <div class="col m4">
       Documents Finished/New
@@ -15,45 +51,13 @@
       ${docs_done}/${docs_todo}
     </div>
   </div>
+  <div class="row" style="height: 3vh">
+    <a md-sidenav-collapse="ref.bind: sideNav" md-button md-waves>Show Keywords</a>
+    <span style="font-size: xx-large;">Active Keyword: <strong>${selected_keyword.keyword}</strong></span>
+  </div>
   <div class="row">
     <!-- Keyword View -->
     <div class="col m3">
-      <input type="text" class="form-control search-box" value.bind="searchKeywordsTerm"
-        placeholder="search Keywords..."></input>
-      <md-checkbox checked.bind="finishedKeywords">Show finished
-      </md-checkbox>
-      <div class="row" style="overflow: scroll; height: 84vh;">
-        <table>
-          <thead>
-            <tr>
-              <th>
-                <span style="font-size: x-large">Author Keywords</span>
-              </th>
-              <th style="cursor: pointer" click.delegate="setKeywordSortProperty('count')">#</th>
-              <th style="cursor: pointer" click.delegate="setKeywordSortProperty('highest_value')">Highest
-                Recommendation</th>
-              <th>Mapping</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              repeat.for="keyword of keyword_list | customSort: { propertyName: key_property, direction: 'descending' } | filter:searchKeywordsTerm:filterKeywordsFunc | filterProperty: finishedKeywords:'isDone'"
-              click.delegate="selectKeyword(keyword)"
-              css="cursor: pointer; background-color: ${keyword.isActive ? '#50c6f1' : keyword.isDone ? '#0df2c9' : None};">
-              <td>
-                ${keyword["keyword"]}
-              </td>
-              <td>${keyword["count"]}</td>
-              <td as-element="small-bar" percent="${keyword['highest_value']}" orientation="horizontal" xSize="60"
-                ySize="20">
-              </td>
-              <td style="word-break: break-all;">
-                ${keyword["mapping"]}
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
     </div>
     <div class="col m5">
       <!-- Labels View -->
@@ -65,9 +69,11 @@
             <tr>
               <th><span style="font-size: x-large">Labels</span></th>
               <th style="cursor: pointer" click.delegate="setLabelSortProperty('n_docs')">Count</th>
-              <th style="cursor: pointer" click.delegate="setLabelSortProperty('substring_similarity')">Label Substring
+              <th style="cursor: pointer" click.delegate="setLabelSortProperty('substring_similarity')">Label
+                Substring
               </th>
-              <th style="cursor: pointer" click.delegate="setLabelSortProperty('keyword_substring_similarity')">Keyword
+              <th style="cursor: pointer" click.delegate="setLabelSortProperty('keyword_substring_similarity')">
+                Keyword
                 Substring</th>
               <!-- <th style="cursor: pointer" click.delegate="setLabelSortProperty('keyword_avg_similarity')">Sim Hist</th> -->
             </tr>

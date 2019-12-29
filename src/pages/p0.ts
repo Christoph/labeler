@@ -22,7 +22,7 @@ export class P0 {
 
     // Filter
     public searchKeywordsTerm = "";
-    public finishedKeywords = false;
+    public finishedKeywords = true;
     public searchLabelsTerm = "";
 
     // Selection
@@ -366,6 +366,7 @@ export class P0 {
         // }
 
         // this.selectDocument(0);
+        this.selectKeyword(this.keyword_list[0])
     }
 
     selectDocument(doc) {
