@@ -57,17 +57,14 @@
   </div>
   <div class="row">
     <!-- Keyword View -->
-    <div class="col m3">
-    </div>
-    <div class="col m5">
-      <!-- Labels View -->
+    <div class="col m4">
       <input type="text" class="form-control search-box" value.bind="searchLabelsTerm"
         placeholder="search Labels..."></input>
-      <div class="row" style="overflow: scroll; height: 50vh">
+      <div class="row" style="overflow: scroll; height: 80vh">
         <table>
           <thead>
             <tr>
-              <th><span style="font-size: x-large">Labels</span></th>
+              <th>Labels</th>
               <th style="cursor: pointer" click.delegate="setLabelSortProperty('n_docs')">Count</th>
               <th style="cursor: pointer" click.delegate="setLabelSortProperty('substring_similarity')">Label
                 Substring
@@ -99,7 +96,11 @@
           </tbody>
         </table>
       </div>
-      <div class="row" style="overflow: scroll; height: 35vh;">
+    </div>
+    <div class="col m4">
+      <input type="text" class="form-control search-box" value.bind="searchCoocKeywordTerm"
+        placeholder="search Keywords..."></input>
+      <div class="row" style="overflow: scroll; height: 80vh;">
         <table>
           <thead>
             <tr>
@@ -133,16 +134,14 @@
       </div>
     </div>
     <div class="col m4">
+      <input type="text" class="form-control search-box" value.bind="searchDocumentTerm"
+        placeholder="search Documents..."></input>
       <!-- Document List View -->
       <div class="row" style="overflow: scroll; height: 55vh;">
         <table>
           <thead>
             <tr>
-              <th><span style="font-size: x-large">Documents</span></th>
-              <th style="cursor: pointer" click.delegate="setSortProperty('text_similarity')">Text Sim
-              </th>
-              <th style="cursor: pointer" click.delegate="setSortProperty('keyword_similarity')">Keyword
-                Sim</th>
+              <th>Document</th>
             </tr>
           </thead>
           <tbody>
@@ -158,10 +157,6 @@
                 <br>
                 ${sim.document["Keywords"]}
               </td>
-              <td as-element="small-bar" percent="${sim.text_similarity}" orientation="vertical" xSize="20" ySize="100">
-              </td>
-              <td as-element="small-bar" percent="${sim.keyword_similarity}" orientation="vertical" xsize="20"
-                ysize="100"></td>
             </tr>
           </tbody>
         </table>

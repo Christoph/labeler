@@ -457,18 +457,18 @@ export class P0 {
             }
         }
 
-        if (this.selected_label) {
-            for (const element of this.selected_label.docs) {
-                this.selected_similarities.push({
-                    document: element,
-                    text_similarity: 0,
-                    // text_similarity: this.cosine_similarity(this.selected_document["Abstract_Vector"], element["Abstract_Vector"]),
-                    //keyword_similarity: this.jaccard_similarity(this.selected_document["Keywords"], element["Keywords"])
-                    // keyword_similarity: this.cosine_similarity(this.selected_document["Keyword_Vector"], element["Keyword_Vector"])
-                    keyword_similarity: 0
-                })
-            }
-        }
+        // if (this.selected_label) {
+        //     for (const element of this.selected_label.docs) {
+        //         this.selected_similarities.push({
+        //             document: element,
+        //             text_similarity: 0,
+        //             // text_similarity: this.cosine_similarity(this.selected_document["Abstract_Vector"], element["Abstract_Vector"]),
+        //             //keyword_similarity: this.jaccard_similarity(this.selected_document["Keywords"], element["Keywords"])
+        //             // keyword_similarity: this.cosine_similarity(this.selected_document["Keyword_Vector"], element["Keyword_Vector"])
+        //             keyword_similarity: 0
+        //         })
+        //     }
+        // }
     }
 
     computeKeywordSimilarity() {
