@@ -6,7 +6,9 @@ import {
 } from 'data-store';
 import * as _ from 'lodash';
 import { computedFrom } from 'aurelia-framework';
-import * as natural from '@mrizki/natural';
+import * as tfidf from 'tiny-tfidf';
+import * as porter from 'wink-porter2-stemmer';
+import * as distances from 'wink-distance';
 
 @autoinject()
 export class P0 {
@@ -312,24 +314,28 @@ export class P0 {
             }
         }
 
-        // Precompute tfidf
-        // let TFIDF = natural.Tfidf;
-        // let tfidf = new TFIDF();
+        // // Precompute tfidf
+        // const corpus = new tfidf.Corpus(
+        //     ["document1", "document2", "document3"],
+        //     [
+        //         "This is test document number 1. It is quite a short document.",
+        //         "This is test document 2. It is also quite short, and is a test.",
+        //         "Test document number three is a bit different and is also a tiny bit longer."
+        //     ]
+        // );
 
-        // tfidf.addDocument('this document is about node.');
-        // tfidf.addDocument('this document is about ruby.');
-        // tfidf.addDocument('this document is about ruby and node.');
-        // tfidf.addDocument('this document is about node. it has node examples');
+        // // print top terms for document 3
+        // console.log(corpus.getTopTermsForDocument("document3"));
+        // let sim = new tfidf.Similarity(corpus)
+        // console.log(tfidf.Similarity.cosineSimilarity(corpus.getDocumentVector("document2"), corpus.getDocumentVector("document3")))
 
-        // console.log('node --------------------------------');
-        // tfidf.tfidfs('node', function (i, measure) {
-        //     console.log('document #' + i + ' is ' + measure);
-        // });
+        // // Distances
+        // console.log(distances.string.levenshtein("hamming", "haming"))
+        // console.log(distances.string.jaroWinkler("hamming", "haming"))
+        // console.log(distances.string.soundex("hamming", "haming"))
 
-        // console.log('ruby --------------------------------');
-        // tfidf.tfidfs('ruby', function (i, measure) {
-        //     console.log('document #' + i + ' is ' + measure);
-        // });
+        // // Stemmer
+        // console.log(porter("running"))
 
         console.log(this.labeled_documents)
         console.log(this.documents)
