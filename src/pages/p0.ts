@@ -4,10 +4,9 @@ import {
 import {
     DataStore
 } from 'data-store';
-import * as Mark from 'mark.js';
-import * as math from 'mathjs';
 import * as _ from 'lodash';
 import { computedFrom } from 'aurelia-framework';
+import * as natural from '@mrizki/natural';
 
 @autoinject()
 export class P0 {
@@ -45,18 +44,21 @@ export class P0 {
     public keywords_todo = 0;
     public keywords_done = 0;
 
+    // NLP
+    public tfidf;
+
     // Temp variables
     public sort_property = "descending";
     public graph_data;
 
     // Distance Metrics
-    cosine_similarity(v1, v2) {
-        if (v1 && v2) {
-            return math.abs(math.dot(v1, v2) / (math.norm(v1) * math.norm(v2)))
-        } else {
-            return 0
-        }
-    }
+    // cosine_similarity(v1, v2) {
+    //     if (v1 && v2) {
+    //         return Math.abs(Math.dot(v1, v2) / (math.norm(v1) * math.norm(v2)))
+    //     } else {
+    //         return 0
+    //     }
+    // }
 
     jaccard_similarity(s1, s2) {
         // return math.setIntersect(s1, s2).length / math.setUnion(s1, s2).length
@@ -310,6 +312,25 @@ export class P0 {
             }
         }
 
+        // Precompute tfidf
+        // let TFIDF = natural.Tfidf;
+        // let tfidf = new TFIDF();
+
+        // tfidf.addDocument('this document is about node.');
+        // tfidf.addDocument('this document is about ruby.');
+        // tfidf.addDocument('this document is about ruby and node.');
+        // tfidf.addDocument('this document is about node. it has node examples');
+
+        // console.log('node --------------------------------');
+        // tfidf.tfidfs('node', function (i, measure) {
+        //     console.log('document #' + i + ' is ' + measure);
+        // });
+
+        // console.log('ruby --------------------------------');
+        // tfidf.tfidfs('ruby', function (i, measure) {
+        //     console.log('document #' + i + ' is ' + measure);
+        // });
+
         console.log(this.labeled_documents)
         console.log(this.documents)
         console.log(this.keyword_list)
@@ -375,9 +396,11 @@ export class P0 {
             for (const element of this.selected_keyword.docs) {
                 this.selected_similarities.push({
                     document: element,
-                    text_similarity: this.cosine_similarity(this.selected_document["Abstract_Vector"], element["Abstract_Vector"]),
+                    text_similarity: 0,
+                    // text_similarity: this.cosine_similarity(this.selected_document["Abstract_Vector"], element["Abstract_Vector"]),
                     //keyword_similarity: this.jaccard_similarity(this.selected_document["Keywords"], element["Keywords"])
-                    keyword_similarity: this.cosine_similarity(this.selected_document["Keyword_Vector"], element["Keyword_Vector"])
+                    // keyword_similarity: this.cosine_similarity(this.selected_document["Keyword_Vector"], element["Keyword_Vector"])
+                    keyword_similarity: 0
                 })
             }
 
@@ -415,9 +438,11 @@ export class P0 {
             for (const element of this.selected_label.docs) {
                 this.selected_similarities.push({
                     document: element,
-                    text_similarity: this.cosine_similarity(this.selected_document["Abstract_Vector"], element["Abstract_Vector"]),
+                    text_similarity: 0,
+                    // text_similarity: this.cosine_similarity(this.selected_document["Abstract_Vector"], element["Abstract_Vector"]),
                     //keyword_similarity: this.jaccard_similarity(this.selected_document["Keywords"], element["Keywords"])
-                    keyword_similarity: this.cosine_similarity(this.selected_document["Keyword_Vector"], element["Keyword_Vector"])
+                    // keyword_similarity: this.cosine_similarity(this.selected_document["Keyword_Vector"], element["Keyword_Vector"])
+                    keyword_similarity: 0
                 })
             }
         }
@@ -425,7 +450,8 @@ export class P0 {
 
     computeKeywordSimilarity() {
         this.label_list.forEach(element => {
-            element["Similarity"] = this.cosine_similarity(this.selected_document["Keyword_Vector"], element["Vector"])
+            // element["Similarity"] = this.cosine_similarity(this.selected_document["Keyword_Vector"], element["Vector"])
+            element["Similarity"] = 0
         });
     }
 
@@ -434,9 +460,11 @@ export class P0 {
         this.documents.forEach(element => {
             this.selected_similarities.push({
                 document: element,
-                text_similarity: this.cosine_similarity(this.selected_document["Abstract_Vector"], element["Abstract_Vector"]),
+                // text_similarity: this.cosine_similarity(this.selected_document["Abstract_Vector"], element["Abstract_Vector"]),
+                text_similarity: 0,
                 //keyword_similarity: this.jaccard_similarity(this.selected_document["Keywords"], element["Keywords"])
-                keyword_similarity: this.cosine_similarity(this.selected_document["Keyword_Vector"], element["Keyword_Vector"])
+                // keyword_similarity: this.cosine_similarity(this.selected_document["Keyword_Vector"], element["Keyword_Vector"])
+                keyword_similarity: 0
             })
         });
     }
@@ -478,7 +506,7 @@ export class P0 {
                 }
 
                 n_gram_loop:
-                for (let n_gram_size = math.min(keywords.length - 1, 2); n_gram_size > 0; n_gram_size--) {
+                for (let n_gram_size = Math.min(keywords.length - 1, 2); n_gram_size > 0; n_gram_size--) {
                     for (let index = 0; index < n_gram_size; index++) {
                         let n_gram = keywords.slice(index, index + n_gram_size + 1).join(" ")
 

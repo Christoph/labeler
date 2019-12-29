@@ -13,7 +13,6 @@ export function configure(aurelia: Aurelia) {
   aurelia.use
     .standardConfiguration()
     .feature(PLATFORM.moduleName('resources/index'))
-    .plugin(PLATFORM.moduleName('au-table'))
     .plugin(PLATFORM.moduleName('aurelia-materialize-bridge'), b => b.useAll());
 
   // Uncomment the line below to enable animation.

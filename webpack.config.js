@@ -201,7 +201,7 @@ module.exports = ({
     ]
   },
   node: {
-    fs: 'empty'
+    fs: 'empty',
   },
   plugins: [
     ...when(!karma, new DuplicatePackageCheckerPlugin()),

@@ -2,8 +2,6 @@ import * as d3 from "d3";
 import { inject, noView, bindable } from 'aurelia-framework';
 import * as _ from "lodash"
 
-import { connectTo } from 'aurelia-store';
-
 @inject(Element)
 @noView()
 export class GraphPlotCustomElement {
