@@ -306,7 +306,7 @@ export class P0 {
             }
         }
 
-        // Compuate all similarities for all new keywords
+        // Compute all similarities for all new keywords
         for (const keyword of this.keyword_list) {
             if (!keyword["isDone"]) {
                 // Populate global variables
@@ -314,20 +314,36 @@ export class P0 {
             }
         }
 
-        // // Precompute tfidf
-        // const corpus = new tfidf.Corpus(
-        //     ["document1", "document2", "document3"],
-        //     [
-        //         "This is test document number 1. It is quite a short document.",
-        //         "This is test document 2. It is also quite short, and is a test.",
-        //         "Test document number three is a bit different and is also a tiny bit longer."
-        //     ]
-        // );
+        // Precompute tfidf
+        let identifiers = {}
 
-        // // print top terms for document 3
-        // console.log(corpus.getTopTermsForDocument("document3"));
-        // let sim = new tfidf.Similarity(corpus)
+        for (const key of this.keyword_list) {
+            let mapping = key.mapping.toLowerCase();
+            let keyword = key.keyword.replace(" ", "SEP")
+            // let keyword = key.keyword
+
+            if (identifiers.hasOwnProperty(mapping)) {
+
+                identifiers[mapping] = identifiers[mapping] + " " + keyword
+            }
+            else {
+                identifiers[mapping] = keyword
+            }
+
+        }
+
+        this.tfidf = new tfidf.Corpus(
+            Object.keys(identifiers),
+            Object.values(identifiers),
+        );
+
+        for (const label of this.label_docs) {
+            label["top_words"] = this.tfidf.getTopTermsForDocument(label.label.toLowerCase())
+        }
+
+        // let sim = new tfidf.Similarity(corpus).getDistanceMatrix()
         // console.log(tfidf.Similarity.cosineSimilarity(corpus.getDocumentVector("document2"), corpus.getDocumentVector("document3")))
+
 
         // // Distances
         // console.log(distances.string.levenshtein("hamming", "haming"))
