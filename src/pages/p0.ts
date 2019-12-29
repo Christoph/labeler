@@ -338,7 +338,7 @@ export class P0 {
         );
 
         for (const label of this.label_docs) {
-            label["top_words"] = this.tfidf.getTopTermsForDocument(label.label.toLowerCase())
+            label["top_words"] = this.tfidf.getTopTermsForDocument(label.label.toLowerCase()).map(x => x[0])
         }
 
         // let sim = new tfidf.Similarity(corpus).getDistanceMatrix()
