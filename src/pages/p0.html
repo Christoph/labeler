@@ -137,7 +137,7 @@
       <input type="text" class="form-control search-box" value.bind="searchDocumentTerm"
         placeholder="search Documents..."></input>
       <!-- Document List View -->
-      <div class="row" style="overflow: scroll; height: 55vh;">
+      <div class="row" style="overflow: scroll; height: 80vh;">
         <table>
           <thead>
             <tr>
@@ -145,40 +145,35 @@
             </tr>
           </thead>
           <tbody>
-            <tr
-              repeat.for="sim of selected_similarities | customSort: { propertyName: sim_property, direction: sort_property }"
-              click.delegate="selectDocument(sim.document)"
+            <tr repeat.for="sim of selected_similarities | customSort: { propertyName: sim_property, direction: sort_property }
+              | filter:searchDocumentTerm:filterDocumentsFunc" click.delegate="selectDocument(sim.document)"
               css="cursor: pointer; background-color: ${sim.document['type'] == 'old' ? 'lightgrey' : none}">
               <td>
                 <strong>
                   ${sim.document["Title"]}
                 </strong>
+                <a style="font-size: small;" href=${sim.document["DOI"]}>Link</a>
                 <br>
+                <span style="font-size: small;">
+                  ${sim.document["Authors"]}
+                </span>
                 <br>
-                ${sim.document["Keywords"]}
+                <span style="font-size: small;">
+                  <strong>Keywords:</strong> ${sim.document["Keywords"]}
+                </span>
+                <br>
+                <ul style="margin: 0;" md-collapsible="accordion.bind: !accordion; popout: false;">
+                  <li>
+                    <div style="padding: 0;" class="collapsible-header"> Abstract...</div>
+                    <div class="collapsible-body">
+                      <p>${sim.document["Abstract"]}</p>
+                    </div>
+                  </li>
+                </ul>
               </td>
             </tr>
           </tbody>
         </table>
-      </div>
-      <!-- Document Info View -->
-      <div class="row" style="overflow: scroll; height: 35vh;">
-        <h6>${selected_document["Title"]} </h6>
-        <strong>Authors: </strong> ${selected_document["Authors"]}
-        <br>
-        <a href=${selected_document["DOI"]}>Link to the official Source (DOI)</a>
-        <br>
-        <strong>Author Keywords: </strong> ${selected_document["Keywords"]}
-        <div class="collapsible-basic-use">
-          <ul md-collapsible="accordion.bind: !accordion; popout: false;">
-            <li>
-              <div class="collapsible-header">Abstract</div>
-              <div class="collapsible-body">
-                <p>${selected_document["Abstract"]}</p>
-              </div>
-            </li>
-          </ul>
-        </div>
       </div>
     </div>
   </div>

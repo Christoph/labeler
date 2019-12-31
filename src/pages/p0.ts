@@ -24,6 +24,7 @@ export class P0 {
     public searchKeywordsTerm = "";
     public finishedKeywords = true;
     public searchLabelsTerm = "";
+    public searchDocumentTerm = "";
 
     // Selection
     public selected_document_list = [];
@@ -598,6 +599,11 @@ export class P0 {
         }
 
         this.updateDocumentStats();
+
+        // Reset filter
+        this.searchDocumentTerm = ""
+        this.searchKeywordsTerm = ""
+        this.searchLabelsTerm = ""
     }
 
     downloadData() {
@@ -663,6 +669,13 @@ export class P0 {
 
     filterLabelsFunc(searchExpression, value) {
         let itemValue = value["label"];
+        if (!searchExpression || !itemValue) return false;
+
+        return itemValue.toUpperCase().indexOf(searchExpression.toUpperCase()) !== -1;
+    }
+
+    filterDocumentsFunc(searchExpression, value) {
+        let itemValue = value.document["Title"];
         if (!searchExpression || !itemValue) return false;
 
         return itemValue.toUpperCase().indexOf(searchExpression.toUpperCase()) !== -1;
