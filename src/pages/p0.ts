@@ -38,7 +38,7 @@ export class P0 {
     // Similarity list
     public sim_property = "text_similarity";
     public key_property = "highest_value";
-    public label_sort_property = "n_docs";
+    public label_sort_property = "total_similarity";
     public label_sort_value = 0;
 
     // Status variables
@@ -158,6 +158,7 @@ export class P0 {
             o["n_docs"] = o["docs"].length
             o["substring_similarity"] = 0.0
             o["keyword_avg_similarity"] = 0.0
+            o["total_similarity"] = 0.0
             o["isActive"] = false
 
 
@@ -322,8 +323,8 @@ export class P0 {
 
         for (const key of this.keyword_list) {
             let mapping = key.mapping.toLowerCase();
-            let keyword = key.keyword.replace(" ", "SEP")
-            // let keyword = key.keyword
+            // let keyword = key.keyword.replace(" ", "SEP")
+            let keyword = key.keyword
 
             if (identifiers.hasOwnProperty(mapping)) {
 
@@ -500,12 +501,18 @@ export class P0 {
         for (const label of labels) {
             label["substring_similarity"] = keyword["sub_label"][label.label]
             label["keyword_substring_similarity"] = keyword["sub_key"][label.label]
+            label["edit_distance_similarity"] = keyword["sub_edit"][label.label]
+
+            label["total_similarity"] =
+                label["substring_similarity"] +
+                label["keyword_substring_similarity"] +
+                label["edit_distance_similarity"]
         }
 
         // Sort labels list
-        this.label_sort_value = keyword["highest_value"]
+        // this.label_sort_value = keyword["highest_value"]
         this.label_sort_property = "";
-        this.label_sort_property = keyword["highest_property"];
+        this.label_sort_property = "total_similarity"
     }
 
     computeLabelSimilarities(labels, keyword) {
@@ -516,21 +523,24 @@ export class P0 {
 
             let sub_label_obj = {}
             let sub_key_obj = {}
-            let sims_obj = {}
+            let sub_edit_obj = {}
 
             for (let label of labels) {
-                // Keyword Substring
-                // Label Substring
                 let substring_dist = 0
                 let keyword_substring_dist = 0
+                let cooc_dist = 0
+                let edit_dist = 4
+
                 let keywords = keyword.keyword.split(" ")
 
+                // Label Substring
                 for (const keyword of keywords) {
                     if (label.label.toLowerCase().includes(keyword)) {
                         substring_dist++;
                     }
                 }
 
+                // Keyword Substring
                 n_gram_loop:
                 for (let n_gram_size = Math.min(keywords.length - 1, 2); n_gram_size > 0; n_gram_size--) {
                     for (let index = 0; index < n_gram_size; index++) {
@@ -544,29 +554,42 @@ export class P0 {
                     }
                 }
 
+                // Cooc dist
+
+
+                // Edit dist
+                edit_loop:
+                for (const keyword of keywords) {
+                    if (label.top_words) {
+                        for (const top of label.top_words) {
+                            const dist = distances.string.levenshtein(keyword, top)
+
+                            if (dist == 1) {
+                                edit_dist = 1;
+                                break edit_loop;
+                            }
+
+                            if (dist > 1 && dist < 4 && dist < edit_dist) {
+                                edit_dist = dist;
+                            }
+                        }
+                    }
+                }
+
                 let substring_avg_dist = substring_dist / keywords.length;
                 sub_label_obj[label.label] = substring_avg_dist
 
-                if (substring_avg_dist >= highest_sim) {
-                    highest_sim = substring_avg_dist
-                    highest_sim_type = "substring_similarity"
-                }
+                let edit_norm_sim = 1 - (edit_dist - 1) / 3
+                sub_edit_obj[label.label] = edit_norm_sim
 
                 let substring_avg_dist_keyword = keyword_substring_dist / keywords.length;
                 sub_key_obj[label.label] = substring_avg_dist_keyword
-
-                if (substring_avg_dist_keyword > highest_sim) {
-                    highest_sim = substring_avg_dist_keyword
-                    highest_sim_type = "keyword_substring_similarity"
-                }
             }
 
             // Set property in object
             keyword["sub_label"] = sub_label_obj
             keyword["sub_key"] = sub_key_obj
-
-            keyword["highest_property"] = highest_sim_type
-            keyword["highest_value"] = highest_sim
+            keyword["sub_edit"] = sub_edit_obj
         }
     }
 
