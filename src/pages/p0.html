@@ -34,26 +34,51 @@
       </table>
     </div>
   </md-sidenav>
-  </div>
   <div class="row" style="height: 3vh">
-    <div class="col m3">
-      Mapped Keywords/New Keywords:
-      <br>
-      ${keywords_done}/${keywords_todo}
-    </div>
-    <div class="col m5">
-      <button md-button style="width: 50%" click.delegate="applyLabel()">Apply Label to Keyword</button>
-    </div>
+
     <div class="col m4">
-      Documents Finished/New
-      <button md-button style="float: right" click.delegate="downloadData()">Download</button>
+      <button md-sidenav-collapse="ref.bind: sideNav" md-button md-waves>Show Keywords</button>
+    </div>
+    <div class="col m4" style="text-align: center;">
+      <span style="font-size: xx-large; font-style: italic; font-weight: 800;">
+        LAssi
+      </span>
+      <i class="fad fa-glass" style="color: orange; font-size: xx-large;"></i>
+    </div>
+
+    <div class="col m4">
+
+      Keywords:
+      <small-bar percent=${keywords_per} orientation="horizontal" xSize=40 ySize=13></small-bar>
+      ${keywords_done}/${keywords_todo}
+      <button md-button style="float: right" click.delegate="downloadData()"><i class="fad fa-download"></i></button>
       <br>
+      Documents:
+      <small-bar percent=${docs_per}orientation="horizontal" xSize=40 ySize=13></small-bar>
       ${docs_done}/${docs_todo}
     </div>
   </div>
-  <div class="row" style="height: 3vh">
-    <a md-sidenav-collapse="ref.bind: sideNav" md-button md-waves>Show Keywords</a>
-    <span style="font-size: xx-large;">Active Keyword: <strong>${selected_keyword.keyword}</strong></span>
+  <br>
+  <div class="row">
+    <div class="col m1" style="height: 15vh">
+      <button md-button style="height: 100%; width: 100%;" click.delegate="applyLabel()">
+        Apply
+        <i class="fad fa-layer-plus fa-4x"></i>
+      </button>
+    </div>
+    <div class="col m11">
+      Active Keyword:
+      <span style="font-size: xx-large;">
+        <strong>${selected_keyword.keyword}</strong></span>
+      , ${selected_keyword.count}
+      <i class="fad fa-file-alt"></i>
+      <br>
+      Selected Label:
+      <span style="font-size: xx-large;">
+        <strong>${selected_label.label}</strong></span>
+      , ${selected_label.n_docs}
+      <i class="fad fa-file-alt"></i>
+    </div>
   </div>
   <div class="row">
     <!-- Keyword View -->

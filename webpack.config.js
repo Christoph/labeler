@@ -49,7 +49,7 @@ module.exports = ({
     }
   },
   entry: {
-    app: ['aurelia-bootstrapper']
+    app: ['LAssi: Labeling Assistant']
   },
   mode: production ? 'production' : 'development',
   output: {

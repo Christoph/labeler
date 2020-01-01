@@ -44,8 +44,10 @@ export class P0 {
     // Status variables
     public docs_todo = 0;
     public docs_done = 0;
+    public docs_per = 0;
     public keywords_todo = 0;
     public keywords_done = 0;
+    public keywords_per = 0;
 
     // NLP
     public tfidf;
@@ -684,10 +686,14 @@ export class P0 {
     updateDocumentStats() {
         this.docs_todo = this.documents.filter(x => !x.isDone).length
         this.docs_done = this.documents.filter(x => x.isDone).length + this.labeled_documents.length
+
+        this.docs_per = this.docs_todo / (this.labeled_documents + this.documents)
     }
 
     updateKeywordStats() {
         this.keywords_todo = this.keyword_list.filter(x => x["mapping"].length == 0).length
         this.keywords_done = this.keyword_list.filter(x => x["mapping"].length > 0).length
+
+        this.keywords_per = this.keywords_todo / this.keyword_list.length
     }
 }
