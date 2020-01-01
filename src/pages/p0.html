@@ -107,6 +107,10 @@
               css="cursor: pointer; background-color: ${label_object['isActive'] ? '#50c6f1' : None};"
               click.delegate="selectLabel(label_object)">
               <td style="word-break: break-all;">
+                <span class="fa-stack fa-2x hover" show.bind="label_object['isActive'] " click.delegate="applyLabel()">
+                  <i class="fal fa-square fa-stack-2x"></i>
+                  <i class="fad fa-layer-plus fa-stack-1x"></i>
+                </span>
                 ${label_object['label']}
               </td>
               <td>${label_object['n_docs']}</td>
@@ -142,6 +146,11 @@
             }" css="cursor: pointer; background-color: ${cooc['label_object']['isActive'] ? '#50c6f1' : None};"
               click.delegate="selectLabelName(cooc.label)">
               <td style="word-break: break-all">
+                <span class="fa-stack fa-2x hover" show.bind="cooc['label_object']['isActive'] "
+                  click.delegate="applyLabel()">
+                  <i class="fal fa-square fa-stack-2x"></i>
+                  <i class="fad fa-layer-plus fa-stack-1x"></i>
+                </span>
                 ${cooc.label}
               </td>
               <td>

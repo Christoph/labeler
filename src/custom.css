@@ -81,3 +81,7 @@ md-collection-selector>div>div {
 .sidenav {
   width: 40vw !important;
 }
+
+.hover:hover {
+  color: orange;
+}
