@@ -22,7 +22,7 @@ export class P0 {
 
     // Filter
     public searchKeywordsTerm = "";
-    public finishedKeywords = true;
+    public finishedKeywords = false;
     public searchLabelsTerm = "";
     public searchDocumentTerm = "";
 
@@ -104,10 +104,11 @@ export class P0 {
 
             for (const author_key of doc["Keywords_Processed"]) {
                 if (!this.keyword_mapping.hasOwnProperty(author_key)) {
-                    let mapping = this.store.getKeywordMapping(author_key);
+                    let mapping = this.store.getKeywordMapping(author_key).replace(",", "");
                     if (mapping.length > 0) {
                         this.keyword_mapping[author_key] = {
                             mapping: mapping,
+                            label: {},
                             count: 1,
                             isActive: false,
                             docs: [doc],
@@ -123,6 +124,7 @@ export class P0 {
                     else {
                         this.keyword_mapping[author_key] = {
                             mapping: "ERROR IN PREPROCESSING",
+                            label: {},
                             count: 1,
                             isActive: false,
                             docs: [doc],
@@ -200,6 +202,7 @@ export class P0 {
                     let mapping = this.store.getKeywordMapping(author_key);
                     let new_obj = {
                         mapping: "",
+                        label: {},
                         count: 1,
                         isActive: false,
                         docs: [doc],
@@ -251,6 +254,14 @@ export class P0 {
             this.keyword_list.push(value)
         }
 
+        // Add label object to keywords
+        for (const key of this.keyword_list) {
+            if (key.mapping) {
+                let label = this.label_docs.filter(x => x.label.toLowerCase() == key.mapping.replace(/[^\w]*/g, "").toLowerCase())
+
+                key["label"] = label[0]
+            }
+        }
 
         // Replace keyword strings with objects
         for (const doc of this.documents) {
@@ -314,7 +325,8 @@ export class P0 {
         for (const keyword of this.keyword_list) {
             if (!keyword["isDone"]) {
                 // Populate global variables
-                this.computeLabelSimilarities(this.label_docs, keyword)
+                // this.updateSelectedSimilarities(keyword);
+                // this.computeLabelSimilarities(this.label_docs, keyword)
             }
         }
 
@@ -382,7 +394,7 @@ export class P0 {
         this.selected_label = label
         this.selected_label["isActive"] = true
 
-        this.updateSelectedSimilarities();
+        this.updateSelectedSimilarities(this.selected_keyword);
 
         // Update graph
         // this.createGraphData();
@@ -403,7 +415,7 @@ export class P0 {
         this.selected_document = key.docs[0]
         // this.selected_document_list.push(key.docs[0])
 
-        this.updateSelectedSimilarities();
+        this.updateSelectedSimilarities(this.selected_keyword);
 
         // Update Labels List
         this.computeLabelSimilarities(this.label_docs, this.selected_keyword);
@@ -413,14 +425,14 @@ export class P0 {
         // this.createGraphData();
     }
 
-    updateSelectedSimilarities() {
+    updateSelectedSimilarities(keyword) {
         // Prepare Document List
         this.selected_similarities.length = 0;
-        this.selected_similar_keywords.length = 0;
+        this.selected_similar_keywords = [];
         let groups = {}
 
-        if (this.selected_keyword) {
-            for (const element of this.selected_keyword.docs) {
+        if (keyword) {
+            for (const element of keyword.docs) {
                 this.selected_similarities.push({
                     document: element,
                     text_similarity: 0,
@@ -432,7 +444,7 @@ export class P0 {
             }
 
             // Populate similar keywords
-            for (const element of this.selected_keyword.co_oc) {
+            for (const element of keyword.co_oc) {
                 // this.selected_similar_keywords.push({
                 //     keyword: element.keyword,
                 //     count: element.keyword.count,
@@ -498,15 +510,20 @@ export class P0 {
 
 
     populateLabels(labels, keyword) {
+        // console.log("NEW", keyword)
         for (const label of labels) {
             label["substring_similarity"] = keyword["sub_label"][label.label]
             label["keyword_substring_similarity"] = keyword["sub_key"][label.label]
             label["edit_distance_similarity"] = keyword["sub_edit"][label.label]
+            label["cooc_similarity"] = keyword["sub_cooc"][label.label]
 
             label["total_similarity"] =
                 label["substring_similarity"] +
                 label["keyword_substring_similarity"] +
-                label["edit_distance_similarity"]
+                // label["edit_distance_similarity"] +
+                label["cooc_similarity"]
+
+            // if (label["total_similarity"] > 0) console.log(label.label, label["total_similarity"])
         }
 
         // Sort labels list
@@ -517,25 +534,23 @@ export class P0 {
 
     computeLabelSimilarities(labels, keyword) {
         // Only compute if not already computed
-        if (!keyword["highest_property"]) {
-            let highest_sim_type = "n_docs"
-            let highest_sim = 0;
-
+        if (!keyword["sub_label"]) {
             let sub_label_obj = {}
             let sub_key_obj = {}
             let sub_edit_obj = {}
+            let sub_cooc_obj = {}
 
             for (let label of labels) {
                 let substring_dist = 0
                 let keyword_substring_dist = 0
-                let cooc_dist = 0
+                let cooc_sim = 0
                 let edit_dist = 4
 
-                let keywords = keyword.keyword.split(" ")
+                let keywords = keyword.keyword.split(" ");
 
                 // Label Substring
                 for (const keyword of keywords) {
-                    if (label.label.toLowerCase().includes(keyword)) {
+                    if (label.label.toLowerCase().includes(keyword.toLowerCase())) {
                         substring_dist++;
                     }
                 }
@@ -555,23 +570,29 @@ export class P0 {
                 }
 
                 // Cooc dist
+                let cooc_keywords = keyword.co_oc.filter(x => x.keyword.label == label)
 
+                if (cooc_keywords) cooc_sim = cooc_keywords.length
 
                 // Edit dist
                 edit_loop:
                 for (const keyword of keywords) {
                     if (label.top_words) {
                         for (const top of label.top_words) {
-                            const dist = distances.string.levenshtein(keyword, top)
+                            const dist = distances.string.jaroWinkler(keyword, top)
 
-                            if (dist == 1) {
-                                edit_dist = 1;
-                                break edit_loop;
-                            }
+                            // if (dist < 0.2) console.log(keyword, top)
 
-                            if (dist > 1 && dist < 4 && dist < edit_dist) {
-                                edit_dist = dist;
-                            }
+                            if (dist < edit_dist) edit_dist = dist
+
+                            // if (dist == 1) {
+                            //     edit_dist = 1;
+                            //     break edit_loop;
+                            // }
+
+                            // if (dist > 1 && dist < 4 && dist < edit_dist) {
+                            //     edit_dist = dist;
+                            // }
                         }
                     }
                 }
@@ -579,8 +600,15 @@ export class P0 {
                 let substring_avg_dist = substring_dist / keywords.length;
                 sub_label_obj[label.label] = substring_avg_dist
 
-                let edit_norm_sim = 1 - (edit_dist - 1) / 3
+                // let edit_norm_sim = 1 - (edit_dist - 1) / 3
+                let edit_norm_sim = 1 - edit_dist
                 sub_edit_obj[label.label] = edit_norm_sim
+
+                let cooc_norm_sim = 0
+                if (cooc_sim >= 3) cooc_norm_sim = 1 + 0.01
+                else if (cooc_sim == 2) cooc_norm_sim = 0.66 + 0.01
+                else if (cooc_sim == 1) cooc_norm_sim = 0.33 + 0.01
+                sub_cooc_obj[label.label] = cooc_norm_sim
 
                 let substring_avg_dist_keyword = keyword_substring_dist / keywords.length;
                 sub_key_obj[label.label] = substring_avg_dist_keyword
@@ -590,6 +618,7 @@ export class P0 {
             keyword["sub_label"] = sub_label_obj
             keyword["sub_key"] = sub_key_obj
             keyword["sub_edit"] = sub_edit_obj
+            keyword["sub_cooc"] = sub_cooc_obj
         }
     }
 
@@ -604,11 +633,12 @@ export class P0 {
 
     async applyLabel() {
         this.selected_keyword.mapping = this.selected_label.label;
+        this.selected_keyword.label = this.selected_label;
         this.selected_keyword.isDone = true;
 
         // Update keyword list view
-        this.finishedKeywords = !this.finishedKeywords;
-        this.finishedKeywords = !this.finishedKeywords;
+        // this.finishedKeywords = !this.finishedKeywords;
+        // this.finishedKeywords = !this.finishedKeywords;
 
         // this.selected_keyword = this.keyword_list.filter(x => !x.isDone)[0]
         // let index = this.keyword_list.indexOf(this.selected_keyword)

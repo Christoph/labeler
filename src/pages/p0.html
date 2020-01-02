@@ -97,6 +97,8 @@
               <th style="cursor: pointer" click.delegate="setLabelSortProperty('keyword_substring_similarity')">
                 Keyword
                 Substring</th>
+              <th>Cooc</th>
+              <th>Edit</th>
               <!-- <th style="cursor: pointer" click.delegate="setLabelSortProperty('keyword_avg_similarity')">Sim Hist</th> -->
             </tr>
           </thead>
@@ -119,6 +121,12 @@
               </td>
               <td as-element="small-bar" percent="${label_object['keyword_substring_similarity']}"
                 orientation="vertical" xSize="15" , ySize="40">
+              </td>
+              <td as-element="small-bar" percent="${label_object['cooc_similarity']}" orientation="vertical" xSize="15"
+                , ySize="40">
+              </td>
+              <td as-element="small-bar" percent="${label_object['edit_distance_similarity']}" orientation="vertical"
+                xSize="15" , ySize="40">
               </td>
               <!-- <td as-element="bar-chart" data="${label_object['keyword_similarities']}"></td> -->
             </tr>
