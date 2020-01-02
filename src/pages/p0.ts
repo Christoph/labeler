@@ -508,6 +508,13 @@ export class P0 {
         });
     }
 
+    colorConverter(num: number) {
+        let color = "none"
+
+        if (num > 0.5) return "green"
+        else if (num > 0) return "orange"
+        else return "#A6A6A6"
+    }
 
     populateLabels(labels, keyword) {
         // console.log("NEW", keyword)
@@ -516,6 +523,30 @@ export class P0 {
             label["keyword_substring_similarity"] = keyword["sub_key"][label.label]
             label["edit_distance_similarity"] = keyword["sub_edit"][label.label]
             label["cooc_similarity"] = keyword["sub_cooc"][label.label]
+
+            let temp = []
+            temp.push({
+                type: "Label Substring",
+                color: this.colorConverter(label["substring_similarity"]),
+                value: label["substring_similarity"]
+            })
+            temp.push({
+                type: "Keyword Substring",
+                color: this.colorConverter(label["keyword_substring_similarity"]),
+                value: label["keyword_substring_similarity"]
+            })
+            temp.push({
+                type: "Cooccurrent Keywords",
+                color: this.colorConverter(label["cooc_similarity"]),
+                value: label["cooc_similarity"]
+            })
+            temp.push({
+                type: "Edit Distance",
+                color: this.colorConverter(label["edit_distance_similarity"]),
+                value: label["edit_distance_similarity"]
+            })
+
+            label["similarities"] = temp
 
             label["total_similarity"] =
                 label["substring_similarity"] +

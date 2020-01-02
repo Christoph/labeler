@@ -90,16 +90,8 @@
           <thead>
             <tr>
               <th>Labels</th>
-              <th style="cursor: pointer" click.delegate="setLabelSortProperty('n_docs')">Count</th>
-              <th style="cursor: pointer" click.delegate="setLabelSortProperty('substring_similarity')">Label
-                Substring
-              </th>
-              <th style="cursor: pointer" click.delegate="setLabelSortProperty('keyword_substring_similarity')">
-                Keyword
-                Substring</th>
-              <th>Cooc</th>
-              <th>Edit</th>
-              <!-- <th style="cursor: pointer" click.delegate="setLabelSortProperty('keyword_avg_similarity')">Sim Hist</th> -->
+              <!-- <th>Count</th> -->
+              <th>Similarity Measures</th>
             </tr>
           </thead>
           <tbody>
@@ -109,26 +101,31 @@
               css="cursor: pointer; background-color: ${label_object['isActive'] ? '#50c6f1' : None};"
               click.delegate="selectLabel(label_object)">
               <td style="word-break: break-all;">
-                <span class="fa-stack fa-2x hover" show.bind="label_object['isActive'] " click.delegate="applyLabel()">
-                  <i class="fal fa-square fa-stack-2x"></i>
-                  <i class="fad fa-layer-plus fa-stack-1x"></i>
+                <span style="display: inline-block;" show.bind="!label_object['isActive']">
+                  ${label_object['label']}, ${label_object['n_docs']}<i class="fad fa-file-alt"></i>
                 </span>
-                ${label_object['label']}
+                <div class="row" show.bind="label_object['isActive']">
+                  <div class="col m4">
+                    <span class="fa-stack fa-2x hover" click.delegate="applyLabel()" style="margin-top: 5px">
+                      <i class="fal fa-square fa-stack-2x"></i>
+                      <i class="fad fa-layer-plus fa-stack-1x"></i>
+                    </span>
+                  </div>
+                  <div class="col m8">
+                    ${label_object['label']}, ${label_object['n_docs']}<i class="fad fa-file-alt"></i>
+                  </div>
+                </div>
               </td>
-              <td>${label_object['n_docs']}</td>
-              <td as-element="small-bar" percent="${label_object['substring_similarity']}" orientation="vertical"
-                xSize="15" , ySize="40">
+              <!-- <td>${label_object['n_docs']}</td> -->
+              <td>
+                <span style="white-space: nowrap" repeat.for="sim of label_object.similarities | customSort: {
+                  propertyName: 'count', direction: 'descending'
+                }">
+                  <i class="fad fa-circle" css="color: ${sim['color']}"></i>
+                  ${sim.type}
+                  <br>
+                </span>
               </td>
-              <td as-element="small-bar" percent="${label_object['keyword_substring_similarity']}"
-                orientation="vertical" xSize="15" , ySize="40">
-              </td>
-              <td as-element="small-bar" percent="${label_object['cooc_similarity']}" orientation="vertical" xSize="15"
-                , ySize="40">
-              </td>
-              <td as-element="small-bar" percent="${label_object['edit_distance_similarity']}" orientation="vertical"
-                xSize="15" , ySize="40">
-              </td>
-              <!-- <td as-element="bar-chart" data="${label_object['keyword_similarities']}"></td> -->
             </tr>
           </tbody>
         </table>
