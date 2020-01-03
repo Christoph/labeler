@@ -160,7 +160,8 @@
               filter:searchCoocKeywordTerm:filterKeywordsFunc" click.delegate="selectAddKeyword(keyword)"
               css="cursor: pointer; background-color: ${keyword.isActive ? '#50c6f1' : None};">
               <td>
-                <md-checkbox model.bind="keyword" checked.bind="selected_additional_keywords">
+                <md-checkbox show.bind="!keyword['isDone']" model.bind="keyword"
+                  checked.bind="selected_additional_keywords">
                 </md-checkbox>
                 ${keyword["keyword"]}
               </td>
@@ -201,7 +202,8 @@
                 <div style="white-space: nowrap" repeat.for="keyword of cooc.keywords | customSort: {
                   propertyName: 'count', direction: 'descending'
                 }">
-                  <md-checkbox model.bind="keyword" checked.bind="selected_additional_keywords"></md-checkbox>
+                  <md-checkbox show.bind="!keyword['isDone']" model.bind="keyword"
+                    checked.bind="selected_additional_keywords"></md-checkbox>
                   <span md-badge>${keyword.count}</span>
                   <span style="cursor: pointer;" click.delegate="selectAddKeyword(keyword)">
                     ${keyword.keyword}

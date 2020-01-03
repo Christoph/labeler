@@ -670,11 +670,13 @@ export class P0 {
     }
 
     selectAddKeyword(keyword) {
-        if (this.selected_additional_keywords.includes(keyword)) {
-            this.removeAddKeyword(keyword)
-        }
-        else {
-            this.selected_additional_keywords.push(keyword)
+        if (!keyword.isDone) {
+            if (this.selected_additional_keywords.includes(keyword)) {
+                this.removeAddKeyword(keyword)
+            }
+            else {
+                this.selected_additional_keywords.push(keyword)
+            }
         }
     }
 
