@@ -1,5 +1,5 @@
 <template>
-  <md-sidenav view-model.ref="sideNav" edge="left" close-on-click="true">
+  <!-- <md-sidenav view-model.ref="sideNav" edge="left" close-on-click="true">
     <div style="overflow: scroll; height: 84vh;">
       <table>
         <thead>
@@ -33,11 +33,11 @@
         </tbody>
       </table>
     </div>
-  </md-sidenav>
+  </md-sidenav> -->
   <div class="row" style="height: 3vh">
 
     <div class="col m4">
-      <button md-sidenav-collapse="ref.bind: sideNav" md-button md-waves>Show Keywords</button>
+      <!-- <button md-sidenav-collapse="ref.bind: sideNav" md-button md-waves>Show Keywords</button> -->
     </div>
     <div class="col m4" style="text-align: center;">
       <span style="font-size: xx-large; font-style: italic; font-weight: 800;">
@@ -134,9 +134,33 @@
     <!-- Keyword View -->
     <div class="col m4">
       <input type="text" class="form-control search-box" value.bind="searchCoocKeywordTerm"
-        placeholder="search Keywords..."></input>
+        placeholder="search All Keywords..."></input>
       <div class="row" style="overflow: scroll; height: 80vh;">
-        <table>
+        <table show.bind="searchCoocKeywordTerm">
+          <thead>
+            <tr>
+              <th>
+                Keyword
+              </th>
+              <th>#</th>
+              <th>Label</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr repeat.for="keyword of keyword_list | customSort: { propertyName: 'mapping', direction: 'descending' } |
+              filter:searchCoocKeywordTerm:filterKeywordsFunc" click.delegate="selectKeyword(keyword)"
+              css="cursor: pointer; background-color: ${keyword.isActive ? '#50c6f1' : None};">
+              <td>
+                ${keyword["keyword"]}
+              </td>
+              <td>${keyword["count"]}</td>
+              <td style="word-break: break-all;">
+                ${keyword["mapping"]}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <table show.bind="!searchCoocKeywordTerm">
           <thead>
             <tr>
               <th>Label</th>
@@ -170,7 +194,7 @@
               </td>
             </tr>
           </tbody>
-        </table>
+        </table if.bind="searchCoocKeywordTerm">
       </div>
     </div>
     <div class="col m4">
