@@ -64,7 +64,8 @@
       <button md-button style="height: 50%; width: 100%;" click.delegate="skipKeyword()">
         <i class="fad fa-forward"></i>
         Skip
-        <button md-button style="height: 50%; width: 100%;" click.delegate="applyLabel()">
+        <button md-button style="height: 50%; width: 100%;" click.delegate="applyLabel()"
+          disabled.bind="!selected_label">
           <i class="fad fa-layer-plus"></i>
           Apply
         </button>
@@ -164,7 +165,7 @@
               css="cursor: pointer; background-color: ${keyword.isActive ? '#50c6f1' : None};">
               <td>
                 <md-checkbox show.bind="!keyword['isDone']" model.bind="keyword"
-                  checked.bind="selected_additional_keywords">
+                  checked.bind="selected_additional_keywords">Add
                 </md-checkbox>
                 ${keyword["keyword"]}
               </td>
@@ -206,7 +207,7 @@
                   propertyName: 'count', direction: 'descending'
                 }">
                   <md-checkbox show.bind="!keyword['isDone']" model.bind="keyword"
-                    checked.bind="selected_additional_keywords"></md-checkbox>
+                    checked.bind="selected_additional_keywords">Add</md-checkbox>
                   <span md-badge>${keyword.count}</span>
                   <span style="cursor: pointer;" click.delegate="selectAddKeyword(keyword)">
                     ${keyword.keyword}
