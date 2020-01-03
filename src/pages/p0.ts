@@ -30,6 +30,7 @@ export class P0 {
     public selected_document_list = [];
     public selected_document;
     public selected_keyword;
+    public selected_additional_keywords = [];
     public selected_label;
     public showDocuments = false;
     public selected_similarities = [];
@@ -662,10 +663,39 @@ export class P0 {
     getMapping = (keyword) => this.store.getKeywordMapping(keyword);
     checkMapping = (keyword) => keyword.mapping.length > 0 ? 1 : 0;
 
+    removeAddKeyword(keyword) {
+        this.selected_additional_keywords.splice(
+            this.selected_additional_keywords.indexOf(keyword), 1
+        );
+    }
+
+    selectAddKeyword(keyword) {
+        if (this.selected_additional_keywords.includes(keyword)) {
+            this.removeAddKeyword(keyword)
+        }
+        else {
+            this.selected_additional_keywords.push(keyword)
+        }
+    }
+
+    skipKeyword() {
+
+    }
+
     async applyLabel() {
         this.selected_keyword.mapping = this.selected_label.label;
         this.selected_keyword.label = this.selected_label;
         this.selected_keyword.isDone = true;
+
+        if (this.selected_additional_keywords) {
+            for (const keyword of this.selected_additional_keywords) {
+                keyword.mapping = this.selected_label.label;
+                keyword.label = this.selected_label;
+                keyword.isDone = true;
+            }
+
+            this.selected_additional_keywords = [];
+        }
 
         // Update keyword list view
         // this.finishedKeywords = !this.finishedKeywords;

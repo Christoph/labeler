@@ -73,6 +73,15 @@
       , ${selected_keyword.count}
       <i class="fad fa-file-alt"></i>
       <br>
+      <span style="font-size: smaller;">
+        Additional Selected Keywords:
+      </span>
+      <span repeat.for="keyword of selected_additional_keywords">
+        <strong>${keyword.keyword}</strong>
+        <i class="fad fa-trash-alt" click.delegate="removeAddKeyword(keyword)" style="cursor: pointer"></i>
+        <span>, </span>
+      </span>
+      <br>
       Selected Label:
       <span style="font-size: xx-large;">
         <strong>${selected_label.label}</strong></span>
@@ -148,9 +157,11 @@
           </thead>
           <tbody>
             <tr repeat.for="keyword of keyword_list | customSort: { propertyName: 'mapping', direction: 'descending' } |
-              filter:searchCoocKeywordTerm:filterKeywordsFunc" click.delegate="selectKeyword(keyword)"
+              filter:searchCoocKeywordTerm:filterKeywordsFunc" click.delegate="selectAddKeyword(keyword)"
               css="cursor: pointer; background-color: ${keyword.isActive ? '#50c6f1' : None};">
               <td>
+                <md-checkbox model.bind="keyword" checked.bind="selected_additional_keywords">
+                </md-checkbox>
                 ${keyword["keyword"]}
               </td>
               <td>${keyword["count"]}</td>
@@ -173,24 +184,30 @@
               direction: 'descending',
               filterName: 'label',
               filterValue: ''
-            }" css="cursor: pointer; background-color: ${cooc['label_object']['isActive'] ? '#50c6f1' : None};"
-              click.delegate="selectLabelName(cooc.label)">
-              <td style="word-break: break-all">
+            }">
+              <td style="word-break: break-all"
+                css="background-color: ${cooc['label_object']['isActive'] ? '#50c6f1' : None};cursor: pointer;"
+                click.delegate="selectLabelName(cooc.label)">
                 <span class="fa-stack fa-2x hover" show.bind="cooc['label_object']['isActive'] "
-                  click.delegate="applyLabel()">
+                  style="display: inline-block;">
                   <i class="fal fa-square fa-stack-2x"></i>
                   <i class="fad fa-layer-plus fa-stack-1x"></i>
                 </span>
-                ${cooc.label}
+                <span style="display: inline-block;">
+                  ${cooc.label}
+                </span>
               </td>
               <td>
-                <span style="white-space: nowrap" repeat.for="keyword of cooc.keywords | customSort: {
+                <div style="white-space: nowrap" repeat.for="keyword of cooc.keywords | customSort: {
                   propertyName: 'count', direction: 'descending'
                 }">
+                  <md-checkbox model.bind="keyword" checked.bind="selected_additional_keywords"></md-checkbox>
                   <span md-badge>${keyword.count}</span>
-                  ${keyword.keyword}
+                  <span style="cursor: pointer;" click.delegate="selectAddKeyword(keyword)">
+                    ${keyword.keyword}
+                  </span>
                   <br>
-                </span>
+                </div>
               </td>
             </tr>
           </tbody>
