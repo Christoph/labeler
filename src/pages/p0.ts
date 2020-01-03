@@ -383,7 +383,7 @@ export class P0 {
         // }
 
         // this.selectDocument(0);
-        this.selectKeyword(this.keyword_list.filter(x => !x.label)[0])
+        this.selectKeyword(this.keyword_list.filter(x => !x.isDone)[0])
     }
 
     selectDocument(doc) {
