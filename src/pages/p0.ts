@@ -680,8 +680,21 @@ export class P0 {
         }
     }
 
-    skipKeyword() {
+    async skipKeyword() {
+        // Move current element to the end of the array
+        this.keyword_list.splice(
+            this.keyword_list.indexOf(this.selected_keyword), 1
+        );
+        this.keyword_list.push(this.selected_keyword)
 
+        // Select next element
+        await this.selectKeyword(this.keyword_list.filter(x => !x.isDone)[0])
+        this.selectLabel(this.label_docs[0])
+
+        // Reset filter
+        this.searchDocumentTerm = ""
+        this.searchKeywordsTerm = ""
+        this.searchLabelsTerm = ""
     }
 
     async applyLabel() {

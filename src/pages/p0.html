@@ -60,13 +60,16 @@
   </div>
   <br>
   <div class="row">
-    <div class="col m1" style="height: 15vh">
-      <button md-button style="height: 100%; width: 100%;" click.delegate="applyLabel()">
-        Apply
-        <i class="fad fa-layer-plus fa-4x"></i>
-      </button>
+    <div class="col m2" style="height: 15vh">
+      <button md-button style="height: 50%; width: 100%;" click.delegate="skipKeyword()">
+        <i class="fad fa-forward"></i>
+        Skip
+        <button md-button style="height: 50%; width: 100%;" click.delegate="applyLabel()">
+          <i class="fad fa-layer-plus"></i>
+          Apply
+        </button>
     </div>
-    <div class="col m11">
+    <div class="col m10">
       Active Keyword:
       <span style="font-size: xx-large;">
         <strong>${selected_keyword.keyword}</strong></span>
