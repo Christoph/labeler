@@ -437,6 +437,7 @@ export class P0 {
                 this.selected_similarities.push({
                     document: element,
                     text_similarity: 0,
+                    hasKeywords: true,
                     // text_similarity: this.cosine_similarity(this.selected_document["Abstract_Vector"], element["Abstract_Vector"]),
                     //keyword_similarity: this.jaccard_similarity(this.selected_document["Keywords"], element["Keywords"])
                     // keyword_similarity: this.cosine_similarity(this.selected_document["Keyword_Vector"], element["Keyword_Vector"])
@@ -502,6 +503,7 @@ export class P0 {
                 document: element,
                 // text_similarity: this.cosine_similarity(this.selected_document["Abstract_Vector"], element["Abstract_Vector"]),
                 text_similarity: 0,
+                hasKeywords: true,
                 //keyword_similarity: this.jaccard_similarity(this.selected_document["Keywords"], element["Keywords"])
                 // keyword_similarity: this.cosine_similarity(this.selected_document["Keyword_Vector"], element["Keyword_Vector"])
                 keyword_similarity: 0
@@ -676,6 +678,22 @@ export class P0 {
             }
             else {
                 this.selected_additional_keywords.push(keyword)
+            }
+
+            this.checkKeywordsForDoc();
+        }
+    }
+
+    checkKeywordsForDoc() {
+        let temp = []
+        temp.push(this.selected_keyword, ...this.selected_additional_keywords)
+
+        for (const doc of this.selected_similarities) {
+            if (temp.every(r => doc.document["Keywords_Processed"].includes(r))) {
+                doc.hasKeywords = true
+            }
+            else {
+                doc.hasKeywords = false
             }
         }
     }

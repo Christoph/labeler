@@ -235,7 +235,7 @@
           <tbody>
             <tr repeat.for="sim of selected_similarities | customSort: { propertyName: sim_property, direction: sort_property }
               | filter:searchDocumentTerm:filterDocumentsFunc" click.delegate="selectDocument(sim.document)"
-              css="cursor: pointer; background-color: ${sim.document['type'] == 'old' ? 'lightgrey' : none}">
+              css="cursor: pointer;" class="${sim.hasKeywords ? 'none': 'deselected'}">
               <td>
                 <strong>
                   ${sim.document["Title"]}
@@ -253,7 +253,7 @@
                 <ul style="margin: 0; box-shadow: none; -webkit-box-shadow: none"
                   md-collapsible="accordion.bind: !accordion; popout: false;">
                   <li>
-                    <div style="padding: 0 0 0 10px;" class="collapsible-header"> Abstract...</div>
+                    <div style="padding: 0 0 0 10px;" class="collapsible-header "> Abstract...</div>
                     <div class="collapsible-body">
                       <p>${sim.document["Abstract"]}</p>
                     </div>

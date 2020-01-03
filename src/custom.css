@@ -85,3 +85,7 @@ md-collection-selector>div>div {
 .hover:hover {
   color: orange;
 }
+
+.deselected {
+  opacity: 0.3;
+}
