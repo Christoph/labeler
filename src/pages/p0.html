@@ -212,7 +212,7 @@
                   propertyName: 'count', direction: 'descending'
                 }">
                   <md-checkbox show.bind="!keyword['isDone']" model.bind="keyword"
-                    checked.bind="selected_additional_keywords">Add</md-checkbox>
+                    checked.bind="selected_additional_keywords" style="width: 19px">Add</md-checkbox>
                   <span md-badge>${keyword.count}</span>
                   <span style="cursor: pointer;" click.delegate="selectAddKeyword(keyword)">
                     ${keyword.keyword}
