@@ -52,6 +52,7 @@ export class P0 {
 
     // NLP
     public tfidf;
+    public tfidf_keywords = {};
 
     // Temp variables
     public sort_property = "descending";
@@ -354,9 +355,40 @@ export class P0 {
             Object.values(identifiers),
         );
 
-        for (const label of this.label_docs) {
-            label["top_words"] = this.tfidf.getTopTermsForDocument(label.label.toLowerCase()).map(x => x[0])
+        for (const key of Object.keys(identifiers)) {
+            let terms = this.tfidf.getTopTermsForDocument(key)
+
+            for (const term of terms) {
+                let name = term[0]
+                let value = term[1]
+
+                if (this.tfidf_keywords.hasOwnProperty(name)) {
+                    this.tfidf_keywords[name].push(value)
+                } else {
+                    let temp = []
+                    temp.push(value)
+                    this.tfidf_keywords[name] = temp
+                }
+            }
         }
+
+        let max_tfidf = 0;
+
+        for (const key of Object.keys(this.tfidf_keywords)) {
+            let values = this.tfidf_keywords[key]
+            this.tfidf_keywords[key] = values.reduce((sum, x) => sum + x) / values.length;
+
+            if (this.tfidf_keywords[key] > max_tfidf) max_tfidf = this.tfidf_keywords[key]
+        }
+
+        for (const key of Object.keys(this.tfidf_keywords)) {
+            let value = this.tfidf_keywords[key]
+            this.tfidf_keywords[key] = value / max_tfidf;
+        }
+
+        // for (const label of this.label_docs) {
+        //     label["top_words"] = this.tfidf.getTopTermsForDocument(label.label.toLowerCase()).map(x => x[0])
+        // }
 
         // let sim = new tfidf.Similarity(corpus).getDistanceMatrix()
         // console.log(tfidf.Similarity.cosineSimilarity(corpus.getDocumentVector("document2"), corpus.getDocumentVector("document3")))
@@ -374,6 +406,7 @@ export class P0 {
         console.log(this.documents)
         console.log(this.keyword_list)
         console.log(this.label_docs)
+        console.log(this.tfidf_keywords)
 
         this.updateDocumentStats();
         this.updateKeywordStats();
@@ -580,11 +613,12 @@ export class P0 {
                 let cooc_sim = 0
                 let edit_dist = 4
 
-                let keywords = keyword.keyword.split(" ");
+                let keywords = keyword.keyword.toLowerCase().split(" ");
 
                 // Label Substring
                 for (const keyword of keywords) {
-                    if (label.label.toLowerCase().includes(keyword.toLowerCase())) {
+                    if (label.label.toLowerCase().includes(keyword)) {
+                        // substring_dist++;
                         substring_dist++;
                     }
                 }
