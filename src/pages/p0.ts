@@ -92,6 +92,9 @@ export class P0 {
             this.label_docs[label["Cluster"]] = []
         }
 
+        // Add missing unclear label
+        this.label_docs["Unclear"] = [];
+
         for (const doc of this.labeled_documents) {
             for (const label of doc["Clusters"].split(";")) {
                 if (this.label_docs.hasOwnProperty(label)) {
@@ -107,6 +110,7 @@ export class P0 {
             for (const author_key of doc["Keywords_Processed"]) {
                 if (!this.keyword_mapping.hasOwnProperty(author_key)) {
                     let mapping = this.store.getKeywordMapping(author_key).replace(",", "");
+
                     if (mapping.length > 0) {
                         this.keyword_mapping[author_key] = {
                             mapping: mapping,
@@ -124,8 +128,9 @@ export class P0 {
                         }
                     }
                     else {
+                        console.log(author_key)
                         this.keyword_mapping[author_key] = {
-                            mapping: "ERROR IN PREPROCESSING",
+                            mapping: "ERROR IN PREPROCEING",
                             label: {},
                             count: 1,
                             isActive: false,
@@ -336,7 +341,8 @@ export class P0 {
         let identifiers = {}
 
         for (const key of this.keyword_list) {
-            let mapping = key.mapping.toLowerCase();
+            let mapping = key.label.label;
+            // let mapping = key.mapping.toLowerCase();
             // let keyword = key.keyword.replace(" ", "SEP")
             let keyword = key.keyword
 
@@ -348,6 +354,22 @@ export class P0 {
                 identifiers[mapping] = keyword
             }
 
+        }
+
+        // Add label Terms to the tfidf corpus
+        for (const label of this.label_docs) {
+            let words = label.label.toLowerCase().split(/(?=[A-Z])/);
+            let mapping = label.label;
+
+            for (const keyword of words) {
+                if (identifiers.hasOwnProperty(mapping)) {
+
+                    identifiers[mapping] = identifiers[mapping] + " " + keyword
+                }
+                else {
+                    identifiers[mapping] = keyword
+                }
+            }
         }
 
         this.tfidf = new tfidf.Corpus(
@@ -576,21 +598,20 @@ export class P0 {
                 color: this.colorConverter(label["cooc_similarity"]),
                 value: label["cooc_similarity"]
             })
-            // temp.push({
-            //     type: "Edit Distance",
-            //     color: this.colorConverter(label["edit_distance_similarity"]),
-            //     value: label["edit_distance_similarity"]
-            // })
+            temp.push({
+                type: "Edit Distance",
+                color: this.colorConverter(label["edit_distance_similarity"]),
+                value: label["edit_distance_similarity"]
+            })
 
             label["similarities"] = temp
 
             label["total_similarity"] =
-                label["substring_similarity"] +
-                label["keyword_substring_similarity"] +
-                // label["edit_distance_similarity"] +
-                label["cooc_similarity"]
-
-            // if (label["total_similarity"] > 0) console.log(label.label, label["total_similarity"])
+                Math.max(
+                    label["substring_similarity"] +
+                    label["keyword_substring_similarity"] +
+                    label["edit_distance_similarity"] +
+                    label["cooc_similarity"], 0)
         }
 
         // Sort labels list
@@ -611,28 +632,42 @@ export class P0 {
                 let substring_dist = 0
                 let keyword_substring_dist = 0
                 let cooc_sim = 0
-                let edit_dist = 4
+                let edit_dist = 0
 
                 let keywords = keyword.keyword.toLowerCase().split(" ");
 
-                // Label Substring
+                let lkw = label.keywords.split(" ")
+                lkw.push(...label.label.toLowerCase().split(/(?=[A-Z])/));
+
+                let keyword_list = Array.from(new Set(lkw))
+
                 for (const keyword of keywords) {
+                    // Label Substring
                     if (label.label.toLowerCase().includes(keyword)) {
+                        substring_dist = substring_dist + this.tfidf_keywords[keyword]
+
+                        // if (this.tfidf_keywords[keyword] > 0.5) {
+                        //     substring_dist++;
+                        // }
+
                         // substring_dist++;
-                        substring_dist++;
                     }
-                }
 
-                // Keyword Substring
-                n_gram_loop:
-                for (let n_gram_size = Math.min(keywords.length - 1, 2); n_gram_size > 0; n_gram_size--) {
-                    for (let index = 0; index < n_gram_size; index++) {
-                        let n_gram = keywords.slice(index, index + n_gram_size + 1).join(" ")
+                    // Keyword Substring
+                    if (label.keywords.toLowerCase().includes(keyword)) {
+                        keyword_substring_dist = keyword_substring_dist + this.tfidf_keywords[keyword]
+                    }
 
-                        if (label.keywords.includes(n_gram)) {
-                            keyword_substring_dist = n_gram_size;
-                            // Stop after finding highest n_gram
-                            break n_gram_loop;
+                    // Edit dist
+                    for (const keyword of keywords) {
+                        if (keyword.length > 3) {
+                            for (const kw of keyword_list) {
+                                let dist = distances.string.levenshtein(keyword, kw)
+
+                                if (dist > 0 && dist < 2) {
+                                    edit_dist = edit_dist + this.tfidf_keywords[keyword]
+                                }
+                            }
                         }
                     }
                 }
@@ -642,44 +677,21 @@ export class P0 {
 
                 if (cooc_keywords) cooc_sim = cooc_keywords.length
 
-                // Edit dist
-                edit_loop:
-                for (const keyword of keywords) {
-                    if (label.top_words) {
-                        for (const top of label.top_words) {
-                            const dist = distances.string.jaroWinkler(keyword, top)
-
-                            // if (dist < 0.2) console.log(keyword, top)
-
-                            if (dist < edit_dist) edit_dist = dist
-
-                            // if (dist == 1) {
-                            //     edit_dist = 1;
-                            //     break edit_loop;
-                            // }
-
-                            // if (dist > 1 && dist < 4 && dist < edit_dist) {
-                            //     edit_dist = dist;
-                            // }
-                        }
-                    }
-                }
-
+                // Normalize all values
                 let substring_avg_dist = substring_dist / keywords.length;
-                sub_label_obj[label.label] = substring_avg_dist
+                sub_label_obj[label.label] = Math.min(substring_avg_dist * 2, 1)
 
-                // let edit_norm_sim = 1 - (edit_dist - 1) / 3
-                let edit_norm_sim = 1 - edit_dist
+                let substring_avg_dist_keyword = keyword_substring_dist / keywords.length;
+                sub_key_obj[label.label] = Math.min(substring_avg_dist_keyword * 1.5, 1)
+
+                let edit_norm_sim = edit_dist / keywords.length;
                 sub_edit_obj[label.label] = edit_norm_sim
 
                 let cooc_norm_sim = 0
-                if (cooc_sim >= 3) cooc_norm_sim = 1 + 0.01
-                else if (cooc_sim == 2) cooc_norm_sim = 0.66 + 0.01
-                else if (cooc_sim == 1) cooc_norm_sim = 0.33 + 0.01
+                if (cooc_sim >= 3) cooc_norm_sim = 1
+                else if (cooc_sim == 2) cooc_norm_sim = 0.66
+                else if (cooc_sim == 1) cooc_norm_sim = 0.33
                 sub_cooc_obj[label.label] = cooc_norm_sim
-
-                let substring_avg_dist_keyword = keyword_substring_dist / keywords.length;
-                sub_key_obj[label.label] = substring_avg_dist_keyword
             }
 
             // Set property in object
