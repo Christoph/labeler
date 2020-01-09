@@ -102,6 +102,7 @@
         <table>
           <thead>
             <tr>
+              <th></th>
               <th>Labels</th>
               <!-- <th>Count</th> -->
               <th>Similarity Measures</th>
@@ -113,16 +114,19 @@
               } | filter:searchLabelsTerm:filterLabelsFunc"
               css="cursor: pointer; background-color: ${label_object['isActive'] ? '#50c6f1' : None};"
               click.delegate="selectLabel(label_object)">
+              <td style="width: 30px;">
+                <md-checkbox checked.bind="label_object['isActive']" click.delegate="selectLabel(label_object)">
+              </td>
               <td style="word-break: break-all;">
                 <span style="display: inline-block;" show.bind="!label_object['isActive']">
                   ${label_object['label']}, ${label_object['n_docs']}<i class="fad fa-file-alt"></i>
                 </span>
                 <div class="row" show.bind="label_object['isActive']">
                   <div class="col m4">
-                    <span class="fa-stack fa-2x hover" click.delegate="applyLabel()" style="margin-top: 5px">
+                    <!-- <span class="fa-stack fa-2x hover" click.delegate="applyLabel()" style="margin-top: 5px">
                       <i class="fal fa-square fa-stack-2x"></i>
                       <i class="fad fa-layer-plus fa-stack-1x"></i>
-                    </span>
+                    </span> -->
                   </div>
                   <div class="col m8">
                     ${label_object['label']}, ${label_object['n_docs']}<i class="fad fa-file-alt"></i>
@@ -179,6 +183,7 @@
         <table show.bind="!searchCoocKeywordTerm">
           <thead>
             <tr>
+              <th></th>
               <th>Label</th>
               <th>Co-Occurring Keywords</th>
           </thead>
@@ -190,14 +195,17 @@
               filterName: 'label',
               filterValue: ''
             }">
+              <td>
+                <md-checkbox checked.bind="cooc['label_object']['isActive']">
+              </td>
               <td style="word-break: break-all"
                 css="background-color: ${cooc['label_object']['isActive'] ? '#50c6f1' : None};cursor: pointer;"
-                click.delegate="selectLabelName(cooc.label)">
-                <span class="fa-stack fa-2x hover" show.bind="cooc['label_object']['isActive'] "
+                click.delegate="selectLabelName(cooc.label)" click.delegate="selectLabel(cooc['label_object'])">
+                <!-- <span class="fa-stack fa-2x hover" show.bind="cooc['label_object']['isActive'] "
                   style="display: inline-block;">
                   <i class="fal fa-square fa-stack-2x"></i>
                   <i class="fad fa-layer-plus fa-stack-1x"></i>
-                </span>
+                </span> -->
                 <span style="display: inline-block;">
                   ${cooc.label}
                 </span>
