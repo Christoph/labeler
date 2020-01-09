@@ -543,11 +543,11 @@ export class P0 {
                 color: this.colorConverter(label["cooc_similarity"]),
                 value: label["cooc_similarity"]
             })
-            temp.push({
-                type: "Edit Distance",
-                color: this.colorConverter(label["edit_distance_similarity"]),
-                value: label["edit_distance_similarity"]
-            })
+            // temp.push({
+            //     type: "Edit Distance",
+            //     color: this.colorConverter(label["edit_distance_similarity"]),
+            //     value: label["edit_distance_similarity"]
+            // })
 
             label["similarities"] = temp
 

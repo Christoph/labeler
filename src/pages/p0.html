@@ -118,30 +118,27 @@
                 <md-checkbox checked.bind="label_object['isActive']" click.delegate="selectLabel(label_object)">
               </td>
               <td style="word-break: break-all;">
-                <span style="display: inline-block;" show.bind="!label_object['isActive']">
+                <span style="display: inline-block;">
                   ${label_object['label']}, ${label_object['n_docs']}<i class="fad fa-file-alt"></i>
                 </span>
-                <div class="row" show.bind="label_object['isActive']">
-                  <div class="col m4">
-                    <!-- <span class="fa-stack fa-2x hover" click.delegate="applyLabel()" style="margin-top: 5px">
-                      <i class="fal fa-square fa-stack-2x"></i>
-                      <i class="fad fa-layer-plus fa-stack-1x"></i>
-                    </span> -->
-                  </div>
-                  <div class="col m8">
-                    ${label_object['label']}, ${label_object['n_docs']}<i class="fad fa-file-alt"></i>
-                  </div>
-                </div>
               </td>
               <!-- <td>${label_object['n_docs']}</td> -->
               <td>
-                <span style="white-space: nowrap" repeat.for="sim of label_object.similarities | customSort: {
+                <div class="row">
+                  <div class="col m2">
+                    <small-bar percent=${label_object.total_similarity} orientation="vertical" xSize=15 ySize=60>
+                    </small-bar>
+                  </div>
+                  <div class="col m10">
+                    <span style="white-space: nowrap" repeat.for="sim of label_object.similarities | customSort: {
                   propertyName: 'count', direction: 'descending'
                 }">
-                  <i class="fad fa-circle" css="color: ${sim['color']}"></i>
-                  ${sim.type}
-                  <br>
-                </span>
+                      <i class="fad fa-circle" css="color: ${sim['color']}"></i>
+                      ${sim.type}
+                      <br>
+                    </span>
+                  </div>
+                </div>
               </td>
             </tr>
           </tbody>
