@@ -686,10 +686,18 @@ export class P0 {
                 let edit_norm_sim = edit_dist / keywords.length;
                 sub_edit_obj[label.label] = edit_norm_sim
 
-                let cooc_norm_sim = 0
-                if (cooc_sim >= 3) cooc_norm_sim = 1
-                else if (cooc_sim == 2) cooc_norm_sim = 0.66
-                else if (cooc_sim == 1) cooc_norm_sim = 0.33
+                let cooc_norm_sim
+                if (keyword.co_oc) {
+                    cooc_norm_sim = cooc_sim / keyword.co_oc.length
+                }
+                else {
+                    cooc_norm_sim = 0
+                }
+
+                // let cooc_norm_sim = 0
+                // if (cooc_sim >= 3) cooc_norm_sim = 1
+                // else if (cooc_sim == 2) cooc_norm_sim = 0.66
+                // else if (cooc_sim == 1) cooc_norm_sim = 0.33
                 sub_cooc_obj[label.label] = cooc_norm_sim
             }
 
