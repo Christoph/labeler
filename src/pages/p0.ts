@@ -607,11 +607,10 @@ export class P0 {
             label["similarities"] = temp
 
             label["total_similarity"] =
-                Math.max(
-                    label["substring_similarity"] +
-                    label["keyword_substring_similarity"] +
-                    label["edit_distance_similarity"] +
-                    label["cooc_similarity"], 0)
+                label["substring_similarity"] +
+                label["keyword_substring_similarity"] +
+                label["edit_distance_similarity"] +
+                label["cooc_similarity"]
         }
 
         // Sort labels list
