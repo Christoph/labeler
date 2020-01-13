@@ -115,14 +115,14 @@
           <tbody>
             <tr repeat.for="label_object of label_docs | customSort: { propertyName: label_sort_property,
                 direction: 'descending',
-              } | filter:searchLabelsTerm:filterLabelsFunc"
-              css="cursor: pointer; background-color: ${label_object['isActive'] ? '#50c6f1' : None};"
-              click.delegate="selectLabel(label_object)">
+              } | filter:searchLabelsTerm:filterLabelsFunc">
               <td class="table_cell" style="width: 30px">
                 <md-checkbox checked.bind="label_object['isActive']" click.delegate="selectLabel(label_object)">
               </td>
-              <td class="table_cell">
-                <span style="display: inline-block;">
+              <td class="table_cell"
+                css="cursor: pointer; background-color: ${label_object['isActive'] ? '#50c6f1' : None};"
+                click.delegate="selectLabel(label_object)">
+                <span>
                   ${label_object['label']}, ${label_object['n_docs']}<i class="fad fa-file-alt"></i>
                 </span>
               </td>
