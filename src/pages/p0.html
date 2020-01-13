@@ -106,10 +106,10 @@
         <table>
           <thead>
             <tr>
-              <th></th>
-              <th>Label</th>
+              <th class="table_head"></th>
+              <th class="table_head">Label</th>
               <!-- <th>Count</th> -->
-              <th>Similarity Measures</th>
+              <th class="table_head">Similarity Measures</th>
             </tr>
           </thead>
           <tbody>
@@ -118,29 +118,51 @@
               } | filter:searchLabelsTerm:filterLabelsFunc"
               css="cursor: pointer; background-color: ${label_object['isActive'] ? '#50c6f1' : None};"
               click.delegate="selectLabel(label_object)">
-              <td style="width: 30px;">
+              <td class="table_cell" style="width: 30px">
                 <md-checkbox checked.bind="label_object['isActive']" click.delegate="selectLabel(label_object)">
               </td>
-              <td>
+              <td class="table_cell">
                 <span style="display: inline-block;">
                   ${label_object['label']}, ${label_object['n_docs']}<i class="fad fa-file-alt"></i>
                 </span>
               </td>
               <!-- <td>${label_object['n_docs']}</td> -->
-              <td>
+              <td class="table_cell">
                 <div class="row" style="margin: 0">
-                  <div class="col m2">
+                  <div class="col m2" style="margin-top: 70px">
                     <small-bar percent=${label_object.total_similarity} orientation="vertical" xSize=15 ySize=80>
                     </small-bar>
                   </div>
                   <div class="col m10">
-                    <span style="white-space: nowrap" repeat.for="sim of label_object.similarities | customSort: {
+                    <table>
+                      <thead>
+                        <tr>
+                          <th class="table_head">Feature</th>
+                          <th class="table_head">Explanation</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr repeat.for="sim of label_object.similarities | customSort: {
+                          propertyName: 'count', direction: 'descending'
+                        }">
+                          <td class="table_cell">
+                            ${sim.type}
+                          </td>
+                          <td class="table_cell">
+                            <i>
+                              ${sim.explanation}
+                            </i>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <!-- <span style="white-space: nowrap" repeat.for="sim of label_object.similarities | customSort: {
                   propertyName: 'count', direction: 'descending'
                 }">
                       <i class="fad fa-circle" css="color: ${sim['color']}"></i>
-                      ${sim.type}
+                      ${sim.type} | ${sim.explanation}
                       <br>
-                    </span>
+                    </span> -->
                   </div>
                 </div>
               </td>
@@ -157,25 +179,25 @@
         <table show.bind="searchCoocKeywordTerm">
           <thead>
             <tr>
-              <th>
+              <th class="table_head">
                 Keyword
               </th>
-              <th>#</th>
-              <th>Label</th>
+              <th class="table_head">#</th>
+              <th class="table_head">Label</th>
             </tr>
           </thead>
           <tbody>
             <tr repeat.for="keyword of keyword_list | customSort: { propertyName: 'mapping', direction: 'descending' } |
               filter:searchCoocKeywordTerm:filterKeywordsFunc" click.delegate="selectAddKeyword(keyword)"
               css="cursor: pointer; background-color: ${keyword.isActive ? '#50c6f1' : None};">
-              <td>
+              <td class="table_cell">
                 <md-checkbox show.bind="!keyword['isDone']" model.bind="keyword"
                   checked.bind="selected_additional_keywords">Add
                 </md-checkbox>
                 ${keyword["keyword"]}
               </td>
-              <td>${keyword["count"]}</td>
-              <td>
+              <td class="table_cell">${keyword["count"]}</td>
+              <td class="table_cell">
                 ${keyword["mapping"]}
               </td>
             </tr>
@@ -184,9 +206,9 @@
         <table show.bind="!searchCoocKeywordTerm">
           <thead>
             <tr>
-              <th></th>
-              <th>Label</th>
-              <th>Co-Occurring Keywords</th>
+              <th class="table_head"></th>
+              <th class="table_head">Label</th>
+              <th class="table_head">Co-Occurring Keywords</th>
           </thead>
           <tbody>
             <tr repeat.for="cooc of selected_similar_keywords
@@ -196,10 +218,11 @@
               filterName: 'label',
               filterValue: ''
             }">
-              <td>
+              <td class="table_cell">
                 <md-checkbox disabled.bind="!cooc.label" checked.bind="cooc['label_object']['isActive']">
               </td>
-              <td css="background-color: ${cooc['label_object']['isActive'] ? '#50c6f1' : None};cursor: pointer;"
+              <td class="table_cell"
+                css="background-color: ${cooc['label_object']['isActive'] ? '#50c6f1' : None};cursor: pointer;"
                 click.delegate="selectLabelName(cooc.label)" click.delegate="selectLabel(cooc['label_object'])">
                 <!-- <span class="fa-stack fa-2x hover" show.bind="cooc['label_object']['isActive'] "
                   style="display: inline-block;">
@@ -210,7 +233,7 @@
                   ${cooc.label}
                 </span>
               </td>
-              <td>
+              <td class="table_cell">
                 <div style="white-space: nowrap" repeat.for="keyword of cooc.keywords | customSort: {
                   propertyName: 'count', direction: 'descending'
                 }">
@@ -237,14 +260,14 @@
         <table>
           <thead>
             <tr>
-              <th>Document</th>
+              <th class="table_head">Document</th>
             </tr>
           </thead>
           <tbody>
             <tr repeat.for="sim of selected_similarities | customSort: { propertyName: sim_property, direction: sort_property }
               | filter:searchDocumentTerm:filterDocumentsFunc" click.delegate="selectDocument(sim.document)"
               css="cursor: pointer;" class="${sim.hasKeywords ? 'none': 'deselected'}">
-              <td>
+              <td class="table_cell">
                 <strong>
                   ${sim.document["Title"]}
                 </strong>

@@ -584,9 +584,13 @@ export class P0 {
         // Only compute if not already computed
         for (let label of labels) {
             let substring_dist = 0
+            let substring_ex = ""
             let keyword_substring_dist = 0
+            let keyword_ex = ""
             let cooc_sim = 0
+            let cooc_ex = ""
             let edit_dist = 0
+            let edit_ex = ""
 
             let keywords = keyword.keyword.toLowerCase().split(" ");
 
@@ -599,17 +603,13 @@ export class P0 {
                 // Label Substring
                 if (label.label.toLowerCase().includes(keyword)) {
                     substring_dist = substring_dist + this.tfidf_keywords[keyword]
-
-                    // if (this.tfidf_keywords[keyword] > 0.5) {
-                    //     substring_dist++;
-                    // }
-
-                    // substring_dist++;
+                    substring_ex = substring_ex + keyword + " "
                 }
 
                 // Keyword Substring
                 if (label.keywords.toLowerCase().includes(keyword)) {
                     keyword_substring_dist = keyword_substring_dist + this.tfidf_keywords[keyword]
+                    keyword_ex = keyword_ex + keyword + " "
                 }
 
                 // Edit dist
@@ -620,6 +620,7 @@ export class P0 {
 
                             if (dist > 0 && dist < 2) {
                                 edit_dist = edit_dist + this.tfidf_keywords[keyword]
+                                edit_ex = edit_ex + keyword + " "
                             }
                         }
                     }
@@ -628,7 +629,10 @@ export class P0 {
 
             // Cooc dist
             let cooc_keywords = keyword.co_oc.filter(x => x.keyword.label == label)
-            if (cooc_keywords) cooc_sim = cooc_keywords.length
+            if (cooc_keywords) {
+                cooc_sim = cooc_keywords.length
+                cooc_ex = cooc_keywords.map(x => x.keyword.keyword)
+            }
 
             // Normalize all values
             let substring_avg_dist = substring_dist / keywords.length;
@@ -652,22 +656,26 @@ export class P0 {
             temp.push({
                 type: "Label Substring",
                 color: this.colorConverter(label["substring_similarity"]),
-                value: label["substring_similarity"]
+                value: label["substring_similarity"],
+                explanation: substring_ex
             })
             temp.push({
                 type: "Keyword Substring",
                 color: this.colorConverter(label["keyword_substring_similarity"]),
-                value: label["keyword_substring_similarity"]
+                value: label["keyword_substring_similarity"],
+                explanation: keyword_ex
             })
             temp.push({
                 type: "Cooccurrent Keywords",
                 color: this.colorConverter(label["cooc_similarity"]),
-                value: label["cooc_similarity"]
+                value: label["cooc_similarity"],
+                explanation: cooc_ex
             })
             temp.push({
                 type: "Edit Distance",
                 color: this.colorConverter(label["edit_distance_similarity"]),
-                value: label["edit_distance_similarity"]
+                value: label["edit_distance_similarity"],
+                explanation: edit_ex
             })
 
             label["similarities"] = temp
