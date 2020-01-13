@@ -80,6 +80,7 @@
       <span style="font-size: smaller;">
         Additional Selected Keywords:
       </span>
+      <i if.bind="!selected_additional_keywords.length"> Select Co-Occurring Keywords </i>
       <span repeat.for="keyword of selected_additional_keywords">
         <strong>${keyword.keyword}</strong>
         <i class="fad fa-trash-alt" click.delegate="removeAddKeyword(keyword)" style="cursor: pointer"></i>
@@ -88,9 +89,12 @@
       <br>
       Selected Label:
       <span style="font-size: xx-large;">
-        <strong>${selected_label.label}</strong></span>
-      , ${selected_label.n_docs}
-      <i class="fad fa-file-alt"></i>
+        <i if.bind="!selected_label"> Select a Label </i>
+        <i>${selected_label.label}</i>
+      </span>
+      <span if.bind="selected_label">, </span>
+      ${selected_label.n_docs}
+      <i if.bind="selected_label" class="fad fa-file-alt"></i>
     </div>
   </div>
   <div class="row">
