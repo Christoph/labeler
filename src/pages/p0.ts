@@ -328,12 +328,18 @@ export class P0 {
             }
         }
 
-        // Compute all similarities for all new keywords
+        // Properly format label string
+        for (const label of this.label_docs) {
+            label.label = label.label.split(/(?=[A-Z])/).join(" ")
+        }
+
+        // Properly format label string in keywords
         for (const keyword of this.keyword_list) {
-            if (!keyword["isDone"]) {
-                // Populate global variables
-                // this.updateSelectedSimilarities(keyword);
-                // this.computeLabelSimilarities(this.label_docs, keyword)
+            if(keyword.label.label) {
+                keyword.mapping = keyword.label.label
+            }
+            else {
+                keyword.mapping = ""
             }
         }
 
@@ -358,7 +364,7 @@ export class P0 {
 
         // Add label Terms to the tfidf corpus
         for (const label of this.label_docs) {
-            let words = label.label.toLowerCase().split(/(?=[A-Z])/);
+            let words = label.label.toLowerCase().split(" ")
             let mapping = label.label;
 
             for (const keyword of words) {
@@ -520,7 +526,7 @@ export class P0 {
             }
 
             for (const [key, value] of Object.entries(groups)) {
-                let norm_key = key.replace(/[^A-Za-z0-9]/g, "")
+                let norm_key = key//.replace(/[^A-Za-z0-9]/g, "")
                 let label_obj = this.label_docs.find(x => x.label === norm_key)
                 this.selected_similar_keywords.push({
                     label: norm_key,
