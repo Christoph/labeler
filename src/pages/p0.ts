@@ -335,7 +335,7 @@ export class P0 {
 
         // Properly format label string in keywords
         for (const keyword of this.keyword_list) {
-            if(keyword.label.label) {
+            if (keyword.label.label) {
                 keyword.mapping = keyword.label.label
             }
             else {
@@ -481,7 +481,7 @@ export class P0 {
 
         // Update Labels List
         this.computeLabelSimilarities(this.label_docs, this.selected_keyword);
-        this.populateLabels(this.label_docs, this.selected_keyword);
+        // this.populateLabels(this.label_docs, this.selected_keyword);
 
         // Update graph
         // this.createGraphData();
@@ -580,13 +580,73 @@ export class P0 {
         else return "#A6A6A6"
     }
 
-    populateLabels(labels, keyword) {
-        // console.log("NEW", keyword)
-        for (const label of labels) {
-            label["substring_similarity"] = keyword["sub_label"][label.label]
-            label["keyword_substring_similarity"] = keyword["sub_key"][label.label]
-            label["edit_distance_similarity"] = keyword["sub_edit"][label.label]
-            label["cooc_similarity"] = keyword["sub_cooc"][label.label]
+    computeLabelSimilarities(labels, keyword) {
+        // Only compute if not already computed
+        for (let label of labels) {
+            let substring_dist = 0
+            let keyword_substring_dist = 0
+            let cooc_sim = 0
+            let edit_dist = 0
+
+            let keywords = keyword.keyword.toLowerCase().split(" ");
+
+            let lkw = label.keywords.split(" ")
+            lkw.push(...label.label.toLowerCase().split(/(?=[A-Z])/));
+
+            let keyword_list = Array.from(new Set(lkw))
+
+            for (const keyword of keywords) {
+                // Label Substring
+                if (label.label.toLowerCase().includes(keyword)) {
+                    substring_dist = substring_dist + this.tfidf_keywords[keyword]
+
+                    // if (this.tfidf_keywords[keyword] > 0.5) {
+                    //     substring_dist++;
+                    // }
+
+                    // substring_dist++;
+                }
+
+                // Keyword Substring
+                if (label.keywords.toLowerCase().includes(keyword)) {
+                    keyword_substring_dist = keyword_substring_dist + this.tfidf_keywords[keyword]
+                }
+
+                // Edit dist
+                for (const keyword of keywords) {
+                    if (keyword.length > 3) {
+                        for (const kw of keyword_list) {
+                            let dist = distances.string.levenshtein(keyword, kw)
+
+                            if (dist > 0 && dist < 2) {
+                                edit_dist = edit_dist + this.tfidf_keywords[keyword]
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Cooc dist
+            let cooc_keywords = keyword.co_oc.filter(x => x.keyword.label == label)
+            if (cooc_keywords) cooc_sim = cooc_keywords.length
+
+            // Normalize all values
+            let substring_avg_dist = substring_dist / keywords.length;
+            let substring_avg_dist_keyword = keyword_substring_dist / keywords.length;
+            let edit_norm_sim = edit_dist / keywords.length;
+            let cooc_norm_sim
+            if (keyword.co_oc) {
+                cooc_norm_sim = cooc_sim / keyword.co_oc.length
+            }
+            else {
+                cooc_norm_sim = 0
+            }
+
+            // Set all values
+            label["substring_similarity"] = Math.min(substring_avg_dist * 2, 1)
+            label["keyword_substring_similarity"] = Math.min(substring_avg_dist_keyword * 1.5, 1)
+            label["edit_distance_similarity"] = edit_norm_sim
+            label["cooc_similarity"] = cooc_norm_sim
 
             let temp = []
             temp.push({
@@ -620,99 +680,8 @@ export class P0 {
         }
 
         // Sort labels list
-        // this.label_sort_value = keyword["highest_value"]
         this.label_sort_property = "";
         this.label_sort_property = "total_similarity"
-    }
-
-    computeLabelSimilarities(labels, keyword) {
-        // Only compute if not already computed
-        if (!keyword["sub_label"]) {
-            let sub_label_obj = {}
-            let sub_key_obj = {}
-            let sub_edit_obj = {}
-            let sub_cooc_obj = {}
-
-            for (let label of labels) {
-                let substring_dist = 0
-                let keyword_substring_dist = 0
-                let cooc_sim = 0
-                let edit_dist = 0
-
-                let keywords = keyword.keyword.toLowerCase().split(" ");
-
-                let lkw = label.keywords.split(" ")
-                lkw.push(...label.label.toLowerCase().split(/(?=[A-Z])/));
-
-                let keyword_list = Array.from(new Set(lkw))
-
-                for (const keyword of keywords) {
-                    // Label Substring
-                    if (label.label.toLowerCase().includes(keyword)) {
-                        substring_dist = substring_dist + this.tfidf_keywords[keyword]
-
-                        // if (this.tfidf_keywords[keyword] > 0.5) {
-                        //     substring_dist++;
-                        // }
-
-                        // substring_dist++;
-                    }
-
-                    // Keyword Substring
-                    if (label.keywords.toLowerCase().includes(keyword)) {
-                        keyword_substring_dist = keyword_substring_dist + this.tfidf_keywords[keyword]
-                    }
-
-                    // Edit dist
-                    for (const keyword of keywords) {
-                        if (keyword.length > 3) {
-                            for (const kw of keyword_list) {
-                                let dist = distances.string.levenshtein(keyword, kw)
-
-                                if (dist > 0 && dist < 2) {
-                                    edit_dist = edit_dist + this.tfidf_keywords[keyword]
-                                }
-                            }
-                        }
-                    }
-                }
-
-                // Cooc dist
-                let cooc_keywords = keyword.co_oc.filter(x => x.keyword.label == label)
-
-                if (cooc_keywords) cooc_sim = cooc_keywords.length
-
-                // Normalize all values
-                let substring_avg_dist = substring_dist / keywords.length;
-                sub_label_obj[label.label] = Math.min(substring_avg_dist * 2, 1)
-
-                let substring_avg_dist_keyword = keyword_substring_dist / keywords.length;
-                sub_key_obj[label.label] = Math.min(substring_avg_dist_keyword * 1.5, 1)
-
-                let edit_norm_sim = edit_dist / keywords.length;
-                sub_edit_obj[label.label] = edit_norm_sim
-
-                let cooc_norm_sim
-                if (keyword.co_oc) {
-                    cooc_norm_sim = cooc_sim / keyword.co_oc.length
-                }
-                else {
-                    cooc_norm_sim = 0
-                }
-
-                // let cooc_norm_sim = 0
-                // if (cooc_sim >= 3) cooc_norm_sim = 1
-                // else if (cooc_sim == 2) cooc_norm_sim = 0.66
-                // else if (cooc_sim == 1) cooc_norm_sim = 0.33
-                sub_cooc_obj[label.label] = cooc_norm_sim
-            }
-
-            // Set property in object
-            keyword["sub_label"] = sub_label_obj
-            keyword["sub_key"] = sub_key_obj
-            keyword["sub_edit"] = sub_edit_obj
-            keyword["sub_cooc"] = sub_cooc_obj
-        }
     }
 
     // Sort Function
