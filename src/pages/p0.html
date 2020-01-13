@@ -34,7 +34,7 @@
       </table>
     </div>
   </md-sidenav> -->
-  <div class="row" style="height: 3vh">
+  <div class="row" style="height: 3vh; margin-bottom: 0">
 
     <div class="col m4">
       <!-- <button md-sidenav-collapse="ref.bind: sideNav" md-button md-waves>Show Keywords</button> -->
@@ -59,12 +59,12 @@
     </div>
   </div>
   <br>
-  <div class="row">
-    <div class="col m2" style="height: 15vh">
-      <button md-button style="height: 50%; width: 100%;" click.delegate="skipKeyword()">
+  <div class="row" style="margin-bottom: 0">
+    <div class="col m2">
+      <button md-button style="height: 50px; width: 100%;" click.delegate="skipKeyword()">
         <i class="fad fa-forward"></i>
         Skip
-        <button md-button style="height: 50%; width: 100%;" click.delegate="applyLabel()"
+        <button md-button style="height: 70px; width: 100%;" click.delegate="applyLabel()"
           disabled.bind="!selected_label">
           <i class="fad fa-layer-plus"></i>
           Apply
