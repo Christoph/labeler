@@ -197,7 +197,7 @@
               filterValue: ''
             }">
               <td>
-                <md-checkbox checked.bind="cooc['label_object']['isActive']">
+                <md-checkbox disabled.bind="!cooc.label" checked.bind="cooc['label_object']['isActive']">
               </td>
               <td style="word-break: break-all"
                 css="background-color: ${cooc['label_object']['isActive'] ? '#50c6f1' : None};cursor: pointer;"
