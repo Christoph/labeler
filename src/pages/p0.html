@@ -121,7 +121,7 @@
               <td style="width: 30px;">
                 <md-checkbox checked.bind="label_object['isActive']" click.delegate="selectLabel(label_object)">
               </td>
-              <td style="word-break: break-all;">
+              <td>
                 <span style="display: inline-block;">
                   ${label_object['label']}, ${label_object['n_docs']}<i class="fad fa-file-alt"></i>
                 </span>
@@ -175,7 +175,7 @@
                 ${keyword["keyword"]}
               </td>
               <td>${keyword["count"]}</td>
-              <td style="word-break: break-all;">
+              <td>
                 ${keyword["mapping"]}
               </td>
             </tr>
@@ -199,8 +199,7 @@
               <td>
                 <md-checkbox disabled.bind="!cooc.label" checked.bind="cooc['label_object']['isActive']">
               </td>
-              <td style="word-break: break-all"
-                css="background-color: ${cooc['label_object']['isActive'] ? '#50c6f1' : None};cursor: pointer;"
+              <td css="background-color: ${cooc['label_object']['isActive'] ? '#50c6f1' : None};cursor: pointer;"
                 click.delegate="selectLabelName(cooc.label)" click.delegate="selectLabel(cooc['label_object'])">
                 <!-- <span class="fa-stack fa-2x hover" show.bind="cooc['label_object']['isActive'] "
                   style="display: inline-block;">
