@@ -580,17 +580,25 @@ export class P0 {
         else return "#A6A6A6"
     }
 
+    colorConverterExplanation(num: number) {
+        let color = "none"
+
+        if (num > 0.5) return "green"
+        else if (num > 0.2) return "orange"
+        else return "#A6A6A6"
+    }
+
     computeLabelSimilarities(labels, keyword) {
         // Only compute if not already computed
         for (let label of labels) {
             let substring_dist = 0
-            let substring_ex = ""
+            let substring_ex = []
             let keyword_substring_dist = 0
-            let keyword_ex = ""
+            let keyword_ex = []
             let cooc_sim = 0
-            let cooc_ex = ""
+            let cooc_ex = []
             let edit_dist = 0
-            let edit_ex = ""
+            let edit_ex = []
 
             let keywords = keyword.keyword.toLowerCase().split(" ");
 
@@ -603,13 +611,21 @@ export class P0 {
                 // Label Substring
                 if (label.label.toLowerCase().includes(keyword)) {
                     substring_dist = substring_dist + this.tfidf_keywords[keyword]
-                    substring_ex = substring_ex + keyword + " "
+                    substring_ex.push({
+                        keyword: keyword,
+                        strength: this.tfidf_keywords[keyword],
+                        color: this.colorConverterExplanation(this.tfidf_keywords[keyword])
+                    })
                 }
 
                 // Keyword Substring
                 if (label.keywords.toLowerCase().includes(keyword)) {
                     keyword_substring_dist = keyword_substring_dist + this.tfidf_keywords[keyword]
-                    keyword_ex = keyword_ex + keyword + " "
+                    keyword_ex.push({
+                        keyword: keyword,
+                        strength: this.tfidf_keywords[keyword],
+                        color: this.colorConverterExplanation(this.tfidf_keywords[keyword])
+                    })
                 }
 
                 // Edit dist
@@ -620,7 +636,11 @@ export class P0 {
 
                             if (dist > 0 && dist < 2) {
                                 edit_dist = edit_dist + this.tfidf_keywords[keyword]
-                                edit_ex = edit_ex + keyword + " "
+                                edit_ex.push({
+                                    keyword: keyword,
+                                    strength: this.tfidf_keywords[keyword],
+                                    color: this.colorConverterExplanation(this.tfidf_keywords[keyword])
+                                })
                             }
                         }
                     }
@@ -631,7 +651,14 @@ export class P0 {
             let cooc_keywords = keyword.co_oc.filter(x => x.keyword.label == label)
             if (cooc_keywords) {
                 cooc_sim = cooc_keywords.length
-                cooc_ex = cooc_keywords.map(x => x.keyword.keyword)
+
+                for (const co of cooc_keywords) {
+                    cooc_ex.push({
+                        keyword: co.keyword.keyword,
+                        strength: 1 / keyword.co_oc.length,
+                        color: this.colorConverterExplanation(1 / keyword.co_oc.length)
+                    })
+                }
             }
 
             // Normalize all values

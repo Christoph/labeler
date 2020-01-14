@@ -120,10 +120,10 @@
                 <md-checkbox checked.bind="label_object['isActive']" click.delegate="selectLabel(label_object)">
               </td>
               <td class="table_cell"
-                css="cursor: pointer; background-color: ${label_object['isActive'] ? '#50c6f1' : None};"
+                css="cursor: pointer; background-color: ${label_object['isActive'] ? '#50c6f1' : None}; width: 30%"
                 click.delegate="selectLabel(label_object)">
                 <span>
-                  ${label_object['label']}, ${label_object['n_docs']}<i class="fad fa-file-alt"></i>
+                  ${label_object['label']}, ${label_object['n_docs']} <i class="fad fa-file-alt"></i>
                 </span>
               </td>
               <!-- <td>${label_object['n_docs']}</td> -->
@@ -152,9 +152,10 @@
                             </span>
                           </td>
                           <td class="table_cell">
-                            <i>
-                              ${sim.explanation}
-                            </i>
+                            <span repeat.for="ex of sim.explanation" style="text-align: left;">
+                              <i css="color: ${ex.color}">
+                                ${ex.keyword},
+                              </i>
                           </td>
                         </tr>
                       </tbody>
