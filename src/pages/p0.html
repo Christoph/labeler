@@ -71,13 +71,15 @@
         </button>
     </div>
     <div class="col m10">
-      Active Keyword:
+      <strong>
+        Active Keyword:
+      </strong>
       <span style="font-size: xx-large;">
         <strong>${selected_keyword.keyword}</strong></span>
       , ${selected_keyword.count}
       <i class="fad fa-file-alt"></i>
       <br>
-      <span style="font-size: smaller;">
+      <span style="font-size: smaller; margin-left: 20px">
         Additional Selected Keywords:
       </span>
       <i if.bind="!selected_additional_keywords.length"> Select Co-Occurring Keywords </i>
@@ -87,9 +89,11 @@
         <span>, </span>
       </span>
       <br>
-      Selected Label:
+      <strong>
+        Selected Label:
+      </strong>
       <span style="font-size: xx-large;">
-        <i if.bind="!selected_label"> Select a Label </i>
+        <i if.bind="!selected_label"> Select a Label Below </i>
         <i>${selected_label.label}</i>
       </span>
       <span if.bind="selected_label">, </span>
@@ -130,7 +134,13 @@
               <td class="table_cell">
                 <div class="row" style="margin: 0">
                   <div class="col m2" style="margin-top: 20px">
-                    <small-bar percent=${label_object.total_similarity} orientation="vertical" xSize=15 ySize=80>
+                    <button show.bind="label_object['isActive']" md-button style="height: 50%; top: 25%; width: 70%;"
+                      click.delegate="applyLabel()">
+                      <i class="fad fa-layer-plus"></i>
+                      Apply
+                    </button>
+                    <small-bar style="float: right" percent=${label_object.total_similarity} orientation="vertical"
+                      xSize=15 ySize=80>
                     </small-bar>
                   </div>
                   <div class="col m10">
