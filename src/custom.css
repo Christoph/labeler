@@ -99,3 +99,8 @@ md-collection-selector>div>div {
   padding: 0;
   margin: 0 0 10px 0
 }
+
+md-checkbox>label>span {
+  padding-left: 20px !important;
+  display: inline !important;
+}

@@ -72,21 +72,23 @@
     </div>
     <div class="col m10">
       <span style="font-size: xx-large;">
-        Active Keyword: <strong>${selected_keyword.keyword}</strong></span>
+        active keyword: <strong>${selected_keyword.keyword}</strong></span>
       <!-- , ${selected_keyword.count} <i class="fad fa-file-alt"></i> -->
       <br>
       <span style="font-size: smaller; margin-left: 20px">
-        Additional Selected Keywords:
+        possible similar keywords:
       </span>
-      <i if.bind="!selected_additional_keywords.length"> Select Co-Occurring Keywords </i>
-      <span repeat.for="keyword of selected_additional_keywords">
-        <strong>${keyword.keyword}</strong>
-        <i class="fad fa-trash-alt" click.delegate="removeAddKeyword(keyword)" style="cursor: pointer"></i>
+      <!-- <i if.bind="!selected_additional_keywords.length"> Select Co-Occurring Keywords </i> -->
+      <span repeat.for="word of s_words" style="font-size: smaller">
+        <md-checkbox class="inline_checkbox" model.bind="word.keyword" checked.bind="selected_additional_keywords">
+        </md-checkbox>
+        ${word.keyword.keyword}
+        <!-- <i class="fad fa-trash-alt" click.delegate="removeAddKeyword(keyword)" style="cursor: pointer"></i> -->
         <span>, </span>
       </span>
       <br>
       <span style="font-size: xx-large;">
-        Selected Label:
+        selected label:
         <strong if.bind="!selected_label"> Select a Label Below </strong>
         <strong>${selected_label.label}</strong>
       </span>
@@ -247,7 +249,7 @@
                   propertyName: 'count', direction: 'descending'
                 }">
                     <md-checkbox show.bind="!keyword['isDone']" model.bind="keyword"
-                      checked.bind="selected_additional_keywords" style="width: 19px">Add</md-checkbox>
+                      checked.bind="selected_additional_keywords" style="width: 19px"></md-checkbox>
                     <!-- <span md-badge>${keyword.count}</span> -->
                     <span style="cursor: pointer;" click.delegate="selectAddKeyword(keyword)">
                       ${keyword.keyword}

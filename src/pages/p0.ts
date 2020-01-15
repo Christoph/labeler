@@ -468,6 +468,7 @@ export class P0 {
         if (index) this.selectLabel(this.label_docs[index])
     }
 
+    public s_words = []
     async selectKeyword(key) {
         // Set active keyword
         if (this.selected_keyword) this.selected_keyword.isActive = false;
@@ -485,6 +486,7 @@ export class P0 {
 
         // Update graph
         // this.createGraphData();
+        this.s_words = key.co_oc.filter(x => !x.keyword.mapping)
     }
 
     updateSelectedSimilarities(keyword) {
