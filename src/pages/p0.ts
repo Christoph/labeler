@@ -59,6 +59,7 @@ export class P0 {
 
     // Time
     public time = 0;
+    public keyword_time = 0;
     public timerActive = false;
     public timer;
 
@@ -166,7 +167,8 @@ export class P0 {
                             sub_label: 0,
                             sub_key: 0,
                             sims: [],
-                            co_oc: []
+                            co_oc: [],
+                            source: "db"
                         }
                     }
                     else {
@@ -183,7 +185,8 @@ export class P0 {
                             sub_label: 0,
                             sub_key: 0,
                             sims: [],
-                            co_oc: []
+                            co_oc: [],
+                            source: "db"
                         }
                     }
                 } else {
@@ -261,7 +264,8 @@ export class P0 {
                         sub_label: 0,
                         sub_key: 0,
                         sims: [],
-                        co_oc: []
+                        co_oc: [],
+                        source: "new"
                     }
 
                     if (mapping.length > 0) {
@@ -809,6 +813,9 @@ export class P0 {
         );
         this.keyword_list.push(this.selected_keyword)
 
+        // Reset timing
+        this.keyword_time = 0
+
         // Select next element
         await this.selectKeyword(this.keyword_list.filter(x => !x.isDone)[0])
         this.selectLabel(this.label_docs[0])
@@ -824,6 +831,9 @@ export class P0 {
         this.last_selected_keyword.mapping = ""
         this.selected_keyword.label = {};
         this.selected_keyword.isDone = false;
+
+        // Reset timing
+        this.keyword_time = 0
 
         // Reset additional keyword
         if (this.last_selected_additional_keywords) {
@@ -865,6 +875,10 @@ export class P0 {
             this.selected_additional_keywords = [];
         }
 
+        // Handle timing
+        this.selected_keyword["time"] = this.keyword_time
+        this.keyword_time = 0
+
         // Update keyword list view
         // this.finishedKeywords = !this.finishedKeywords;
         // this.finishedKeywords = !this.finishedKeywords;
@@ -893,6 +907,11 @@ export class P0 {
         this['labelsList'].scrollTop = 0;
     }
 
+    download() {
+        this.downloadKeywords();
+        this.downloadData();
+    }
+
     downloadData() {
         let rows = [
             ["title", "keywords", "authors", "doi", "labels"]
@@ -905,11 +924,11 @@ export class P0 {
             if (doc["Keywords"]) keywords = doc["Keywords"].replace(/,/g, ";")
 
             rows.push([
-                doc["Title"].replace(/,/g, ";"),
-                keywords,
-                doc["Authors"].replace(/,/g, ";"),
-                doc["DOI"],
-                labels
+                "\"" + doc["Title"].replace(/,/g, ";") + "\"",
+                "\"" + keywords + "\"",
+                "\"" + doc["Authors"].replace(/,/g, ";") + "\"",
+                "\"" + doc["DOI"] + "\"",
+                "\"" + labels + "\""
             ])
         }
 
@@ -922,6 +941,34 @@ export class P0 {
         var link = document.createElement("a");
         link.setAttribute("href", encodedUri);
         link.setAttribute("download", "labeled_data.csv");
+        document.body.appendChild(link);
+
+        link.click();
+    }
+
+    downloadKeywords() {
+        let rows = [
+            ["keyword", "label", "time"]
+        ];
+
+        for (const keyword of this.keyword_list.filter(x => x["source"] == "new")) {
+
+            rows.push([
+                "\"" + keyword.keyword + "\"",
+                "\"" + keyword.mapping + "\"",
+                keyword.time
+            ])
+        }
+
+        let csvContent = "data:text/csv;charset=utf-8,"
+            + rows.map(e => e.join(",")).join("\n");
+
+        // var encodedUri = encodeURI(csvContent);
+        // window.open(encodedUri);
+        var encodedUri = encodeURI(csvContent);
+        var link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "keyword_data.csv");
         document.body.appendChild(link);
 
         link.click();
@@ -984,12 +1031,12 @@ export class P0 {
 
     startTimer() {
         if (!this.timerActive) {
-            let seconds = 0;
             this.timerActive = true;
 
             // Call every second
             this.timer = setInterval(x => {
                 this.time++;
+                this.keyword_time++;
             }, 1000)
         }
     }
@@ -999,5 +1046,6 @@ export class P0 {
         clearInterval(this.timer);
         this.timerActive = false;
         this.time = 0;
+        this.keyword_time = 0;
     }
 }

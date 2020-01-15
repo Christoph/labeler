@@ -35,7 +35,6 @@
     </div>
   </md-sidenav> -->
   <div class="row" style="height: 3vh; margin-bottom: 0">
-
     <div class="col m4">
       <!-- <button md-sidenav-collapse="ref.bind: sideNav" md-button md-waves>Show Keywords</button> -->
       <button class="bColor" md-button style="height: 35px; width: 50px;" click.delegate="startTimer()"
@@ -46,7 +45,10 @@
         disabled.bind="!timerActive">
         <i class="fas fa-stop"></i>
       </button>
-      Total Seconds: ${time | timeFormat}
+      <span>
+        Time: ${time | timeFormat}
+        Keyword: ${keyword_time | timeFormat}
+      </span>
     </div>
     <div class="col m4" style="text-align: center;">
       <span style="font-size: xx-large; font-style: italic; font-weight: 800;">
@@ -54,13 +56,12 @@
       </span>
       <i class="fad fa-glass" style="color: orange; font-size: xx-large;"></i>
     </div>
-
     <div class="col m4">
 
       Keywords:
       <small-bar percent=${keywords_per} orientation="horizontal" xSize=40 ySize=13></small-bar>
       ${keywords_done}/${keywords_todo}
-      <button class="bColor" md-button style="float: right" click.delegate="downloadData()"><i
+      <button class="bColor" md-button style="float: right" click.delegate="download()"><i
           class="fad fa-download"></i></button>
       <br>
       Documents:
