@@ -57,6 +57,11 @@ export class P0 {
     public tfidf;
     public tfidf_keywords = {};
 
+    // Time
+    public time = 0;
+    public timerActive = false;
+    public timer;
+
     // Temp variables
     public sort_property = "descending";
     public graph_data;
@@ -975,5 +980,24 @@ export class P0 {
         this.keywords_done = this.keyword_list.filter(x => x["mapping"].length > 0).length
 
         this.keywords_per = this.keywords_todo / this.keyword_list.length
+    }
+
+    startTimer() {
+        if (!this.timerActive) {
+            let seconds = 0;
+            this.timerActive = true;
+
+            // Call every second
+            this.timer = setInterval(x => {
+                this.time++;
+            }, 1000)
+        }
+    }
+
+    endTimer() {
+        // Stop timer
+        clearInterval(this.timer);
+        this.timerActive = false;
+        this.time = 0;
     }
 }

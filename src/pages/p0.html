@@ -38,6 +38,15 @@
 
     <div class="col m4">
       <!-- <button md-sidenav-collapse="ref.bind: sideNav" md-button md-waves>Show Keywords</button> -->
+      <button class="bColor" md-button style="height: 35px; width: 50px;" click.delegate="startTimer()"
+        disabled.bind="timerActive">
+        <i class="fas fa-play"></i>
+      </button>
+      <button class="bColor" md-button style="height: 35px; width: 50px;" click.delegate="endTimer()"
+        disabled.bind="!timerActive">
+        <i class="fas fa-stop"></i>
+      </button>
+      Total Seconds: ${time | timeFormat}
     </div>
     <div class="col m4" style="text-align: center;">
       <span style="font-size: xx-large; font-style: italic; font-weight: 800;">

@@ -8,6 +8,7 @@ export function configure(config: FrameworkConfiguration) {
     PLATFORM.moduleName("./elements/bar-chart"),
     PLATFORM.moduleName("./elements/small-bar"),
     PLATFORM.moduleName("./converters/number-format"),
+    PLATFORM.moduleName("./converters/time-format"),
     PLATFORM.moduleName("./converters/custom-sort"),
     PLATFORM.moduleName("./converters/custom-sort-length"),
     PLATFORM.moduleName("./converters/custom-filter-sort-length"),
