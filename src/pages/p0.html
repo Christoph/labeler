@@ -66,16 +66,13 @@
         Skip
         <button md-button style="height: 70px; width: 100%;" click.delegate="applyLabel()"
           disabled.bind="!selected_label">
-          <i class="fad fa-layer-plus"></i>
-          Apply
+          <i class="fad fa-plus"></i>
+          Use
         </button>
     </div>
     <div class="col m10">
-      <strong>
-        Active Keyword:
-      </strong>
       <span style="font-size: xx-large;">
-        <strong>${selected_keyword.keyword}</strong></span>
+        Active Keyword: <strong>${selected_keyword.keyword}</strong></span>
       <!-- , ${selected_keyword.count} <i class="fad fa-file-alt"></i> -->
       <br>
       <span style="font-size: smaller; margin-left: 20px">
@@ -88,12 +85,10 @@
         <span>, </span>
       </span>
       <br>
-      <strong>
-        Selected Label:
-      </strong>
       <span style="font-size: xx-large;">
-        <i if.bind="!selected_label"> Select a Label Below </i>
-        <i>${selected_label.label}</i>
+        Selected Label:
+        <strong if.bind="!selected_label"> Select a Label Below </strong>
+        <strong>${selected_label.label}</strong>
       </span>
       <!-- <span if.bind="selected_label">, </span> ${selected_label.n_docs}el" class="fad fa-file-alt"></i> </div> -->
     </div>
