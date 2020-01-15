@@ -30,11 +30,14 @@ export class P0 {
     public selected_document_list = [];
     public selected_document;
     public selected_keyword;
+    public last_selected_keyword;
     public selected_additional_keywords = [];
+    public last_selected_additional_keywords = [];
     public selected_label;
     public showDocuments = false;
     public selected_similarities = [];
     public selected_similar_keywords = [];
+    public s_words = [];
 
     // Similarity list
     public sim_property = "text_similarity";
@@ -79,15 +82,35 @@ export class P0 {
 
     activate() {
         window.addEventListener('keypress', this.handleKeyInput, false);
+        window.addEventListener('keydown', this.handleKeyInput, false);
     }
 
     deactivate() {
         window.removeEventListener('keypress', this.handleKeyInput);
+        window.removeEventListener('keydown', this.handleKeyInput);
     }
 
     handleKeyInput = (event) => {
         if (event.key == "Enter" && this.selected_label) {
             this.applyLabel();
+        }
+
+        if (event.key == "ArrowDown" && this.selected_label) {
+            let index = this.label_docs.findIndex(x => x.label == this.selected_label.label)
+            this.selectLabel(this.label_docs[Math.min(index + 1, this.label_docs.length - 1)])
+        }
+
+        if (event.key == "ArrowUp" && this.selected_label) {
+            let index = this.label_docs.findIndex(x => x.label == this.selected_label.label)
+            this.selectLabel(this.label_docs[Math.max(index - 1, 0)])
+        }
+
+        if (event.key == "ArrowRight" && this.selected_label) {
+            this.skipKeyword();
+        }
+
+        if (event.key == "ArrowLeft" && this.selected_label) {
+            this.undoKeyword();
         }
     }
 
@@ -482,12 +505,12 @@ export class P0 {
         if (index) this.selectLabel(this.label_docs[index])
     }
 
-    public s_words = []
     async selectKeyword(key) {
         // Set active keyword
         if (this.selected_keyword) this.selected_keyword.isActive = false;
         key.isActive = true;
 
+        this.last_selected_keyword = this.selected_keyword;
         this.selected_keyword = key;
         this.selected_document = key.docs[0]
         // this.selected_document_list.push(key.docs[0])
@@ -791,16 +814,47 @@ export class P0 {
         this.searchLabelsTerm = ""
     }
 
+    async undoKeyword() {
+        // Reset last element
+        this.last_selected_keyword.mapping = ""
+        this.selected_keyword.label = {};
+        this.selected_keyword.isDone = false;
+
+        // Reset additional keyword
+        if (this.last_selected_additional_keywords) {
+            for (const keyword of this.last_selected_additional_keywords) {
+                keyword.mapping = ""
+                keyword.label = {}
+                keyword.isDone = false;
+            }
+
+            this.last_selected_additional_keywords = [];
+        }
+
+        // Select last element
+        await this.selectKeyword(this.last_selected_keyword);
+        this.selectLabel(this.label_docs[0])
+
+        // Reset filter
+        this.searchDocumentTerm = ""
+        this.searchKeywordsTerm = ""
+        this.searchLabelsTerm = ""
+    }
+
     async applyLabel() {
         this.selected_keyword.mapping = this.selected_label.label;
         this.selected_keyword.label = this.selected_label;
         this.selected_keyword.isDone = true;
+
+        this.last_selected_additional_keywords = []
 
         if (this.selected_additional_keywords) {
             for (const keyword of this.selected_additional_keywords) {
                 keyword.mapping = this.selected_label.label;
                 keyword.label = this.selected_label;
                 keyword.isDone = true;
+
+                this.last_selected_additional_keywords.push(keyword)
             }
 
             this.selected_additional_keywords = [];
@@ -829,6 +883,9 @@ export class P0 {
         this.searchDocumentTerm = ""
         this.searchKeywordsTerm = ""
         this.searchLabelsTerm = ""
+
+        // Reset scrolling after applying
+        this['labelsList'].scrollTop = 0;
     }
 
     downloadData() {
