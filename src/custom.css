@@ -33,8 +33,14 @@ mark {
 }
 
 .small-bar {
-  fill: green;
+  fill: #108C0E;
 }
+
+.bColor {
+  background-color: #364652 !important;
+}
+
+/* #40798C */
 
 .row .selectionList {
   margin-bottom: 0;

@@ -77,6 +77,20 @@ export class P0 {
         return _.intersectionBy(s1, s2, property).length / _.unionBy(s1, s2, property).length
     }
 
+    activate() {
+        window.addEventListener('keypress', this.handleKeyInput, false);
+    }
+
+    deactivate() {
+        window.removeEventListener('keypress', this.handleKeyInput);
+    }
+
+    handleKeyInput = (event) => {
+        if (event.key == "Enter" && this.selected_label) {
+            this.applyLabel();
+        }
+    }
+
     constructor(public store: DataStore) {
         this.documents = store.getNew();
         this.labeled_documents = store.getLabeled();
@@ -575,19 +589,16 @@ export class P0 {
     }
 
     colorConverter(num: number) {
-        let color = "none"
-
-        if (num > 0.5) return "green"
-        else if (num > 0) return "orange"
-        else return "#A6A6A6"
+        if (num > 0.5) return "#094D08"
+        else if (num > 0.25) return "#108C0E"
+        else if (num > 0) return "#7CC07B"
+        else return "#D8DBDB"
     }
 
     colorConverterExplanation(num: number) {
-        let color = "none"
-
-        if (num > 0.5) return "green"
-        else if (num > 0.2) return "orange"
-        else return "#A6A6A6"
+        if (num > 0.5) return "#094D08"
+        else if (num > 0.25) return "#108C0E"
+        else return "#7CC07B"
     }
 
     computeLabelSimilarities(labels, keyword) {

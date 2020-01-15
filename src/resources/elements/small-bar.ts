@@ -74,7 +74,7 @@ export class SmallBarCustomElement {
 
     if (this.orientation == "horizontal") {
       this.svg.append("rect")
-        .style("fill", "lightgrey")
+        .style("fill", "#D8DBDB")
         .attr("x", 0)
         .attr("width", self.x(1))
         .attr("y", 0)
@@ -91,7 +91,7 @@ export class SmallBarCustomElement {
     }
     else {
       this.svg.append("rect")
-        .style("fill", "lightgrey")
+        .style("fill", "#D8DBDB")
         .attr("x", 0)
         .attr("y", 0)
         .attr("height", self.height)

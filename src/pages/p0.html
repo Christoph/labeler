@@ -51,7 +51,8 @@
       Keywords:
       <small-bar percent=${keywords_per} orientation="horizontal" xSize=40 ySize=13></small-bar>
       ${keywords_done}/${keywords_todo}
-      <button md-button style="float: right" click.delegate="downloadData()"><i class="fad fa-download"></i></button>
+      <button class="bColor" md-button style="float: right" click.delegate="downloadData()"><i
+          class="fad fa-download"></i></button>
       <br>
       Documents:
       <small-bar percent=${docs_per}orientation="horizontal" xSize=40 ySize=13></small-bar>
@@ -61,11 +62,11 @@
   <br>
   <div class="row" style="margin-bottom: 0">
     <div class="col m2">
-      <button md-button style="height: 35px; width: 100%;" click.delegate="skipKeyword()">
+      <button class="bColor" md-button style="height: 35px; width: 100%;" click.delegate="skipKeyword()">
         <i class="fad fa-forward"></i>
         Skip
       </button>
-      <button md-button style="height: 55px; width: 100%;" click.delegate="applyLabel()"
+      <button class="bColor" md-button style="height: 55px; width: 100%;" click.delegate="applyLabel()"
         disabled.bind="!selected_label">
         <i class="fad fa-plus"></i>
         Use
@@ -107,7 +108,20 @@
                 <th class="table_head"></th>
                 <th class="table_head">Label</th>
                 <!-- <th>Count</th> -->
-                <th class="table_head">Similarity Measures</th>
+                <th></th>
+                <th class="table_head">
+                  Similarity Measures
+                  <span style="float: right; font-weight: 200">
+                    Importance:
+                    High
+                    <i class="fad fa-circle" style="color: #094D08; display: inline-block"></i>
+                    <i class="fad fa-circle" style="color: #108C0E; display: inline-block"></i>
+                    <i class="fad fa-circle" style="color: #7CC07B; display: inline-block"></i>
+                    Low
+                    <i class="fad fa-circle" style="color: #D8DBDB; display: inline-block"></i>
+                    No
+                  </span>
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -117,63 +131,52 @@
                 <td class="table_cell" style="width: 30px">
                   <md-checkbox checked.bind="label_object['isActive']" click.delegate="selectLabel(label_object)">
                 </td>
-                <td class="table_cell"
-                  css="cursor: pointer; background-color: ${label_object['isActive'] ? '#50c6f1' : None}; width: 30%"
-                  click.delegate="selectLabel(label_object)">
+                <td class="table_cell" style="cursor: pointer; width: 30%" click.delegate="selectLabel(label_object)"
+                  dblclick.delegate="applyLabel()">
                   <span>
                     ${label_object['label']}
                     <!-- , ${label_object['n_docs']} <i class="fad fa-file-alt"></i> -->
                   </span>
                 </td>
                 <!-- <td>${label_object['n_docs']}</td> -->
+                <td>
+                  <small-bar percent=${label_object.total_similarity} orientation="vertical" xSize=15 ySize=80>
+                  </small-bar>
+                </td>
                 <td class="table_cell">
-                  <div class="row" style="margin: 0">
-                    <div class="col m2" style="margin-top: 20px">
-                      <button if.bind="label_object['isActive']" md-button style="height: 50%; top: 25%; width: 70%;"
-                        click.delegate="applyLabel()">
-                        <i class="fad fa-layer-plus"></i>
-                        Apply
-                      </button>
-                      <small-bar style="float: right" percent=${label_object.total_similarity} orientation="vertical"
-                        xSize=15 ySize=80>
-                      </small-bar>
-                    </div>
-                    <div class="col m10">
-                      <table>
-                        <thead>
-                          <tr style="border: none">
-                            <th class="table_head">Feature</th>
-                            <th class="table_head">Explanation</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr repeat.for="sim of label_object.similarities | customSort: {
+                  <table>
+                    <thead>
+                      <tr style="border: none">
+                        <th class="table_head">Feature</th>
+                        <th class="table_head">Explanation</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr repeat.for="sim of label_object.similarities | customSort: {
                           propertyName: 'count', direction: 'descending'
                         }" style="border: none">
-                            <td class="table_cell" style="width: 200px;">
-                              <i class="fad fa-circle" css="color: ${sim['color']}; display: inline-block"></i>
-                              <span style="display: inline-block;">
-                                ${sim.type}
-                              </span>
-                            </td>
-                            <td class="table_cell">
-                              <span repeat.for="ex of sim.explanation">
-                                <i css="color: ${ex.color}">
-                                  ${ex.keyword},
-                                </i>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                      <!-- <span style="white-space: nowrap" repeat.for="sim of label_object.similarities | customSort: {
+                        <td class="table_cell" style="width: 200px;">
+                          <i class="fad fa-circle" css="color: ${sim['color']}; display: inline-block"></i>
+                          <span style="display: inline-block;">
+                            ${sim.type}
+                          </span>
+                        </td>
+                        <td class="table_cell">
+                          <span repeat.for="ex of sim.explanation">
+                            <i css="color: ${ex.color}">
+                              ${ex.keyword},
+                            </i>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <!-- <span style="white-space: nowrap" repeat.for="sim of label_object.similarities | customSort: {
                   propertyName: 'count', direction: 'descending'
                 }">
                       <i class="fad fa-circle" css="color: ${sim['color']}"></i>
                       ${sim.type} | ${sim.explanation}
                       <br>
                     </span> -->
-                    </div>
-                  </div>
                 </td>
               </tr>
             </tbody>
@@ -200,7 +203,7 @@
             <tbody>
               <tr repeat.for="keyword of keyword_list | customSort: { propertyName: 'mapping', direction: 'descending' } |
               filter:searchCoocKeywordTerm:filterKeywordsFunc" click.delegate="selectAddKeyword(keyword)"
-                css="cursor: pointer; background-color: ${keyword.isActive ? '#50c6f1' : None};">
+                style="cursor: pointer;">
                 <td class="table_cell">
                   <md-checkbox show.bind="!keyword['isDone']" model.bind="keyword"
                     checked.bind="selected_additional_keywords">Add
@@ -233,9 +236,8 @@
                 <td class="table_cell">
                   <md-checkbox disabled.bind="!cooc.label" checked.bind="cooc['label_object']['isActive']">
                 </td>
-                <td class="table_cell"
-                  css="background-color: ${cooc['label_object']['isActive'] ? '#50c6f1' : None};cursor: pointer;"
-                  click.delegate="selectLabelName(cooc.label)" click.delegate="selectLabel(cooc['label_object'])">
+                <td class="table_cell" style="cursor: pointer;" click.delegate="selectLabelName(cooc.label)"
+                  click.delegate="selectLabel(cooc['label_object'])">
                   <!-- <span class="fa-stack fa-2x hover" show.bind="cooc['label_object']['isActive'] "
                   style="display: inline-block;">
                   <i class="fal fa-square fa-stack-2x"></i>
