@@ -46,7 +46,7 @@ export class P0 {
     public label_sort_value = 0;
 
     // Status variables
-    public isWorking = false;
+    public finished = false;
     public docs_todo = 0;
     public docs_done = 0;
     public docs_per = 0;
@@ -854,11 +854,9 @@ export class P0 {
         this.searchLabelsTerm = ""
     }
 
-    throttled_applyLabel = _.throttle(x => this.applyLabel(), 1000)
+    throttled_applyLabel = _.throttle(x => this.applyLabel(), 1)
 
     async applyLabel() {
-        this.isWorking = true
-
         this.selected_keyword.mapping = this.selected_label.label;
         this.selected_keyword.label = this.selected_label;
         this.selected_keyword.isDone = true;
@@ -880,6 +878,16 @@ export class P0 {
         // Handle timing
         this.selected_keyword["time"] = this.keyword_time
         this.keyword_time = 0
+
+        // Check if its done
+        if (this.keywords_todo <= 1) {
+            this.finished = true;
+            this.updateDocumentStats();
+            for (const doc of this.documents) {
+                if (doc["Keywords_Processed"].every(x => x["mapping"].length > 0)) doc["isDone"] = true;
+            }
+            this.updateKeywordStats();
+        }
 
         // Update keyword list view
         // this.finishedKeywords = !this.finishedKeywords;
@@ -907,8 +915,6 @@ export class P0 {
 
         // Reset scrolling after applying
         this['labelsList'].scrollTop = 0;
-
-
     }
 
     download() {

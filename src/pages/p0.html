@@ -68,7 +68,14 @@
       ${docs_done}/${docs_todo}
     </div>
   </div>
-  <div class="row" style="margin-bottom: 0px">
+  <div class="row" if.bind="finished" style="width: 100%; text-align: center; height: 100px; margin-bottom: 0px">
+    <div style="font-size: xx-large; font-weight: 400; margin-top: 40px">
+      All Keywords Labeled!
+    </div>
+    <button class="bColor" md-button click.delegate="download()"><i class="fad fa-download"></i>
+      Download Results</button>
+  </div>
+  <div class="row" if.bind="!finished" style="margin-bottom: 0px">
     <div class="col m3">
       <button class="bColor" md-button style="height: 50px; width: 35%; padding: 0" click.delegate="undoKeyword()"
         disabled.bind="!last_selected_keyword">
