@@ -863,11 +863,20 @@ export class P0 {
 
         this.last_selected_additional_keywords = []
 
+        // Handle timing
+        let div = 0
+        if (this.selected_additional_keywords) div = this.selected_additional_keywords.length
+
+        let time_fraction = Math.ceil(this.keyword_time / (div + 1))
+
+        this.selected_keyword["time"] = time_fraction
+
         if (this.selected_additional_keywords) {
             for (const keyword of this.selected_additional_keywords) {
                 keyword.mapping = this.selected_label.label;
                 keyword.label = this.selected_label;
                 keyword.isDone = true;
+                keyword["time"] = time_fraction;
 
                 this.last_selected_additional_keywords.push(keyword)
             }
@@ -875,8 +884,6 @@ export class P0 {
             this.selected_additional_keywords = [];
         }
 
-        // Handle timing
-        this.selected_keyword["time"] = this.keyword_time
         this.keyword_time = 0
 
         // Check if its done
