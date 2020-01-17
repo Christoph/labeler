@@ -46,6 +46,7 @@ export class P0 {
     public label_sort_value = 0;
 
     // Status variables
+    public isWorking = false;
     public docs_todo = 0;
     public docs_done = 0;
     public docs_per = 0;
@@ -87,18 +88,16 @@ export class P0 {
     }
 
     activate() {
-        window.addEventListener('keypress', this.handleKeyInput, false);
         window.addEventListener('keydown', this.handleKeyInput, false);
     }
 
     deactivate() {
-        window.removeEventListener('keypress', this.handleKeyInput);
         window.removeEventListener('keydown', this.handleKeyInput);
     }
 
     handleKeyInput = (event) => {
         if (event.key == "Enter" && this.selected_label) {
-            this.applyLabel();
+            this.throttled_applyLabel();
         }
 
         if (event.key == "ArrowDown" && this.selected_label) {
@@ -484,13 +483,12 @@ export class P0 {
 
         this.updateDocumentStats();
         this.updateKeywordStats();
-        // Prepare autocomplete list
-        // for (const keyword of this.label_list) {
-        //     this.autocompleteData[keyword["Cluster"]] = null;
-        // }
 
-        // this.selectDocument(0);
         this.selectKeyword(this.keyword_list.filter(x => !x.isDone)[0])
+    }
+
+    attached() {
+        this.selectLabel(this.label_docs[0])
     }
 
     selectDocument(doc) {
@@ -856,7 +854,11 @@ export class P0 {
         this.searchLabelsTerm = ""
     }
 
+    throttled_applyLabel = _.throttle(x => this.applyLabel(), 1000)
+
     async applyLabel() {
+        this.isWorking = true
+
         this.selected_keyword.mapping = this.selected_label.label;
         this.selected_keyword.label = this.selected_label;
         this.selected_keyword.isDone = true;
@@ -905,6 +907,8 @@ export class P0 {
 
         // Reset scrolling after applying
         this['labelsList'].scrollTop = 0;
+
+
     }
 
     download() {

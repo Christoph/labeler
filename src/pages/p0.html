@@ -77,8 +77,8 @@
       <button class="bColor" md-button style="height: 50px; width: 60%; float: right" click.delegate="skipKeyword()">
         <i class="fad fa-forward"></i>
       </button>
-      <button class="bColor" md-button style="height: 50px; width: 100%; margin-top: 2px" click.delegate="applyLabel()"
-        disabled.bind="!selected_label">
+      <button class="bColor" md-button style="height: 50px; width: 100%; margin-top: 2px"
+        click.delegate="applyLabel() & throttle: 1000">
         <i class="fad fa-plus"></i>
         Use
       </button>
