@@ -811,6 +811,11 @@ export class P0 {
         );
         this.keyword_list.push(this.selected_keyword)
 
+        // Reset keyword
+        this.selected_keyword.mapping = ""
+        this.selected_keyword.label = {};
+        this.selected_keyword.isDone = false;
+
         // Reset timing
         this.keyword_time = 0
 
@@ -822,13 +827,16 @@ export class P0 {
         this.searchDocumentTerm = ""
         this.searchKeywordsTerm = ""
         this.searchLabelsTerm = ""
+
+        // Reset scrolling after applying
+        this['labelsList'].scrollTop = 0;
     }
 
     async undoKeyword() {
         // Reset last element
         this.last_selected_keyword.mapping = ""
-        this.selected_keyword.label = {};
-        this.selected_keyword.isDone = false;
+        this.last_selected_keyword.label = {};
+        this.last_selected_keyword.isDone = false;
 
         // Reset timing
         this.keyword_time = 0
@@ -852,6 +860,9 @@ export class P0 {
         this.searchDocumentTerm = ""
         this.searchKeywordsTerm = ""
         this.searchLabelsTerm = ""
+
+        // Reset scrolling after applying
+        this['labelsList'].scrollTop = 0;
     }
 
     throttled_applyLabel = _.throttle(x => this.applyLabel(), 1)
@@ -891,7 +902,7 @@ export class P0 {
             this.finished = true;
             this.updateDocumentStats();
             for (const doc of this.documents) {
-                if (doc["Keywords_Processed"].every(x => x["mapping"].length > 0)) doc["isDone"] = true;
+                if (doc["Keywords_Processed"].every(x => x["isDone"])) doc["isDone"] = true;
             }
             this.updateKeywordStats();
         }
@@ -910,7 +921,7 @@ export class P0 {
 
         // Check if some documents are now finished
         for (const doc of this.documents) {
-            if (doc["Keywords_Processed"].every(x => x["mapping"].length > 0)) doc["isDone"] = true;
+            if (doc["Keywords_Processed"].every(x => x["isDone"])) doc["isDone"] = true;
         }
 
         this.updateDocumentStats();
