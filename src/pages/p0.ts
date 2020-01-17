@@ -865,7 +865,7 @@ export class P0 {
         this['labelsList'].scrollTop = 0;
     }
 
-    throttled_applyLabel = _.throttle(x => this.applyLabel(), 1)
+    throttled_applyLabel = _.throttle(x => this.applyLabel(), 1000)
 
     async applyLabel() {
         this.selected_keyword.mapping = this.selected_label.label;
