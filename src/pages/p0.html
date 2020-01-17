@@ -113,15 +113,15 @@
     <div class="col m12">
       <input type="text" class="form-control search-box" value.bind="searchLabelsTerm"
         placeholder="search Labels..."></input>
-      <div element.ref="labelsList" class="row" style="overflow: scroll; height: 40vh; margin-bottom: 0px;">
+      <div element.ref="labelsList" class="row" style="height: 40vh; margin-bottom: 0px;">
         <table>
           <thead>
-            <tr style="border:none">
-              <th class="table_head"></th>
-              <th class="table_head">Label</th>
+            <tr style="border:none; display: block; height: 5vh; width: 100%">
+              <th class="table_head" style="width: 4%; display: inline-block"></th>
+              <th class="table_head" style="width: 30%; display: inline-block">Label</th>
               <!-- <th>Count</th> -->
-              <th></th>
-              <th class="table_head">
+              <th style="width: 4%; display: inline-block"></th>
+              <th class="table_head" style="width: 60%; display: inline-block">
                 Similarity Measures
                 <span style="float: right; font-weight: 200; margin-right: 5px">
                   Importance:
@@ -136,11 +136,11 @@
               </th>
             </tr>
           </thead>
-          <tbody>
+          <tbody style="display:block; overflow: auto; height: 40vh; width: 100%">
             <tr repeat.for="label_object of label_docs | customSort: { propertyName: label_sort_property,
                 direction: 'descending',
               } | filter:searchLabelsTerm:filterLabelsFunc">
-              <td class="table_cell" style="width: 30px;">
+              <td class="table_cell" style="width: 5%;">
                 <md-checkbox checked.bind="label_object['isActive']" click.delegate="selectLabel(label_object)">
               </td>
               <td class="table_cell" style="cursor: pointer; width: 30%" click.delegate="selectLabel(label_object)"
@@ -151,7 +151,7 @@
                 </span>
               </td>
               <!-- <td>${label_object['n_docs']}</td> -->
-              <td>
+              <td style="width: 5%">
                 <small-bar percent=${label_object.total_similarity} orientation="vertical" xSize=15 ySize=80>
                 </small-bar>
               </td>
