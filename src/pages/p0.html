@@ -58,13 +58,13 @@
     </div>
     <div class="col m4">
       Keywords:
-      <small-bar percent=${keywords_per} orientation="horizontal" xSize=40 ySize=13></small-bar>
+      <small-bar percent.bind="keywords_per" orientation="horizontal" xSize=40 ySize=13></small-bar>
       ${keywords_done}/${keywords_todo}
       <button class="bColor" md-button style="float: right" click.delegate="download()"><i
           class="fad fa-download"></i></button>
       <br>
       Documents:
-      <small-bar percent=${docs_per}orientation="horizontal" xSize=40 ySize=13></small-bar>
+      <small-bar percent.bind="docs_per" orientation="horizontal" xSize=40 ySize=13></small-bar>
       ${docs_done}/${docs_todo}
     </div>
   </div>
@@ -113,7 +113,7 @@
     <div class="col m12">
       <input type="text" class="form-control search-box" value.bind="searchLabelsTerm"
         placeholder="search Labels..."></input>
-      <div element.ref="labelsList" class="row" style="height: 40vh; margin-bottom: 0px;">
+      <div class="row" style="height: 40vh; margin-bottom: 0px;">
         <table>
           <thead>
             <tr style="border:none; display: block; height: 5vh; width: 100%">
@@ -136,7 +136,7 @@
               </th>
             </tr>
           </thead>
-          <tbody style="display:block; overflow: auto; height: 35vh; width: 100%">
+          <tbody element.ref="labelsList" style="display:block; overflow: auto; height: 35vh; width: 100%">
             <tr repeat.for="label_object of label_docs | customSort: { propertyName: label_sort_property,
                 direction: 'descending',
               } | filter:searchLabelsTerm:filterLabelsFunc">

@@ -1021,16 +1021,17 @@ export class P0 {
 
     updateDocumentStats() {
         this.docs_todo = this.documents.filter(x => !x.isDone).length
-        this.docs_done = this.documents.filter(x => x.isDone).length + this.labeled_documents.length
+        this.docs_done = this.documents.filter(x => x.isDone).length
 
-        this.docs_per = this.docs_todo / (this.labeled_documents + this.documents)
+        this.docs_per = 1 - (this.docs_todo / this.documents.length)
     }
 
     updateKeywordStats() {
-        this.keywords_todo = this.keyword_list.filter(x => x["mapping"].length == 0).length
-        this.keywords_done = this.keyword_list.filter(x => x["mapping"].length > 0).length
+        let ll = this.keyword_list.filter(x => x["source"] == "new")
+        this.keywords_todo = ll.filter(x => !x["isDone"]).length
+        this.keywords_done = ll.filter(x => x["isDone"]).length
 
-        this.keywords_per = this.keywords_todo / this.keyword_list.length
+        this.keywords_per = 1 - (this.keywords_todo / ll.length)
     }
 
     startTimer() {
