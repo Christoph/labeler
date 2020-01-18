@@ -223,13 +223,14 @@
           </thead>
           <tbody>
             <tr repeat.for="keyword of keyword_list | customSort: { propertyName: 'isDone', direction: 'ascending' } |
-              filter:searchCoocKeywordTerm:filterKeywordsFunc">
+              filter:searchCoocKeywordTerm:filterKeywordsFunc" click.delegate="moveToKeyword(keyword)"
+              style="cursor: pointer">
               <td class="table_cell">
-                <md-checkbox show.bind="!keyword['isDone']" model.bind="keyword"
+                <!-- <md-checkbox show.bind="!keyword['isDone']" model.bind="keyword"
                   checked.bind="selected_additional_keywords" click.delegate="selectAddKeyword(keyword)">
-                </md-checkbox>
+                </md-checkbox> -->
                 <span style="margin-left: 2px;">
-                  ${keyword["keyword"]}
+                  ${keyword["keyword"]} <span style="color: orange;" show.bind="keyword.isNew">New</span>
                 </span>
               </td>
               <!-- <td class="table_cell">${keyword["count"]}</td> -->

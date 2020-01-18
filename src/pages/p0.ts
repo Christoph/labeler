@@ -167,7 +167,8 @@ export class P0 {
                             sub_key: 0,
                             sims: [],
                             co_oc: [],
-                            source: "db"
+                            source: "db",
+                            isNew: false,
                         }
                     }
                     else {
@@ -185,7 +186,8 @@ export class P0 {
                             sub_key: 0,
                             sims: [],
                             co_oc: [],
-                            source: "db"
+                            source: "db",
+                            isNew: false
                         }
                     }
                 } else {
@@ -264,7 +266,8 @@ export class P0 {
                         sub_key: 0,
                         sims: [],
                         co_oc: [],
-                        source: "new"
+                        source: "new",
+                        isNew: true
                     }
 
                     if (mapping.length > 0) {
@@ -531,6 +534,21 @@ export class P0 {
         // Update graph
         // this.createGraphData();
         this.s_words = key.co_oc.filter(x => !x.keyword.mapping)
+
+        // if (key.label) {
+        //     this.selectLabel(key.label)
+        // }
+        // else {
+        //     this.selectLabel(this.label_docs[0])
+        // }
+
+        // // Reset filter
+        // this.searchDocumentTerm = ""
+        // this.searchKeywordsTerm = ""
+        // this.searchLabelsTerm = ""
+
+        // // Reset scrolling after applying
+        // this['labelsList'].scrollTop = 0;
     }
 
     updateSelectedSimilarities(keyword) {
@@ -804,6 +822,25 @@ export class P0 {
         }
     }
 
+    async moveToKeyword(key) {
+        await this.selectKeyword(key)
+
+        if (key.isDone) {
+            this.selectLabel(key.label)
+        }
+        else {
+            this.selectLabel(this.label_docs[0])
+        }
+
+        // Reset filter
+        this.searchDocumentTerm = ""
+        this.searchKeywordsTerm = ""
+        this.searchLabelsTerm = ""
+
+        // Reset scrolling after applying
+        this['labelsList'].scrollTop = 0;
+    }
+
     async skipKeyword() {
         // Move current element to the end of the array
         this.keyword_list.splice(
@@ -820,16 +857,17 @@ export class P0 {
         this.keyword_time = 0
 
         // Select next element
-        await this.selectKeyword(this.keyword_list.filter(x => !x.isDone)[0])
-        this.selectLabel(this.label_docs[0])
+        this.moveToKeyword(this.keyword_list.filter(x => !x.isDone)[0])
+        // await this.selectKeyword(this.keyword_list.filter(x => !x.isDone)[0])
+        // this.selectLabel(this.label_docs[0])
 
-        // Reset filter
-        this.searchDocumentTerm = ""
-        this.searchKeywordsTerm = ""
-        this.searchLabelsTerm = ""
+        // // Reset filter
+        // this.searchDocumentTerm = ""
+        // this.searchKeywordsTerm = ""
+        // this.searchLabelsTerm = ""
 
-        // Reset scrolling after applying
-        this['labelsList'].scrollTop = 0;
+        // // Reset scrolling after applying
+        // this['labelsList'].scrollTop = 0;
     }
 
     async undoKeyword() {
@@ -853,16 +891,17 @@ export class P0 {
         }
 
         // Select last element
-        await this.selectKeyword(this.last_selected_keyword);
-        this.selectLabel(this.label_docs[0])
+        this.moveToKeyword(this.keyword_list.filter(x => !x.isDone)[0])
+        // await this.selectKeyword(this.last_selected_keyword);
+        // this.selectLabel(this.label_docs[0])
 
-        // Reset filter
-        this.searchDocumentTerm = ""
-        this.searchKeywordsTerm = ""
-        this.searchLabelsTerm = ""
+        // // Reset filter
+        // this.searchDocumentTerm = ""
+        // this.searchKeywordsTerm = ""
+        // this.searchLabelsTerm = ""
 
-        // Reset scrolling after applying
-        this['labelsList'].scrollTop = 0;
+        // // Reset scrolling after applying
+        // this['labelsList'].scrollTop = 0;
     }
 
     throttled_applyLabel = _.throttle(x => this.applyLabel(), 1000)
@@ -914,8 +953,9 @@ export class P0 {
         // this.selected_keyword = this.keyword_list.filter(x => !x.isDone)[0]
         // let index = this.keyword_list.indexOf(this.selected_keyword)
 
-        await this.selectKeyword(this.keyword_list.filter(x => !x.isDone)[0])
-        this.selectLabel(this.label_docs[0])
+        this.moveToKeyword(this.keyword_list.filter(x => !x.isDone)[0])
+        // await this.selectKeyword(this.keyword_list.filter(x => !x.isDone)[0])
+        // this.selectLabel(this.label_docs[0])
 
         this.updateKeywordStats();
 
@@ -926,13 +966,13 @@ export class P0 {
 
         this.updateDocumentStats();
 
-        // Reset filter
-        this.searchDocumentTerm = ""
-        this.searchKeywordsTerm = ""
-        this.searchLabelsTerm = ""
+        // // Reset filter
+        // this.searchDocumentTerm = ""
+        // this.searchKeywordsTerm = ""
+        // this.searchLabelsTerm = ""
 
-        // Reset scrolling after applying
-        this['labelsList'].scrollTop = 0;
+        // // Reset scrolling after applying
+        // this['labelsList'].scrollTop = 0;
     }
 
     download() {
