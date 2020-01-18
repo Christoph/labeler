@@ -91,19 +91,19 @@
       </button>
     </div>
     <div class="col m9">
-      <span style="font-size: x-large;">
+      <span style="font-size: xx-large;">
         active keyword: <strong>${selected_keyword.keyword}</strong></span>
       <!-- , ${selected_keyword.count} <i class="fad fa-file-alt"></i> -->
       <br>
       <span style="font-size: smaller; margin-left: 20px">
-        unlabeled co-occurring keywords:
+        Additional keywords for labeling:
       </span>
       <!-- <i if.bind="!selected_additional_keywords.length"> Select Co-Occurring Keywords </i> -->
-      <span repeat.for="word of s_words" style="font-size: smaller">
-        <md-checkbox class="inline_checkbox" model.bind="word.keyword" checked.bind="selected_additional_keywords">
-        </md-checkbox>
-        ${word.keyword.keyword}
-        <!-- <i class="fad fa-trash-alt" click.delegate="removeAddKeyword(keyword)" style="cursor: pointer"></i> -->
+      <span repeat.for="keyword of selected_additional_keywords" style="font-size: smaller">
+        <strong>
+          ${keyword.keyword}
+          <i class="fad fa-trash-alt" click.delegate="removeAddKeyword(keyword)" style="cursor: pointer"></i>
+        </strong>
         <span>, </span>
       </span>
       <br>
@@ -205,11 +205,11 @@
   </div>
   <div class="row">
     <!-- Keyword View -->
-    <div class="col m6">
+    <div class="col m4">
       <input type="text" class="form-control search-box" value.bind="searchCoocKeywordTerm"
         placeholder="search All Keywords..."></input>
-      <div class="row" style="overflow: scroll; height: 40vh;">
-        <table show.bind="searchCoocKeywordTerm">
+      <div class="row" style="overflow: scroll; height: 35vh;">
+        <table>
           <thead>
             <tr style="border:none">
               <th class="table_head">
@@ -220,14 +220,15 @@
             </tr>
           </thead>
           <tbody>
-            <tr repeat.for="keyword of keyword_list | customSort: { propertyName: 'mapping', direction: 'descending' } |
-              filter:searchCoocKeywordTerm:filterKeywordsFunc" click.delegate="selectAddKeyword(keyword)"
-              style="cursor: pointer;">
+            <tr repeat.for="keyword of keyword_list | customSort: { propertyName: 'isDone', direction: 'ascending' } |
+              filter:searchCoocKeywordTerm:filterKeywordsFunc">
               <td class="table_cell">
                 <md-checkbox show.bind="!keyword['isDone']" model.bind="keyword"
-                  checked.bind="selected_additional_keywords">Add
+                  checked.bind="selected_additional_keywords" click.delegate="selectAddKeyword(keyword)">
                 </md-checkbox>
-                ${keyword["keyword"]}
+                <span style="margin-left: 2px;">
+                  ${keyword["keyword"]}
+                </span>
               </td>
               <!-- <td class="table_cell">${keyword["count"]}</td> -->
               <td class="table_cell">
@@ -236,7 +237,12 @@
             </tr>
           </tbody>
         </table>
-        <table show.bind="!searchCoocKeywordTerm">
+        <!-- <span class="fa-stack fa-2x hover" show.bind="cooc['label_object']['isActive'] "
+                  style="display: inline-block;">
+                  <i class="fal fa-square fa-stack-2x"></i>
+                  <i class="fad fa-layer-plus fa-stack-1x"></i>
+                </span> -->
+        <!-- <table show.bind="!searchCoocKeywordTerm">
           <thead>
             <tr style="border: none">
               <th class="table_head"></th>
@@ -257,11 +263,6 @@
               </td>
               <td class="table_cell" style="cursor: pointer;" click.delegate="selectLabelName(cooc.label)"
                 click.delegate="selectLabel(cooc['label_object'])">
-                <!-- <span class="fa-stack fa-2x hover" show.bind="cooc['label_object']['isActive'] "
-                  style="display: inline-block;">
-                  <i class="fal fa-square fa-stack-2x"></i>
-                  <i class="fad fa-layer-plus fa-stack-1x"></i>
-                </span> -->
                 <span style="display: inline-block;">
                   ${cooc.label}
                 </span>
@@ -272,39 +273,38 @@
                 }">
                   <md-checkbox show.bind="!keyword['isDone']" model.bind="keyword"
                     checked.bind="selected_additional_keywords" style="width: 19px"></md-checkbox>
-                  <!-- <span md-badge>${keyword.count}</span> -->
-                  <span style="cursor: pointer;" click.delegate="selectAddKeyword(keyword)">
-                    ${keyword.keyword}
-                  </span>
-                  <br>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table if.bind="searchCoocKeywordTerm">
+        <span style="cursor: pointer;" click.delegate="selectAddKeyword(keyword)">
+          ${keyword.keyword}
+        </span>
+        <br>
+      </div>
+      </td>
+      </tr>
+      </tbody>
+      </table if.bind="searchCoocKeywordTerm"> -->
       </div>
     </div>
-    <div class="col m6">
+    <div class="col m8">
 
       <!-- Document View -->
       <input type="text" class="form-control search-box" value.bind="searchDocumentTerm"
-        placeholder="search Documents..."></input>
+        placeholder="search Document titles..."></input>
       <!-- Document List View -->
-      <div class="row" style="overflow: scroll; height: 40vh;">
+      <div class="row" style="overflow: scroll; height: 35vh;">
         <table>
           <thead>
             <tr style="border: none">
-              <th class="table_head">Document</th>
+              <th class="table_head">Documents containing the active Keyword</th>
             </tr>
           </thead>
           <tbody>
             <tr repeat.for="sim of selected_similarities | customSort: { propertyName: sim_property, direction: sort_property }
               | filter:searchDocumentTerm:filterDocumentsFunc" click.delegate="selectDocument(sim.document)"
-              css="cursor: pointer;" class="${sim.hasKeywords ? 'none': 'deselected'}">
+              style="border: none" class="${sim.hasKeywords ? 'none': 'deselected'}">
               <td class="table_cell">
-                <strong>
+                <span style="font-size: x-large; font-weight: 400;">
                   ${sim.document["Title"]}
-                </strong>
+                </span>
                 <a style="font-size: small;" href=${sim.document["DOI"]}>Link</a>
                 <br>
                 <span style="font-size: small;">
@@ -312,7 +312,16 @@
                 </span>
                 <br>
                 <span style="font-size: small;">
+
                   <strong>Keywords:</strong> ${sim.document["Keywords"]}
+                </span>
+                <span repeat.for="keyword of sim.document['Keywords_Processed']" style="font-size: smaller">
+                  <md-checkbox disabled.bind="keyword.isDone" class="inline_checkbox" model.bind="keyword"
+                    checked.bind="selected_additional_keywords" click.delegate="selectAddKeyword(keyword)">
+                  </md-checkbox>
+                  ${keyword.keyword}
+                  <!-- <i class="fad fa-trash-alt" click.delegate="removeAddKeyword(keyword)" style="cursor: pointer"></i> -->
+                  <span>, </span>
                 </span>
                 <br>
                 <ul style="margin: 0; box-shadow: none; -webkit-box-shadow: none"
