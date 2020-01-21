@@ -96,16 +96,23 @@
       <!-- , ${selected_keyword.count} <i class="fad fa-file-alt"></i> -->
       <br>
       <span style="font-size: smaller; margin-left: 20px">
-        Additional keywords for labeling:
+        Co-Occurring Unlabeled Keywords:
       </span>
       <!-- <i if.bind="!selected_additional_keywords.length"> Select Co-Occurring Keywords </i> -->
-      <span repeat.for="keyword of selected_additional_keywords" style="font-size: smaller">
+      <span repeat.for="word of s_words" style="font-size: smaller">
+        <md-checkbox class="inline_checkbox" model.bind="word.keyword" checked.bind="selected_additional_keywords">
+        </md-checkbox>
+        ${word.keyword.keyword}
+        <!-- <i class="fad fa-trash-alt" click.delegate="removeAddKeyword(keyword)" style="cursor: pointer"></i> -->
+        <span>, </span>
+      </span>
+      <!-- <span repeat.for="keyword of selected_additional_keywords" style="font-size: smaller">
         <strong>
           ${keyword.keyword}
           <i class="fad fa-trash-alt" click.delegate="removeAddKeyword(keyword)" style="cursor: pointer"></i>
         </strong>
         <span>, </span>
-      </span>
+      </span> -->
       <br>
       <span style="font-size: x-large;">
         selected label:
