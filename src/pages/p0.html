@@ -76,17 +76,17 @@
       Download Results</button>
   </div>
   <div class="row" if.bind="!finished" style="margin-bottom: 0px">
-    <div class="col m3">
-      <button class="bColor" md-button style="height: 50px; width: 35%; padding: 0" click.delegate="undoKeyword()"
+    <div class="col m3" style="margin-top: 12px">
+      <button class="bColor" md-button style="height: 45px; width: 35%; padding: 0" click.delegate="undoKeyword()"
         disabled.bind="!last_selected_keyword">
         <i class="fas fa-undo"></i>
       </button>
-      <button class="bColor" md-button style="height: 50px; width: 60%; float: right" click.delegate="skipKeyword()">
+      <button class="bColor" md-button style="height: 45px; width: 60%; float: right" click.delegate="skipKeyword()">
         <i class="fad fa-forward"></i>
       </button>
-      <button class="bColor" md-button style="height: 50px; width: 100%; margin-top: 2px"
+      <button class="bColor" md-button style="height: 45px; width: 100%; margin-top: 2px"
         click.delegate="applyLabel() & throttle: 1000">
-        <i class="fad fa-plus"></i>
+        <i class="far fa-plus"></i>
         Use
       </button>
     </div>
@@ -122,12 +122,16 @@
       <!-- <span if.bind="selected_label">, </span> ${selected_label.n_docs}el" class="fad fa-file-alt"></i> </div> -->
     </div>
   </div>
+  <hr style="padding: 0; margin: 0; border-top: 1px solid lightgrey;">
   <div class="row" style="margin:0">
 
     <!-- Labels View -->
     <div class="col m12">
-      <input type="text" class="form-control search-box" value.bind="searchLabelsTerm"
-        placeholder="search Labels..."></input>
+      <div>
+        <i class="fad fa-search fa-2x" style="display: inline-block;vertical-align: middle;"></i>
+        <input type="text" class="form-control search-box" style="display: inline-block; width: 50%;"
+          value.bind="searchLabelsTerm" placeholder="search Labels..."></input>
+      </div>
       <div class="row" style="height: 40vh; margin-bottom: 0px;">
         <table>
           <thead>
@@ -215,8 +219,11 @@
   <div class="row">
     <!-- Keyword View -->
     <div class="col m4">
-      <input type="text" class="form-control search-box" value.bind="searchCoocKeywordTerm"
-        placeholder="search All Keywords..."></input>
+      <div>
+        <i class="fad fa-search fa-2x" style="display: inline-block;vertical-align: middle;"></i>
+        <input type="text" class="form-control search-box" value.bind="searchCoocKeywordTerm"
+          style="display: inline-block; width: 80%" placeholder="search All Keywords..."></input>
+      </div>
       <div class="row" style="overflow: scroll; height: 35vh;">
         <table>
           <thead>
@@ -297,8 +304,12 @@
     <div class="col m8">
 
       <!-- Document View -->
-      <input type="text" class="form-control search-box" value.bind="searchDocumentTerm"
-        placeholder="search Document titles..."></input>
+      <div>
+        <i class="fad fa-search fa-2x" style="display: inline-block;vertical-align: middle;"></i>
+        <input type="text" class="form-control search-box" value.bind="searchDocumentTerm"
+          style="display: inline-block; width: 80%" placeholder="search Document titles..."></input>
+
+      </div>
       <!-- Document List View -->
       <div class="row" style="overflow: scroll; height: 35vh;">
         <table>
