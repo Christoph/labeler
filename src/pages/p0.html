@@ -126,11 +126,23 @@
   <div class="row" style="margin:0">
 
     <!-- Labels View -->
-    <div class="col m12">
+    <div class="col m12" style="margin-left: 10px">
       <div>
         <i class="fad fa-search fa-2x" style="display: inline-block;vertical-align: middle;"></i>
         <input type="text" class="form-control search-box" style="display: inline-block; width: 50%;"
           value.bind="searchLabelsTerm" placeholder="search Labels..."></input>
+        <span style="display: inline-block; width: 45%">
+          <span style="float: right; font-size:large; font-weight: 200; margin-right: 5px; vertical-align:middle">
+            Importance:
+            High
+            <i class="fad fa-circle" style="color: #094D08; display: inline-block"></i>
+            <i class="fad fa-circle" style="color: #108C0E; display: inline-block"></i>
+            <i class="fad fa-circle" style="color: #7CC07B; display: inline-block"></i>
+            Low
+            <i class="fad fa-circle" style="color: #D8DBDB; display: inline-block"></i>
+            No
+          </span>
+        </span>
       </div>
       <div class="row" style="height: 40vh; margin-bottom: 0px;">
         <table>
@@ -138,11 +150,11 @@
             <tr style="border:none; display: block; height: 5vh; width: 100%">
               <th class="table_head" style="width: 4%; display: inline-block"></th>
               <th class="table_head" style="width: 30%; display: inline-block">Label</th>
-              <!-- <th>Count</th> -->
               <th style="width: 4%; display: inline-block"></th>
-              <th class="table_head" style="width: 60%; display: inline-block">
-                Similarity Measures
-                <span style="float: right; font-weight: 200; margin-right: 5px">
+              <th class="table_head" style="width: 200px; display:inline-block">Similarity Feature</th>
+              <th class="table_head" style="width: 40%; display: inline-block">
+                Explanation
+                <!-- <span style="float: right; font-weight: 200; margin-right: 5px">
                   Importance:
                   High
                   <i class="fad fa-circle" style="color: #094D08; display: inline-block"></i>
@@ -151,8 +163,9 @@
                   Low
                   <i class="fad fa-circle" style="color: #D8DBDB; display: inline-block"></i>
                   No
-                </span>
+                </span> -->
               </th>
+
             </tr>
           </thead>
           <tbody element.ref="labelsList" style="display:block; overflow: auto; height: 35vh; width: 100%">
@@ -170,18 +183,18 @@
                 </span>
               </td>
               <!-- <td>${label_object['n_docs']}</td> -->
-              <td style="width: 5%">
+              <td class="table_cell" style="width: 5%">
                 <small-bar percent=${label_object.total_similarity} orientation="vertical" xSize=15 ySize=80>
                 </small-bar>
               </td>
               <td class="table_cell">
                 <table>
-                  <thead>
+                  <!-- <thead>
                     <tr style="border: none">
                       <th class="table_head">Feature</th>
                       <th class="table_head">Explanation</th>
                     </tr>
-                  </thead>
+                  </thead> -->
                   <tbody>
                     <tr repeat.for="sim of label_object.similarities | customSort: {
                           propertyName: 'count', direction: 'descending'
@@ -216,7 +229,7 @@
     </div>
   </div>
   <hr style="padding: 0; margin: 0; border-top: 1px solid lightgrey;">
-  <div class="row">
+  <div class="row" style="margin-left: 10px">
     <!-- Keyword View -->
     <div class="col m4">
       <div>
@@ -224,7 +237,7 @@
         <input type="text" class="form-control search-box" value.bind="searchCoocKeywordTerm"
           style="display: inline-block; width: 80%" placeholder="search All Keywords..."></input>
       </div>
-      <div class="row" style="overflow: scroll; height: 35vh;">
+      <div class="row" style="overflow: scroll; height: 30vh;">
         <table>
           <thead>
             <tr style="border:none">
@@ -244,7 +257,8 @@
                   checked.bind="selected_additional_keywords" click.delegate="selectAddKeyword(keyword)">
                 </md-checkbox> -->
                 <span style="margin-left: 2px;">
-                  ${keyword["keyword"]} <span style="color: orange;" show.bind="keyword.isNew">New</span>
+                  ${keyword["keyword"]}
+                  <span style="color: orange;" show.bind="keyword.isNew">[New]</span>
                 </span>
               </td>
               <!-- <td class="table_cell">${keyword["count"]}</td> -->
@@ -311,7 +325,7 @@
 
       </div>
       <!-- Document List View -->
-      <div class="row" style="overflow: scroll; height: 35vh;">
+      <div class="row" style="overflow: scroll; margin-left: 10px">
         <table>
           <thead>
             <tr style="border: none">
