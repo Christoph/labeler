@@ -124,15 +124,14 @@
   </div>
   <hr style="padding: 0; margin: 0; border-top: 1px solid lightgrey;">
   <div class="row" style="margin:0">
-
     <!-- Labels View -->
-    <div class="col m12" style="margin-left: 10px">
+    <div class="col m8">
       <div>
         <i class="fad fa-search fa-2x" style="display: inline-block;vertical-align: middle;"></i>
         <input type="text" class="form-control search-box" style="display: inline-block; width: 50%;"
           value.bind="searchLabelsTerm" placeholder="search Labels..."></input>
-        <span style="display: inline-block; width: 45%">
-          <span style="float: right; font-size:large; font-weight: 200; margin-right: 5px; vertical-align:middle">
+        <span style="display: inline-block; width: 40%; height: 100%">
+          <span style="float: right; font-weight: 200; vertical-align: middle">
             Importance:
             High
             <i class="fad fa-circle" style="color: #094D08; display: inline-block"></i>
@@ -144,15 +143,15 @@
           </span>
         </span>
       </div>
-      <div class="row" style="height: 40vh; margin-bottom: 0px;">
+      <div class="row" style="margin-bottom: 0px;">
         <table>
-          <thead>
-            <tr style="border:none; display: block; height: 5vh; width: 100%">
+          <thead style="margin-left: 15px">
+            <tr style="border:none; display: block; width: 100%; height: 5vh">
               <th class="table_head" style="width: 4%; display: inline-block"></th>
-              <th class="table_head" style="width: 30%; display: inline-block">Label</th>
-              <th style="width: 4%; display: inline-block"></th>
-              <th class="table_head" style="width: 200px; display:inline-block">Similarity Feature</th>
-              <th class="table_head" style="width: 40%; display: inline-block">
+              <th class="table_head" style="width: 30%; display: inline-block">Recommended Label</th>
+              <th class="table_head" style="width: 4%; display: inline-block"><i class="fas fa-sigma"></i></th>
+              <th class="table_head" style="width: 200px; display:inline-block">Similarity Features</th>
+              <th class="table_head" style="display: inline-block">
                 Explanation
                 <!-- <span style="float: right; font-weight: 200; margin-right: 5px">
                   Importance:
@@ -165,10 +164,10 @@
                   No
                 </span> -->
               </th>
-
             </tr>
           </thead>
-          <tbody element.ref="labelsList" style="display:block; overflow: auto; height: 35vh; width: 100%">
+          <tbody element.ref="labelsList"
+            style="display:block; overflow: auto; height: 35vh; width: 100%; margin-left: 15px; padding-right: 50px">
             <tr repeat.for="label_object of label_docs | customSort: { propertyName: label_sort_property,
                 direction: 'descending',
               } | filter:searchLabelsTerm:filterLabelsFunc">
@@ -227,39 +226,34 @@
         </table>
       </div>
     </div>
-  </div>
-  <hr style="padding: 0; margin: 0; border-top: 1px solid lightgrey;">
-  <div class="row" style="margin-left: 10px">
-    <!-- Keyword View -->
     <div class="col m4">
+      <!-- Keyword View -->
       <div>
         <i class="fad fa-search fa-2x" style="display: inline-block;vertical-align: middle;"></i>
         <input type="text" class="form-control search-box" value.bind="searchCoocKeywordTerm"
           style="display: inline-block; width: 80%" placeholder="search All Keywords..."></input>
       </div>
-      <div class="row" style="overflow: scroll; height: 30vh;">
-        <table>
+      <div class="row" style="margin-bottom: 0;">
+        <table style="margin-left: 12px;">
           <thead>
-            <tr style="border:none">
-              <th class="table_head">
+            <tr style="border:none; display: block; width: 100%; height: 5vh">
+              <th class="table_head" style="width: 50%; display: inline-block">
                 Keyword
               </th>
               <!-- <th class="table_head">#</th> -->
-              <th class="table_head">Label</th>
+              <th class="table_head" style="width: 40%; display: inline-block">Label</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody style="display:block; overflow: auto; height: 35vh; width: 100%; padding-right: 20px">
             <tr repeat.for="keyword of keyword_list | customSort: { propertyName: 'isDone', direction: 'ascending' } |
               filter:searchCoocKeywordTerm:filterKeywordsFunc" click.delegate="moveToKeyword(keyword)"
-              style="cursor: pointer">
-              <td class="table_cell">
+              style="cursor: pointer; width: 100%">
+              <td class="table_cell" style="width: 50%">
                 <!-- <md-checkbox show.bind="!keyword['isDone']" model.bind="keyword"
                   checked.bind="selected_additional_keywords" click.delegate="selectAddKeyword(keyword)">
                 </md-checkbox> -->
-                <span style="margin-left: 2px;">
-                  ${keyword["keyword"]}
-                  <span style="color: orange;" show.bind="keyword.isNew">[New]</span>
-                </span>
+                <span style="color: orange;" show.bind="keyword.isNew">[New]</span>
+                ${keyword["keyword"]}
               </td>
               <!-- <td class="table_cell">${keyword["count"]}</td> -->
               <td class="table_cell">
@@ -315,8 +309,10 @@
       </table if.bind="searchCoocKeywordTerm"> -->
       </div>
     </div>
-    <div class="col m8">
-
+  </div>
+  <hr style="padding: 0; margin: 0; border-top: 1px solid lightgrey;">
+  <div class="row" style="margin-left: 15px">
+    <div class="col m12">
       <!-- Document View -->
       <div>
         <i class="fad fa-search fa-2x" style="display: inline-block;vertical-align: middle;"></i>
@@ -325,7 +321,7 @@
 
       </div>
       <!-- Document List View -->
-      <div class="row" style="overflow: scroll; margin-left: 10px">
+      <div class="row" style="overflow: scroll;">
         <table>
           <thead>
             <tr style="border: none">
@@ -343,21 +339,20 @@
                 <a style="font-size: small;" href=${sim.document["DOI"]}>Link</a>
                 <br>
                 <span style="font-size: small;">
-                  ${sim.document["Authors"]}
+                  <strong>Authors:</strong> ${sim.document["Authors"]}
                 </span>
                 <br>
                 <span style="font-size: small;">
 
                   <strong>Keywords:</strong> ${sim.document["Keywords"]}
                 </span>
-                <span repeat.for="keyword of sim.document['Keywords_Processed']" style="font-size: smaller">
+                <!-- <span repeat.for="keyword of sim.document['Keywords_Processed']" style="font-size: smaller">
                   <md-checkbox disabled.bind="keyword.isDone" class="inline_checkbox" model.bind="keyword"
                     checked.bind="selected_additional_keywords" click.delegate="selectAddKeyword(keyword)">
                   </md-checkbox>
                   ${keyword.keyword}
-                  <!-- <i class="fad fa-trash-alt" click.delegate="removeAddKeyword(keyword)" style="cursor: pointer"></i> -->
                   <span>, </span>
-                </span>
+                </span> -->
                 <br>
                 <ul style="margin: 0; box-shadow: none; -webkit-box-shadow: none"
                   md-collapsible="accordion.bind: !accordion; popout: false;">
