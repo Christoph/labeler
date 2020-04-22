@@ -128,6 +128,7 @@ export class P2 {
 
         this.label_docs = {}
         this.label_categories = {}
+        let categories = {}
         this.keyword_mapping = {}
         this.keyword_list = []
 
@@ -232,6 +233,20 @@ export class P2 {
         }
 
         this.label_docs = temp_labels
+
+        // Create Category mapping
+        for (let label of this.label_docs) {
+            if (categories.hasOwnProperty(label['category'])) {
+                categories[label['category']].labels.push(label)
+            } else {
+                categories[label['category']] = {
+                    category: label['category'],
+                    labels: [label]
+                }
+            }
+        }
+
+        this.label_categories = categories
 
         for (const doc of this.documents) {
             let unknown = 0;
@@ -487,6 +502,7 @@ export class P2 {
         console.log(this.documents)
         console.log(this.keyword_list)
         console.log(this.label_docs)
+        console.log(this.label_categories)
         console.log(this.tfidf_keywords)
 
         this.updateDocumentStats();
