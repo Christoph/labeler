@@ -1,39 +1,4 @@
 <template>
-  <!-- <md-sidenav view-model.ref="sideNav" edge="left" close-on-click="true">
-    <div style="overflow: scroll; height: 84vh;">
-      <table>
-        <thead>
-          <tr>
-            <th>
-              Author Keywords
-            </th>
-            <th style="cursor: pointer" click.delegate="setKeywordSortProperty('count')">#</th>
-            <th>Mapping</th>
-            <th style="cursor: pointer" click.delegate="setKeywordSortProperty('highest_value')">Highest
-              Recommendation</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            repeat.for="keyword of keyword_list | customSort: { propertyName: key_property, direction: 'descending' } | filter:searchKeywordsTerm:filterKeywordsFunc | filterProperty: finishedKeywords:'isDone'"
-            click.delegate="selectKeyword(keyword)"
-            css="cursor: pointer; background-color: ${keyword.isActive ? '#50c6f1' : keyword.isDone ? '#0df2c9' : None};"
-            class="sidenav-close">
-            <td>
-              ${keyword["keyword"]}
-            </td>
-            <td>${keyword["count"]}</td>
-            <td style="word-break: break-all;">
-              ${keyword["mapping"]}
-            </td>
-            <td as-element="small-bar" percent="${keyword['highest_value']}" orientation="horizontal" xSize="60"
-              ySize="20">
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </md-sidenav> -->
   <div class="row" style="margin-bottom: 0px">
     <div class="col m4">
       <!-- <button md-sidenav-collapse="ref.bind: sideNav" md-button md-waves>Show Keywords</button> -->

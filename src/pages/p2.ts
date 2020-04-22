@@ -16,6 +16,7 @@ export class P2 {
     public labeled_documents;
     public label_list;
     public label_docs;
+    public label_categories;
     public keyword_list;
     public keyword_mapping;
     public autocompleteData = {};
@@ -126,16 +127,19 @@ export class P2 {
         let mapping = store.getMapping();
 
         this.label_docs = {}
+        this.label_categories = {}
         this.keyword_mapping = {}
         this.keyword_list = []
 
         // Initialize the label document mapping
         for (const label of this.label_list) {
             this.label_docs[label["Cluster"]] = []
+            this.label_categories[label["Cluster"]] = label['Category']
         }
 
         // Add missing unclear label
         this.label_docs["Unclear"] = [];
+        this.label_categories["Unclear"] = "Unclear"
 
         for (const doc of this.labeled_documents) {
             for (const label of doc["Clusters"].split(";")) {
@@ -209,6 +213,7 @@ export class P2 {
             let keywords = []
 
             o["label"] = key
+            o["category"] = this.label_categories[key]
             o["docs"] = value
             o["n_docs"] = o["docs"].length
             o["substring_similarity"] = 0.0
