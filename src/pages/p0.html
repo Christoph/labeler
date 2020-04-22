@@ -93,25 +93,15 @@
     <div class="col m9">
       <span style="font-size: xx-large;">
         active keyword: <strong>${selected_keyword.keyword}</strong></span>
-      <!-- , ${selected_keyword.count} <i class="fad fa-file-alt"></i> -->
-      <br>
+      <!-- <br>
       <span style="font-size: smaller; margin-left: 20px">
         Co-Occurring Unlabeled Keywords:
       </span>
-      <!-- <i if.bind="!selected_additional_keywords.length"> Select Co-Occurring Keywords </i> -->
       <span repeat.for="word of s_words" style="font-size: smaller">
         <md-checkbox class="inline_checkbox" model.bind="word.keyword" checked.bind="selected_additional_keywords"
           click.delegate="selectAddKeyword(word.keyword)">
         </md-checkbox>
         ${word.keyword.keyword}
-        <!-- <i class="fad fa-trash-alt" click.delegate="removeAddKeyword(keyword)" style="cursor: pointer"></i> -->
-        <span>, </span>
-      </span>
-      <!-- <span repeat.for="keyword of selected_additional_keywords" style="font-size: smaller">
-        <strong>
-          ${keyword.keyword}
-          <i class="fad fa-trash-alt" click.delegate="removeAddKeyword(keyword)" style="cursor: pointer"></i>
-        </strong>
         <span>, </span>
       </span> -->
       <br>
@@ -126,12 +116,12 @@
   <hr style="padding: 0; margin: 0; border-top: 1px solid lightgrey;">
   <div class="row" style="margin:0">
     <!-- Labels View -->
-    <div class="col m8">
+    <div class="col m6">
       <div>
         <i class="fad fa-search fa-2x" style="display: inline-block;vertical-align: middle;"></i>
-        <input type="text" class="form-control search-box" style="display: inline-block; width: 50%;"
+        <input type="text" class="form-control search-box" style="display: inline-block; width: 80%;"
           value.bind="searchLabelsTerm" placeholder="search Labels..."></input>
-        <span style="display: inline-block; width: 40%; height: 100%">
+        <!-- <span style="display: inline-block; width: 40%; height: 100%">
           <span style="float: right; font-weight: 200; vertical-align: middle">
             Importance:
             High
@@ -142,7 +132,7 @@
             <i class="fad fa-circle" style="color: #D8DBDB; display: inline-block"></i>
             No
           </span>
-        </span>
+        </span> -->
       </div>
       <div class="row" style="margin-bottom: 0px;">
         <table>
@@ -150,21 +140,9 @@
             <tr style="border:none; display: block; width: 100%; height: 5vh">
               <th class="table_head" style="width: 4%; display: inline-block"></th>
               <th class="table_head" style="width: 30%; display: inline-block">Recommended Label</th>
-              <th class="table_head" style="width: 4%; display: inline-block"><i class="fas fa-sigma"></i></th>
+              <!-- <th class="table_head" style="width: 4%; display: inline-block"><i class="fas fa-sigma"></i></th>
               <th class="table_head" style="width: 200px; display:inline-block">Similarity Features</th>
-              <th class="table_head" style="display: inline-block">
-                Explanation
-                <!-- <span style="float: right; font-weight: 200; margin-right: 5px">
-                  Importance:
-                  High
-                  <i class="fad fa-circle" style="color: #094D08; display: inline-block"></i>
-                  <i class="fad fa-circle" style="color: #108C0E; display: inline-block"></i>
-                  <i class="fad fa-circle" style="color: #7CC07B; display: inline-block"></i>
-                  Low
-                  <i class="fad fa-circle" style="color: #D8DBDB; display: inline-block"></i>
-                  No
-                </span> -->
-              </th>
+              <th class="table_head" style="display: inline-block"> Explanation </th> -->
             </tr>
           </thead>
           <tbody element.ref="labelsList"
@@ -179,22 +157,14 @@
                 dblclick.delegate="applyLabel()">
                 <span>
                   ${label_object['label']}
-                  <!-- , ${label_object['n_docs']} <i class="fad fa-file-alt"></i> -->
                 </span>
               </td>
-              <!-- <td>${label_object['n_docs']}</td> -->
-              <td class="table_cell" style="width: 5%">
+              <!-- <td class="table_cell" style="width: 5%">
                 <small-bar percent=${label_object.total_similarity} orientation="vertical" xSize=15 ySize=80>
                 </small-bar>
               </td>
               <td class="table_cell">
                 <table>
-                  <!-- <thead>
-                    <tr style="border: none">
-                      <th class="table_head">Feature</th>
-                      <th class="table_head">Explanation</th>
-                    </tr>
-                  </thead> -->
                   <tbody>
                     <tr repeat.for="sim of label_object.similarities | customSort: {
                           propertyName: 'count', direction: 'descending'
@@ -214,20 +184,13 @@
                     </tr>
                   </tbody>
                 </table>
-                <!-- <span style="white-space: nowrap" repeat.for="sim of label_object.similarities | customSort: {
-                  propertyName: 'count', direction: 'descending'
-                }">
-                      <i class="fad fa-circle" css="color: ${sim['color']}"></i>
-                      ${sim.type} | ${sim.explanation}
-                      <br>
-                    </span> -->
-              </td>
+              </td> -->
             </tr>
           </tbody>
         </table>
       </div>
     </div>
-    <div class="col m4">
+    <div class="col m6">
       <!-- Keyword View -->
       <div>
         <i class="fad fa-search fa-2x" style="display: inline-block;vertical-align: middle;"></i>
