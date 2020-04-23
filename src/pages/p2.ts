@@ -39,6 +39,8 @@ export class P2 {
     public selected_similarities = [];
     public selected_similar_keywords = [];
     public s_words = [];
+    public selected_category;
+    public selected_label_list = [];
 
     // Similarity list
     public sim_property = "text_similarity";
@@ -246,7 +248,12 @@ export class P2 {
             }
         }
 
-        this.label_categories = categories
+        let temp = []
+        for (let [key, value] of Object.entries(categories)) {
+            temp.push(value)
+        }
+
+        this.label_categories = temp
 
         for (const doc of this.documents) {
             let unknown = 0;
@@ -517,6 +524,16 @@ export class P2 {
 
     selectDocument(doc) {
         this.selected_document = doc;
+    }
+
+    unselectCategory() {
+        this.selected_category = false
+        this.selected_label_list = []
+    }
+
+    selectCategory(category) {
+        this.selected_category = category
+        this.selected_label_list = category['labels']
     }
 
     selectLabel(label) {
