@@ -119,15 +119,17 @@
           <thead style="margin-left: 15px">
             <tr style="border:none; display: block; width: 100%; height: 5vh">
               <!-- <th class="table_head" style="width: 4%; display: inline-block"></th> -->
-              <th class="table_head" style="width: 30%; display: inline-block">Recommended Category</th>
+              <th class="table_head" style="width: 30%; display: inline-block">Categories</th>
               <th class="table_head" style="width: 4%; display: inline-block"><i class="fas fa-sigma"></i></th>
-              <th class="table_head" style="width: 200px; display:inline-block">Similarity Features</th>
+              <th class="table_head" style="width: 200px; display:inline-block">Top Similarity Features</th>
               <th class="table_head" style="display: inline-block"> Explanation </th>
             </tr>
           </thead>
           <tbody element.ref="labelsList"
             style="display:block; overflow: auto; height: 35vh; width: 100%; margin-left: 15px; padding-right: 50px">
-            <tr repeat.for="category of label_categories">
+            <tr repeat.for="category of label_categories| customSort: { propertyName: label_sort_property,
+                direction: 'descending',
+              } | filter:searchLabelsTerm:filterLabelsFunc">
               <!-- <td class="table_cell" style="width: 5%;">
                 <md-checkbox checked.bind="label_object['isActive']" click.delegate="selectLabel(label_object)">
               </td> -->
@@ -136,14 +138,14 @@
                   ${category['category']}
                 </span>
               </td>
-              <!-- <td class="table_cell" style="width: 5%">
-                <small-bar percent=${label_object.total_similarity} orientation="vertical" xSize=15 ySize=80>
+              <td class="table_cell" style="width: 5%">
+                <small-bar percent=${category.total_similarity} orientation="vertical" xSize=15 ySize=80>
                 </small-bar>
               </td>
               <td class="table_cell">
                 <table>
                   <tbody>
-                    <tr repeat.for="sim of label_object.similarities | customSort: {
+                    <tr repeat.for="sim of category.similarities | customSort: {
                           propertyName: 'count', direction: 'descending'
                         }" style="border: none">
                       <td class="table_cell" style="width: 200px;">
@@ -157,11 +159,12 @@
                           <i css="color: ${ex.color}">
                             ${ex.keyword},
                           </i>
+                        </span>
                       </td>
                     </tr>
                   </tbody>
                 </table>
-              </td> -->
+              </td>
             </tr>
           </tbody>
         </table>

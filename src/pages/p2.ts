@@ -9,6 +9,7 @@ import { computedFrom } from 'aurelia-framework';
 import * as tfidf from 'tiny-tfidf';
 import * as porter from 'wink-porter2-stemmer';
 import * as distances from 'wink-distance';
+import { max } from 'd3';
 
 @autoinject()
 export class P2 {
@@ -567,6 +568,7 @@ export class P2 {
 
         // Update Labels List
         this.computeLabelSimilarities(this.label_docs, this.selected_keyword);
+        this.updateCategoriyList(this.label_categories)
         // this.populateLabels(this.label_docs, this.selected_keyword);
 
         // Update graph
@@ -685,6 +687,76 @@ export class P2 {
         if (num > 0.5) return "#094D08"
         else if (num > 0.25) return "#108C0E"
         else return "#7CC07B"
+    }
+
+    updateCategoriyList(categories) {
+        for (const category of categories) {
+            let total_similarity = max(category.labels, d => d["total_similarity"])
+            let temp = []
+
+            let ls = []
+            let lsex = []
+            let ks = []
+            let ksex = []
+            let co = []
+            let coex = []
+            let ed = []
+            let edex = []
+
+            for (const label of category.labels) {
+                for (const sim of label['similarities']) {
+                    if (sim.type == 'Label Substring') {
+                        ls.push(sim.value)
+                        lsex.push(...sim.explanation)
+                    }
+                    if (sim.type == 'Keyword Substring') {
+                        ks.push(sim.value)
+                        ksex.push(...sim.explanation)
+                    }
+                    if (sim.type == 'Cooccurrent Keywords') {
+                        co.push(sim.value)
+                        coex.push(...sim.explanation)
+                    }
+                    if (sim.type == 'Edit Distance') {
+                        ed.push(sim.value)
+                        edex.push(...sim.explanation)
+                    }
+                }
+            }
+
+            let label_subs = max(ls)
+            temp.push({
+                type: 'Label Substring',
+                color: this.colorConverter(Number(label_subs)),
+                value: label_subs,
+                explanation: lsex
+            })
+            let keyword_subs = max(ks)
+            temp.push({
+                type: 'Keyword Substring',
+                color: this.colorConverter(Number(keyword_subs)),
+                value: keyword_subs,
+                explanation: ksex
+            })
+            let cooc = max(co)
+            temp.push({
+                type: 'Cooccurrent Keywords',
+                color: this.colorConverter(Number(cooc)),
+                value: cooc,
+                explanation: coex
+            })
+            let edit = max(ed)
+            temp.push({
+                type: "Edit Distance",
+                color: this.colorConverter(Number(edit)),
+                value: edit,
+                explanation: edex
+            })
+
+
+            category['total_similarity'] = total_similarity
+            category['similarities'] = temp
+        }
     }
 
     computeLabelSimilarities(labels, keyword) {
