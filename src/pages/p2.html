@@ -50,7 +50,7 @@
         <i class="fad fa-forward"></i>
       </button>
       <button class="bColor" md-button style="height: 45px; width: 100%; margin-top: 2px"
-        click.delegate="applyLabel() & throttle: 1000">
+        click.delegate="applyLabel() & throttle: 1000" disabled.bind="!selected_label">
         <i class="far fa-plus"></i>
         Use
       </button>
@@ -59,19 +59,6 @@
       <span style="font-size: xx-large;">
         active keyword: <strong>${selected_keyword.keyword}</strong></span>
       <!-- , ${selected_keyword.count} <i class="fad fa-file-alt"></i> -->
-      <br>
-      <span style="font-size: smaller; margin-left: 20px">
-        Co-Occurring Unlabeled Keywords:
-      </span>
-      <!-- <i if.bind="!selected_additional_keywords.length"> Select Co-Occurring Keywords </i> -->
-      <span repeat.for="word of s_words" style="font-size: smaller">
-        <md-checkbox class="inline_checkbox" model.bind="word.keyword" checked.bind="selected_additional_keywords"
-          click.delegate="selectAddKeyword(word.keyword)">
-        </md-checkbox>
-        ${word.keyword.keyword}
-        <!-- <i class="fad fa-trash-alt" click.delegate="removeAddKeyword(keyword)" style="cursor: pointer"></i> -->
-        <span>, </span>
-      </span>
       <!-- <span repeat.for="keyword of selected_additional_keywords" style="font-size: smaller">
         <strong>
           ${keyword.keyword}
@@ -80,9 +67,15 @@
         <span>, </span>
       </span> -->
       <br>
+      <span>
+        selected category:
+        <strong if.bind="!selected_category"> Select a Category </strong>
+        <strong>${selected_category.category}</strong>
+      </span>
+      <br>
       <span style="font-size: x-large;">
         selected label:
-        <strong if.bind="!selected_label"> Select a Label Below </strong>
+        <strong if.bind="!selected_label"> Select a Label </strong>
         <strong>${selected_label.label}</strong>
       </span>
       <!-- <span if.bind="selected_label">, </span> ${selected_label.n_docs}el" class="fad fa-file-alt"></i> </div> -->
@@ -114,11 +107,95 @@
           </span>
         </span>
       </div>
-      <div class="row" style="margin-bottom: 0px;">
-        <table show.bind="!selected_category">
+      <div if.bind="searchLabelsTerm" class="row" style="margin-bottom: 0px;">
+        <table>
           <thead style="margin-left: 15px">
             <tr style="border:none; display: block; width: 100%; height: 5vh">
-              <!-- <th class="table_head" style="width: 4%; display: inline-block"></th> -->
+              <th class="table_head" style="width: 4%; display: inline-block"></th>
+              <th class="table_head" style="width: 30%; display: inline-block">Recommended Label</th>
+              <th class="table_head" style="width: 4%; display: inline-block"><i class="fas fa-sigma"></i></th>
+              <th class="table_head" style="width: 200px; display:inline-block">Similarity Features</th>
+              <th class="table_head" style="display: inline-block">
+                Explanation
+                <!-- <span style="float: right; font-weight: 200; margin-right: 5px">
+                  Importance:
+                  High
+                  <i class="fad fa-circle" style="color: #094D08; display: inline-block"></i>
+                  <i class="fad fa-circle" style="color: #108C0E; display: inline-block"></i>
+                  <i class="fad fa-circle" style="color: #7CC07B; display: inline-block"></i>
+                  Low
+                  <i class="fad fa-circle" style="color: #D8DBDB; display: inline-block"></i>
+                  No
+                </span> -->
+              </th>
+            </tr>
+          </thead>
+          <tbody element.ref="labelsList"
+            style="display:block; overflow: auto; height: 35vh; width: 100%; margin-left: 15px; padding-right: 50px">
+            <tr repeat.for="label_object of label_docs | customSort: { propertyName: label_sort_property,
+                direction: 'descending',
+              } | filter:searchLabelsTerm:filterLabelsFunc">
+              <td class="table_cell" style="width: 5%;">
+                <md-checkbox checked.bind="label_object['isActive']" click.delegate="selectLabel(label_object)">
+              </td>
+              <td class="table_cell" style="cursor: pointer; width: 30%" click.delegate="selectLabel(label_object)"
+                dblclick.delegate="applyLabel()">
+                <span>
+                  ${label_object['label']}
+                  <br>
+                  <span style="font-size:smaller; color: grey">${label_object['category']}</span>
+                  <!-- , ${label_object['n_docs']} <i class="fad fa-file-alt"></i> -->
+                </span>
+              </td>
+              <!-- <td>${label_object['n_docs']}</td> -->
+              <td class="table_cell" style="width: 5%">
+                <small-bar percent=${label_object.total_similarity} orientation="vertical" xSize=15 ySize=80>
+                </small-bar>
+              </td>
+              <td class="table_cell">
+                <table>
+                  <!-- <thead>
+                    <tr style="border: none">
+                      <th class="table_head">Feature</th>
+                      <th class="table_head">Explanation</th>
+                    </tr>
+                  </thead> -->
+                  <tbody>
+                    <tr repeat.for="sim of label_object.similarities | customSort: {
+                          propertyName: 'count', direction: 'descending'
+                        }" style="border: none">
+                      <td class="table_cell" style="width: 200px;">
+                        <i class="fad fa-circle" css="color: ${sim['color']}; display: inline-block"></i>
+                        <span style="display: inline-block;">
+                          ${sim.type}
+                        </span>
+                      </td>
+                      <td class="table_cell">
+                        <span repeat.for="ex of sim.explanation">
+                          <i css="color: ${ex.color}">
+                            ${ex.keyword},
+                          </i>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <!-- <span style="white-space: nowrap" repeat.for="sim of label_object.similarities | customSort: {
+                  propertyName: 'count', direction: 'descending'
+                }">
+                      <i class="fad fa-circle" css="color: ${sim['color']}"></i>
+                      ${sim.type} | ${sim.explanation}
+                      <br>
+                    </span> -->
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div if.bind="!searchLabelsTerm" class="row" style="margin-bottom: 0px;">
+        <table show.bind="showCategory">
+          <thead style="margin-left: 15px">
+            <tr style="border:none; display: block; width: 100%; height: 5vh">
+              <th class="table_head" style="width: 4%; display: inline-block"></th>
               <th class="table_head" style="width: 30%; display: inline-block">Categories</th>
               <th class="table_head" style="width: 4%; display: inline-block"><i class="fas fa-sigma"></i></th>
               <th class="table_head" style="width: 200px; display:inline-block">Top Similarity Features</th>
@@ -168,7 +245,7 @@
             </tr>
           </tbody>
         </table>
-        <table show.bind="selected_category">
+        <table show.bind="!showCategory">
           <thead style="margin-left: 15px">
             <tr style="border:none; display: block; width: 100%; height: 5vh">
               <th class="table_head" style="width: 4%; display: inline-block"></th>

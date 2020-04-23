@@ -37,6 +37,7 @@ export class P2 {
     public last_selected_additional_keywords = [];
     public selected_label;
     public showDocuments = false;
+    public showCategory = true;
     public selected_similarities = [];
     public selected_similar_keywords = [];
     public s_words = [];
@@ -104,23 +105,23 @@ export class P2 {
             this.throttled_applyLabel();
         }
 
-        if (event.key == "ArrowDown" && this.selected_label) {
-            let index = this.label_docs.findIndex(x => x.label == this.selected_label.label)
-            this.selectLabel(this.label_docs[Math.min(index + 1, this.label_docs.length - 1)])
-        }
+        // if (event.key == "ArrowDown" && this.selected_label) {
+        //     let index = this.label_docs.findIndex(x => x.label == this.selected_label.label)
+        //     this.selectLabel(this.label_docs[Math.min(index + 1, this.label_docs.length - 1)])
+        // }
 
-        if (event.key == "ArrowUp" && this.selected_label) {
-            let index = this.label_docs.findIndex(x => x.label == this.selected_label.label)
-            this.selectLabel(this.label_docs[Math.max(index - 1, 0)])
-        }
+        // if (event.key == "ArrowUp" && this.selected_label) {
+        //     let index = this.label_docs.findIndex(x => x.label == this.selected_label.label)
+        //     this.selectLabel(this.label_docs[Math.max(index - 1, 0)])
+        // }
 
-        if (event.key == "ArrowRight" && this.selected_label) {
-            this.skipKeyword();
-        }
+        // if (event.key == "ArrowRight" && this.selected_label) {
+        //     this.skipKeyword();
+        // }
 
-        if (event.key == "ArrowLeft" && this.selected_label) {
-            this.undoKeyword();
-        }
+        // if (event.key == "ArrowLeft" && this.selected_label) {
+        //     this.undoKeyword();
+        // }
     }
 
     constructor(public store: DataStore) {
@@ -520,7 +521,7 @@ export class P2 {
     }
 
     attached() {
-        this.selectLabel(this.label_docs[0])
+        // this.selectLabel(this.label_docs[0])
     }
 
     selectDocument(doc) {
@@ -528,13 +529,20 @@ export class P2 {
     }
 
     unselectCategory() {
+        this.showCategory = true
         this.selected_category = false
-        this.selected_label_list = []
+        // this.selected_label_list = []
     }
 
     selectCategory(category) {
-        this.selected_category = category
-        this.selected_label_list = category['labels']
+        this.showCategory = false;
+        this.selected_category = category;
+        this.selected_label_list = category['labels'];
+    }
+
+    unselectLabel() {
+        if (this.selected_label) this.selected_label["isActive"] = false;
+        this.selected_label = ""
     }
 
     selectLabel(label) {
@@ -888,6 +896,7 @@ export class P2 {
         // Sort labels list
         this.label_sort_property = "";
         this.label_sort_property = "total_similarity"
+
     }
 
     // Sort Function
@@ -935,12 +944,12 @@ export class P2 {
     async moveToKeyword(key) {
         await this.selectKeyword(key)
 
-        if (key.isDone) {
-            this.selectLabel(key.label)
-        }
-        else {
-            this.selectLabel(this.label_docs[0])
-        }
+        // if (key.isDone) {
+        //     this.selectLabel(key.label)
+        // }
+        // else {
+        //     this.selectLabel(this.label_docs[0])
+        // }
 
         // Reset filter
         this.searchDocumentTerm = ""
@@ -1031,6 +1040,7 @@ export class P2 {
 
         this.selected_keyword["time"] = time_fraction
 
+
         if (this.selected_additional_keywords) {
             for (const keyword of this.selected_additional_keywords) {
                 keyword.mapping = this.selected_label.label;
@@ -1055,7 +1065,6 @@ export class P2 {
             }
             this.updateKeywordStats();
         }
-
         // Update keyword list view
         // this.finishedKeywords = !this.finishedKeywords;
         // this.finishedKeywords = !this.finishedKeywords;
@@ -1075,6 +1084,9 @@ export class P2 {
         }
 
         this.updateDocumentStats();
+
+        this.unselectCategory();
+        this.unselectLabel();
 
         // // Reset filter
         // this.searchDocumentTerm = ""
