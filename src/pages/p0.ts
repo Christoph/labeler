@@ -120,6 +120,7 @@ export class P0 {
     }
 
     constructor(public store: DataStore) {
+        store.loadJson('p0')
         this.documents = store.getNew();
         this.labeled_documents = store.getLabeled();
         this.label_list = store.getClasses();
@@ -147,7 +148,7 @@ export class P0 {
             }
 
             // TODO: fix casing in preprocessing
-            doc["Keywords_Processed"] = doc["Keywords_Processed"].toLowerCase().split(";");
+            doc["Keywords_Processed"] = doc["Keywords"].split(";");
 
             for (const author_key of doc["Keywords_Processed"]) {
                 if (!this.keyword_mapping.hasOwnProperty(author_key)) {
@@ -240,7 +241,7 @@ export class P0 {
 
             // Create final keywords field
             // TODO: fix casing in preprocessing
-            doc["Keywords_Processed"] = doc["Keywords_Processed"].toLowerCase().split(";");
+            doc["Keywords_Processed"] = doc["Keywords"].split(";");
 
             // // Populate final keyword list
             // let final = doc["Keywords_Processed"]

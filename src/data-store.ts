@@ -14,12 +14,39 @@ export class DataStore {
 
   constructor() {
     let classes = require('../datasets/classes.json')
-    let mapping = require('../datasets/mapping.json')
-    let new_data = require('../datasets/new_data.json')
-    let old_data = require('../datasets/old_data.json')
+    // let mapping = require('../datasets/mapping.json')
+    // let new_data = require('../datasets/new_data.json')
+    // let old_data = require('../datasets/old_data.json')
+
+    this.classes = new Array();
+
+    for (let row in classes) {
+      this.classes.push(classes[row])
+    }
+  }
+
+  loadJson(site) {
+    let mapping
+    let new_data
+    let old_data
+
+    if (site == 'p0') {
+      mapping = require('../datasets/mapping-p0.json')
+      new_data = require('../datasets/new_data-p0.json')
+      old_data = require('../datasets/old_data-p0.json')
+    }
+    if (site == 'p1') {
+      mapping = require('../datasets/mapping-p1.json')
+      new_data = require('../datasets/new_data-p1.json')
+      old_data = require('../datasets/old_data-p1.json')
+    }
+    if (site == 'p2') {
+      mapping = require('../datasets/mapping-p2.json')
+      new_data = require('../datasets/new_data-p2.json')
+      old_data = require('../datasets/old_data-p2.json')
+    }
 
     this.dataset_size = Object.keys(new_data).length
-    this.classes = new Array();
     this.keyword_propagation = new Array();
     this.keyword_mapping = new Array();
     this.data_new = new Array();
@@ -44,10 +71,6 @@ export class DataStore {
       update["Done"] = false
       update["Key"] = parseInt(key)
       this.data_new.push(update)
-    }
-
-    for (let row in classes) {
-      this.classes.push(classes[row])
     }
   }
 

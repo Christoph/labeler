@@ -125,6 +125,7 @@ export class P2 {
     }
 
     constructor(public store: DataStore) {
+        store.loadJson('p2')
         this.documents = store.getNew();
         this.labeled_documents = store.getLabeled();
         this.label_list = store.getClasses();
@@ -156,7 +157,7 @@ export class P2 {
             }
 
             // TODO: fix casing in preprocessing
-            doc["Keywords_Processed"] = doc["Keywords_Processed"].toLowerCase().split(";");
+            doc["Keywords_Processed"] = doc["Keywords"].split(";");
 
             for (const author_key of doc["Keywords_Processed"]) {
                 if (!this.keyword_mapping.hasOwnProperty(author_key)) {
@@ -181,7 +182,7 @@ export class P2 {
                         }
                     }
                     else {
-                        console.log(author_key)
+                        console.log(author_key, doc)
                         this.keyword_mapping[author_key] = {
                             mapping: "ERROR IN PREPROCEING",
                             label: {},
@@ -269,7 +270,7 @@ export class P2 {
 
             // Create final keywords field
             // TODO: fix casing in preprocessing
-            doc["Keywords_Processed"] = doc["Keywords_Processed"].toLowerCase().split(";");
+            doc["Keywords_Processed"] = doc["Keywords"].split(";");
 
             // // Populate final keyword list
             // let final = doc["Keywords_Processed"]

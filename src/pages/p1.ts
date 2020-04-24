@@ -120,6 +120,7 @@ export class P1 {
     }
 
     constructor(public store: DataStore) {
+        store.loadJson('p1')
         this.documents = store.getNew();
         this.labeled_documents = store.getLabeled();
         this.label_list = store.getClasses();
