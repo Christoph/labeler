@@ -539,6 +539,10 @@ export class P2 {
         this.showCategory = false;
         this.selected_category = category;
         this.selected_label_list = category['labels'];
+
+        const m = max(this.selected_label_list, d => d['total_similarity'])
+        const index = this.selected_label_list.findIndex(d => d['total_similarity'] === m);
+        this.selectLabel(this.selected_label_list[index])
     }
 
     unselectLabel() {
