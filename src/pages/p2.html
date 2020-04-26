@@ -122,7 +122,7 @@
             style="display:block; overflow: auto; height: 35vh; width: 100%; margin-left: 15px; padding-right: 50px">
             <tr repeat.for="category of label_categories| customSort: { propertyName: label_sort_property,
                 direction: 'descending',
-              } | filter:searchLabelsTerm:filterLabelsFunc" ref="category['element']">
+              }" ref="category['element']">
               <!-- <td class="table_cell" style="width: 5%;">
                 <md-checkbox checked.bind="label_object['isActive']" click.delegate="selectLabel(label_object)">
               </td> -->
@@ -178,7 +178,7 @@
         </thead>
         <tbody element.ref="labelsList"
           style="display:block; overflow: auto; height: 35vh; width: 100%; margin-left: 15px; padding-right: 50px">
-          <tr repeat.for="label_object of selected_label_list | customSort: { propertyName: label_sort_property,
+          <tr repeat.for="label_object of selected_label_list | customSort: { propertyName: 'total_similarity',
                 direction: 'descending',
               } | filter:searchLabelsTerm:filterLabelsFunc">
             <td class="table_cell" style="width: 5%;">
