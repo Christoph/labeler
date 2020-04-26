@@ -20,6 +20,7 @@ GK = pd.read_csv("../input_data/labeled_data_GK.csv")
 
 truth['labelVecs'] = ''
 truth['labels'] = truth['Clusters'].str.lower()
+truth['labels'] = truth['labels'].str.rstrip(';')
 truth['labels'] = truth['labels'].str.split(';')
 
 data = [prepareData(d) for d in [torsten, Mike, CK, RM, GK]]
@@ -35,7 +36,9 @@ enc.fit([clusters])
 for result in data:
     for i, doc in result.iterrows():
         doc['labelVecs'] = enc.transform([doc['labels']])[0]
+        doc['labelVecs'] = doc['labelsVecs'].str.wrap(500)
 
+pd.DataFrame(enc.classes_, columns=['Label']).to_csv('labels.csv', index=False)
 truth.to_csv('truth.csv', index=False)
 torsten.to_csv('labeler1.csv', index=False)
 Mike.to_csv('labeler2.csv', index=False)
