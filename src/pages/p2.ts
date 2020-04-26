@@ -1250,6 +1250,13 @@ export class P2 {
         return itemValue.toUpperCase().indexOf(searchExpression.toUpperCase()) !== -1;
     }
 
+    filterCategoriesFunc(searchExpression, value) {
+        let itemValue = value["labels"].map(d => d['label']).join(" ");
+        if (!searchExpression || !itemValue) return false;
+
+        return itemValue.toUpperCase().indexOf(searchExpression.toUpperCase()) !== -1;
+    }
+
     filterDocumentsFunc(searchExpression, value) {
         let itemValue = value.document["Title"];
         if (!searchExpression || !itemValue) return false;
