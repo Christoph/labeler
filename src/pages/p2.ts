@@ -5,7 +5,7 @@ import {
     DataStore
 } from 'data-store';
 import * as _ from 'lodash';
-import { computedFrom } from 'aurelia-framework';
+import { computedFrom, observable } from 'aurelia-framework';
 import * as tfidf from 'tiny-tfidf';
 import * as porter from 'wink-porter2-stemmer';
 import * as distances from 'wink-distance';
@@ -21,6 +21,9 @@ export class P2 {
     public keyword_list;
     public keyword_mapping;
     public autocompleteData = {};
+
+    // Scrolling
+    @observable scrollCategory = 0;
 
     // Filter
     public searchKeywordsTerm = "";
@@ -247,7 +250,8 @@ export class P2 {
                 categories[label['category']] = {
                     category: label['category'],
                     labels: [label],
-                    isActive: false
+                    isActive: false,
+                    element: {}
                 }
             }
         }
@@ -524,6 +528,20 @@ export class P2 {
 
     attached() {
         // this.selectLabel(this.label_docs[0])
+    }
+
+    scrollCategoryChanged() {
+        if (this.label_categories) {
+            for (const c of this.label_categories) {
+                if (c.element.offsetTop - this.scrollCategory < 150) {
+                    // c['isActive'] = true
+                    this.selectCategory(c)
+                }
+                // else {
+                //     c['isActive'] = false
+                // }
+            }
+        }
     }
 
     categoryHighlight(category) {
