@@ -246,7 +246,8 @@ export class P2 {
             } else {
                 categories[label['category']] = {
                     category: label['category'],
-                    labels: [label]
+                    labels: [label],
+                    isActive: false
                 }
             }
         }
@@ -525,6 +526,15 @@ export class P2 {
         // this.selectLabel(this.label_docs[0])
     }
 
+    categoryHighlight(category) {
+        if (category == this.selected_category) {
+            return 1
+        }
+        else {
+            return 0.3
+        }
+    }
+
     selectDocument(doc) {
         this.selected_document = doc;
     }
@@ -536,9 +546,12 @@ export class P2 {
     }
 
     selectCategory(category) {
+        if (this.selected_category) this.selected_category["isActive"] = false;
+
         this.showCategory = false;
         this.selected_category = category;
         this.selected_label_list = category['labels'];
+        this.selected_category["isActive"] = true
 
         const m = max(this.selected_label_list, d => d['total_similarity'])
         const index = this.selected_label_list.findIndex(d => d['total_similarity'] === m);

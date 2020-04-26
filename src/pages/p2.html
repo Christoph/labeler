@@ -122,11 +122,11 @@
             style="display:block; overflow: auto; height: 35vh; width: 100%; margin-left: 15px; padding-right: 50px">
             <tr repeat.for="category of label_categories| customSort: { propertyName: label_sort_property,
                 direction: 'descending',
-              } | filter:searchLabelsTerm:filterLabelsFunc" css="opacity: 0.1">
+              } | filter:searchLabelsTerm:filterLabelsFunc">
               <!-- <td class="table_cell" style="width: 5%;">
                 <md-checkbox checked.bind="label_object['isActive']" click.delegate="selectLabel(label_object)">
               </td> -->
-              <td class="table_cell" style="width: 65%">
+              <td class="table_cell" css="width: 65%; opacity: ${category['isActive'] | highlightCategory}">
                 <table>
                   <tbody>
                     <tr repeat.for="sim of category.similarities | customSort: {
@@ -149,11 +149,13 @@
                   </tbody>
                 </table>
               </td>
-              <td class="table_cell" style="width: 5%">
+              <td class="table_cell" css="width: 5%; opacity: ${category['isActive'] | highlightCategory}">
                 <small-bar percent=${category.total_similarity} orientation="vertical" xSize=15 ySize=80>
                 </small-bar>
               </td>
-              <td class="table_cell" style="cursor: pointer; width: 30%" click.delegate="selectCategory(category)">
+              <td class="table_cell"
+                css="cursor: pointer; width: 30%; opacity: ${category['isActive'] | highlightCategory}"
+                click.delegate="selectCategory(category)">
                 <span>
                   ${category['category']}
                 </span>
