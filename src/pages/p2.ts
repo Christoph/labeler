@@ -534,7 +534,7 @@ export class P2 {
     scrollCategoryChanged() {
         if (this.label_categories) {
             for (const c of this.label_categories) {
-                if (c.element.offsetTop - this.scrollCategory < c.element.offsetHeight) {
+                if (c.element.offsetTop - this.scrollCategory < c.element.offsetHeight + 20) {
                     // c['isActive'] = true
                     this.selectCategory(c)
                 }
