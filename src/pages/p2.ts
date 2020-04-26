@@ -528,6 +528,7 @@ export class P2 {
 
     attached() {
         // this.selectLabel(this.label_docs[0])
+        this.scrollCategoryChanged()
     }
 
     scrollCategoryChanged() {
@@ -572,7 +573,7 @@ export class P2 {
         this.selected_category["isActive"] = true
 
         const m = max(this.selected_label_list, d => d['total_similarity'])
-        const index = this.selected_label_list.findIndex(d => d['total_similarity'] === m);
+        const index = this.selected_label_list.findIndex(d => d['total_similarity'] == m);
         this.selectLabel(this.selected_label_list[index])
     }
 
@@ -1023,6 +1024,10 @@ export class P2 {
 
         // // Reset scrolling after applying
         // this['labelsList'].scrollTop = 0;
+
+        const m = max(this.label_categories, d => d['total_similarity'])
+        const index = this.label_categories.findIndex(d => d['total_similarity'] == m);
+        this.selectCategory(this.label_categories[index])
     }
 
     async undoKeyword() {
@@ -1057,6 +1062,10 @@ export class P2 {
 
         // // Reset scrolling after applying
         // this['labelsList'].scrollTop = 0;
+
+        const m = max(this.label_categories, d => d['total_similarity'])
+        const index = this.label_categories.findIndex(d => d['total_similarity'] == m);
+        this.selectCategory(this.label_categories[index])
     }
 
     throttled_applyLabel = _.throttle(x => this.applyLabel(), 1000)
@@ -1121,8 +1130,12 @@ export class P2 {
 
         this.updateDocumentStats();
 
-        this.unselectCategory();
-        this.unselectLabel();
+        // this.unselectCategory();
+        // this.unselectLabel();
+
+        const m = max(this.label_categories, d => d['total_similarity'])
+        const index = this.label_categories.findIndex(d => d['total_similarity'] == m);
+        this.selectCategory(this.label_categories[index])
 
         // // Reset filter
         // this.searchDocumentTerm = ""
