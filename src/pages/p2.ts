@@ -534,7 +534,7 @@ export class P2 {
     scrollCategoryChanged() {
         if (this.label_categories) {
             for (const c of this.label_categories) {
-                if (c.element.offsetTop - this.scrollCategory < 150) {
+                if (c.element.offsetTop - this.scrollCategory < c.element.offsetHeight) {
                     // c['isActive'] = true
                     this.selectCategory(c)
                 }
@@ -1025,6 +1025,7 @@ export class P2 {
         // // Reset scrolling after applying
         // this['labelsList'].scrollTop = 0;
 
+        this.scrollCategory = 0
         const m = max(this.label_categories, d => d['total_similarity'])
         const index = this.label_categories.findIndex(d => d['total_similarity'] == m);
         this.selectCategory(this.label_categories[index])
@@ -1063,6 +1064,7 @@ export class P2 {
         // // Reset scrolling after applying
         // this['labelsList'].scrollTop = 0;
 
+        this.scrollCategory = 0
         const m = max(this.label_categories, d => d['total_similarity'])
         const index = this.label_categories.findIndex(d => d['total_similarity'] == m);
         this.selectCategory(this.label_categories[index])
@@ -1133,6 +1135,7 @@ export class P2 {
         // this.unselectCategory();
         // this.unselectLabel();
 
+        this.scrollCategory = 0
         const m = max(this.label_categories, d => d['total_similarity'])
         const index = this.label_categories.findIndex(d => d['total_similarity'] == m);
         this.selectCategory(this.label_categories[index])
