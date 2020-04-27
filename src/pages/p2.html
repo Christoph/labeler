@@ -22,15 +22,10 @@
       <i class="fad fa-glass" style="color: orange; font-size: xx-large;"></i>
     </div>
     <div class="col m4">
-      Keywords:
-      <small-bar percent.bind="keywords_per" orientation="horizontal" xSize=40 ySize=13></small-bar>
-      ${keywords_done}/${keywords_todo}
+      Keywords to label:
+      ${keywords_todo}
       <button class="bColor" md-button style="float: right" click.delegate="download()"><i
           class="fad fa-download"></i></button>
-      <br>
-      Documents:
-      <small-bar percent.bind="docs_per" orientation="horizontal" xSize=40 ySize=13></small-bar>
-      ${docs_done}/${docs_todo}
     </div>
   </div>
   <div class="row" if.bind="finished" style="width: 100%; text-align: center; height: 100px; margin-bottom: 0px">
