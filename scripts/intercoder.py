@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 from sklearn.metrics import cohen_kappa_score
 import plotly.figure_factory as ff
+from nltk.metrics.agreement import AnnotationTask
+import itertools
 
 colors = [
     [0, 'rgb(40, 40, 40)'],
@@ -26,20 +28,52 @@ colors = [
     [1.0, 'rgb(200, 200, 200)']
 ]
 
-data = pd.read_csv('../input_data/labels-manual.csv', sep=';', index_col=0)
+data = pd.read_csv('../input_data/labels-C.csv', sep=';', index_col=0)
 
+allcoders = data.columns
+experts = ['KEY', 'MG', 'MS', 'TM']
+novices = ['KEY', 'CK', 'GK', 'RM']
+
+cols = novices
+
+# Total values
+taskdata = []
+for coder in cols:
+    for i in data[coder].index:
+        taskdata.append([coder, i, data[coder][i]])
+
+ratingtask = AnnotationTask(data=taskdata)
+print("kappa " + str(ratingtask.kappa()))
+print("fleiss " + str(ratingtask.multi_kappa()))
+print("alpha " + str(ratingtask.alpha()))
+print("scotts " + str(ratingtask.pi()))
+
+# Pairwise values
 similarities = []
-for x in data.columns:
-    temp = []
-    for y in data.columns:
-        temp.append(cohen_kappa_score(data[x], data[y]))
-    similarities.append(temp)
+for coders in itertools.product(cols, repeat=2):
+    if coders[0] == coders[1]:
+        similarities.append(1)
+    else:
+        taskdata = []
+        for coder in coders:
+            for i in data[coder].index:
+                taskdata.append([coder, i, data[coder][i]])
+
+        ratingtask = AnnotationTask(data=taskdata)
+        k = ratingtask.kappa()
+        f = ratingtask.multi_kappa()
+        a = ratingtask.alpha()
+        s = ratingtask.pi()
+
+        similarities.append(a)
+
+similarities = np.reshape(similarities, (len(cols), len(cols)))
 
 z_text = np.around(similarities, decimals=2)
 fig = ff.create_annotated_heatmap(
     similarities,
-    x=list(data.columns),
-    y=list(data.columns),
+    x=list(cols),
+    y=list(cols),
     annotation_text=z_text,
     colorscale=colors)
 fig.show()
