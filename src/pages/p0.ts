@@ -67,6 +67,7 @@ export class P0 {
     // Temp variables
     public sort_property = "descending";
     public graph_data;
+    public ranking = [];
 
     // Distance Metrics
     // cosine_similarity(v1, v2) {
@@ -908,6 +909,15 @@ export class P0 {
     throttled_applyLabel = _.throttle(x => this.applyLabel(), 1000)
 
     async applyLabel() {
+
+        let temp = []
+        temp.push(this.selected_keyword.keyword)
+        for (let index = 0; index < 10; index++) {
+            const element = this.label_docs[index];
+            temp.push(element.label)
+        }
+        this.ranking.push(temp)
+
         this.selected_keyword.mapping = this.selected_label.label;
         this.selected_keyword.label = this.selected_label;
         this.selected_keyword.isDone = true;
@@ -979,6 +989,7 @@ export class P0 {
     download() {
         this.downloadKeywords();
         this.downloadData();
+        this.downloadRanking();
     }
 
     downloadData() {
@@ -1038,6 +1049,41 @@ export class P0 {
         var link = document.createElement("a");
         link.setAttribute("href", encodedUri);
         link.setAttribute("download", "keyword_data.csv");
+        document.body.appendChild(link);
+
+        link.click();
+    }
+
+    downloadRanking() {
+        let rows = [
+            ["keyword", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
+        ];
+
+        for (const keyword of this.ranking) {
+            rows.push([
+                "\"" + keyword[0] + "\"",
+                "\"" + keyword[1] + "\"",
+                "\"" + keyword[2] + "\"",
+                "\"" + keyword[3] + "\"",
+                "\"" + keyword[4] + "\"",
+                "\"" + keyword[5] + "\"",
+                "\"" + keyword[6] + "\"",
+                "\"" + keyword[7] + "\"",
+                "\"" + keyword[8] + "\"",
+                "\"" + keyword[9] + "\"",
+                "\"" + keyword[10] + "\"",
+            ])
+        }
+
+        let csvContent = "data:text/csv;charset=utf-8,"
+            + rows.map(e => e.join(",")).join("\n");
+
+        // var encodedUri = encodeURI(csvContent);
+        // window.open(encodedUri);
+        var encodedUri = encodeURI(csvContent);
+        var link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "ranking_data.csv");
         document.body.appendChild(link);
 
         link.click();
