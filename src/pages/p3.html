@@ -1,0 +1,235 @@
+<template>
+  <div class="row">
+    <div class="col m8">
+      <!-- Header -->
+      <div class="row">
+        <div class="col m4">
+          <!-- <button md-sidenav-collapse="ref.bind: sideNav" md-button md-waves>Show Keywords</button> -->
+          <button class="bColor" md-button style="height: 35px; width: 50px;" click.delegate="startTimer()"
+            disabled.bind="timerActive">
+            <i class="fas fa-play"></i>
+          </button>
+          <button class="bColor" md-button style="height: 35px; width: 50px;" click.delegate="endTimer()"
+            disabled.bind="!timerActive">
+            <i class="fas fa-stop"></i>
+          </button>
+          <span>
+            Time: ${time | timeFormat}
+            Keyword: ${keyword_time | timeFormat}
+          </span>
+        </div>
+        <div class="col m4" style="text-align: center;">
+          <span style="font-size: xx-large; font-style: italic; font-weight: 800;">
+            LAssi
+          </span>
+          <i class="fad fa-glass" style="color: orange; font-size: xx-large;"></i>
+        </div>
+        <div class="col m4">
+          Keywords to label:
+          ${keywords_todo}
+          <button class="bColor" md-button style="float: right" click.delegate="download()"><i
+              class="fad fa-download"></i></button>
+        </div>
+        <div class="row" if.bind="finished" style="width: 100%; text-align: center; height: 100px; margin-bottom: 0px">
+          <div style="font-size: xx-large; font-weight: 400; margin-top: 40px">
+            All Keywords Labeled!
+          </div>
+          <button class="bColor" md-button click.delegate="download()"><i class="fad fa-download"></i>
+            Download Results</button>
+        </div>
+        <div class="row" style="margin: 0">
+          <div class="col m8">
+            active Keyword: <span style="font-size:  4em;">${selected_keyword.keyword}</span>
+            <!-- <br>
+            sub label: <span style="font-size: x-large;">${selected_label.label}</span> -->
+          </div>
+          <div class="col m4">
+            <button class="bColor" md-button style="height: 45px; width: 100%; margin-bottom: 1px"
+              click.delegate="undoKeyword()" disabled.bind="!last_selected_keyword">
+              <i class="fas fa-undo"></i>
+            </button>
+            <br>
+            <button class="bColor" md-button style="height: 45px; width: 100%;"
+              click.delegate="applyLabel() & throttle: 1000" disabled.bind="!selected_label">
+              <i class="far fa-plus"></i>
+              Use
+            </button>
+          </div>
+        </div>
+        <hr style="padding: 0; margin: 0; border-top: 1px solid lightgrey;">
+      </div>
+      <div class="row">
+        <div class="col m4">
+          <!-- Keyword View -->
+          <div>
+            <i class="fad fa-search fa-2x" style="display: inline-block;vertical-align: middle;"></i>
+            <input type="text" class="form-control search-box" value.bind="searchCoocKeywordTerm"
+              style="display: inline-block; width: 80%" placeholder="search All Keywords..."></input>
+          </div>
+          <div class="row" style="margin-bottom: 0;">
+            <table style="margin-left: 12px;">
+              <thead>
+                <tr style="border:none; display: block; width: 100%; height: 5vh">
+                  <th class="table_head" style="width: 50%; display: inline-block">
+                    Keyword
+                  </th>
+                  <!-- <th class="table_head">#</th> -->
+                  <th class="table_head" style="width: 40%; display: inline-block">Label</th>
+                </tr>
+              </thead>
+              <tbody style="display:block; overflow: auto; height: 35vh; width: 100%; padding-right: 20px">
+                <tr repeat.for="keyword of keyword_list | customSort: { propertyName: 'isDone', direction: 'ascending' } |
+              filter:searchCoocKeywordTerm:filterKeywordsFunc" click.delegate="moveToKeyword(keyword)"
+                  style="cursor: pointer; width: 100%">
+                  <td class="table_cell" style="width: 50%">
+                    <!-- <md-checkbox show.bind="!keyword['isDone']" model.bind="keyword"
+                  checked.bind="selected_additional_keywords" click.delegate="selectAddKeyword(keyword)">
+                </md-checkbox> -->
+                    <span style="color: orange;" show.bind="keyword.isNew">[New]</span>
+                    ${keyword["keyword"]}
+                  </td>
+                  <!-- <td class="table_cell">${keyword["count"]}</td> -->
+                  <td class="table_cell">
+                    ${keyword["mapping"]}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="col m4">
+
+        </div>
+        <div class="col m4">
+          <!-- Categories -->
+          <table>
+            <thead style="margin-left: 15px">
+              <tr style="border:none; display: block; width: 100%; height: 5vh">
+                <th class="table_head">Main Label</th>
+              </tr>
+            </thead>
+            <tbody element.ref="labelsList" style="display:block; height: 35vh; width: 100%; margin-left: 15px; padding-right: 50px;
+                cursor: pointer; ">
+              <tr repeat.for="category of label_categories| customSort: { propertyName: label_sort_property,
+                direction: 'descending',
+              }" ref="category['element']" click.delegate="selectCategory(category)">
+                <td class="table_cell" css="opacity: ${category['isActive'] | highlightCategory}">
+                  <span>
+                    ${category['category']}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <hr style="padding: 0; margin: 0; border-top: 1px solid lightgrey;">
+      <!-- Document List View -->
+      <div class="row" style="height: 30vh; overflow: scroll;">
+        <div>
+          <i class="fad fa-search fa-2x" style="display: inline-block;vertical-align: middle;"></i>
+          <input type="text" class="form-control search-box" value.bind="searchDocumentTerm"
+            style="display: inline-block; width: 80%" placeholder="search Document titles..."></input>
+
+        </div>
+        <table>
+          <thead>
+            <tr style="border: none">
+              <th class="table_head">Documents containing the active Keyword</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr repeat.for="sim of selected_similarities | customSort: { propertyName: sim_property, direction: sort_property }
+              | filter:searchDocumentTerm:filterDocumentsFunc" click.delegate="selectDocument(sim.document)"
+              style="border: none" class="${sim.hasKeywords ? 'none': 'deselected'}">
+              <td class="table_cell">
+                <span style="font-size: x-large; font-weight: 400;">
+                  ${sim.document["Title"]}
+                </span>
+                <a style="font-size: small;" href=${sim.document["DOI"]}>Link</a>
+                <br>
+                <span style="font-size: small;">
+                  <strong>Authors:</strong> ${sim.document["Authors"]}
+                </span>
+                <br>
+                <span style="font-size: small;">
+
+                  <strong>Keywords:</strong> ${sim.document["Keywords"]}
+                </span>
+                <!-- <span repeat.for="keyword of sim.document['Keywords_Processed']" style="font-size: smaller">
+                  <md-checkbox disabled.bind="keyword.isDone" class="inline_checkbox" model.bind="keyword"
+                    checked.bind="selected_additional_keywords" click.delegate="selectAddKeyword(keyword)">
+                  </md-checkbox>
+                  ${keyword.keyword}
+                  <span>, </span>
+                </span> -->
+                <br>
+                <ul style="margin: 0; box-shadow: none; -webkit-box-shadow: none"
+                  md-collapsible="accordion.bind: !accordion; popout: false;">
+                  <li>
+                    <div style="padding: 0 0 0 10px;" class="collapsible-header "> Abstract...</div>
+                    <div class="collapsible-body">
+                      <p>${sim.document["Abstract"]}</p>
+                    </div>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="col m4">
+      <!-- Label View -->
+      <div>
+        <i class="fad fa-search fa-2x" style="display: inline-block;vertical-align: middle;"></i>
+        <input type="text" class="form-control search-box" style="display: inline-block; width: 40%;"
+          value.bind="searchLabelsTerm" placeholder="search Labels..."></input>
+        <span style="float: right; font-weight: 200; vertical-align: middle">
+          Importance:
+          High
+          <i class="fad fa-circle" style="color: #094D08; display: inline-block"></i>
+          <i class="fad fa-circle" style="color: #108C0E; display: inline-block"></i>
+          <i class="fad fa-circle" style="color: #7CC07B; display: inline-block"></i>
+          Low
+          <i class="fad fa-circle" style="color: #D8DBDB; display: inline-block"></i>
+          No
+        </span>
+      </div>
+
+      <div class="row" style="margin-bottom: 0;">
+        <table style="margin-left: 12px;">
+          <thead>
+            <tr style="border:none; display: block; width: 100%; height: 5vh">
+              <th class="table_head" style="width: 50%; display: inline-block">
+                Label
+              </th>
+              <th class="table_head" style="width: 40%; display: inline-block">Recommender Explanations</th>
+            </tr>
+          </thead>
+          <tbody style="display:block; overflow: auto; height: 85vh; width: 100%; padding-right: 20px">
+            <tr repeat.for="label_object of label_docs | customSort: { propertyName: 'total_similarity',
+                direction: 'descending',
+              } | filter:searchLabelsTerm:filterLabelsFunc" click.delegate="selectLabel(label_object)" style="cursor:
+              pointer; width: 100%">
+              <td class="table_cell">
+                <md-checkbox checked.bind="label_object['isActive']" click.delegate="selectLabel(label_object)">
+              </td>
+              <td class="table_cell">
+                ${label_object['label']}
+              </td>
+              <td class="table_cell">
+                <i class="fad fa-circle" css="color: ${label_object['color']}; display: inline-block"></i>
+                <span repeat.for="ex of label_object['total_explanations']">
+                  <i css="color: ${ex.color}">
+                    ${ex.keyword},
+                  </i>
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</template>
