@@ -46,16 +46,13 @@ export class P3 {
     public s_words = [];
     public selected_category;
     public selected_label_list = [];
+    public label_consistency = [];
 
     // Similarity list
     public sim_property = "text_similarity";
     public key_property = "highest_value";
     public label_sort_property = "total_similarity";
     public label_sort_value = 0;
-    public labelSort = {
-        propertyName: "total_similarity",
-        direction: 'descending',
-    }
 
     // Status variables
     public finished = false;
@@ -534,7 +531,7 @@ export class P3 {
 
     attached() {
         // this.selectLabel(this.label_docs[0])
-        this.scrollCategoryChanged()
+        // this.scrollCategoryChanged()
     }
 
     scrollCategoryChanged() {
@@ -1118,6 +1115,19 @@ export class P3 {
 
     throttled_applyLabel = _.throttle(x => this.applyLabel(), 1000)
 
+    updateConsistency() {
+        let label = this.label_consistency.filter(x => x.label == this.selected_label)
+        if (label.length > 0) {
+            label[0]['keywords'].push(this.selected_keyword)
+        }
+        else {
+            this.label_consistency.push({
+                label: this.selected_label,
+                keywords: [this.selected_keyword]
+            })
+        }
+    }
+
     async applyLabel() {
         // let temp = []
         // temp.push(this.selected_keyword.keyword)
@@ -1126,6 +1136,8 @@ export class P3 {
         //     temp.push(element.label)
         // }
         // this.ranking.push(temp)
+
+        this.updateConsistency()
 
         this.selected_keyword.mapping = this.selected_label.label;
         this.selected_keyword.label = this.selected_label;
