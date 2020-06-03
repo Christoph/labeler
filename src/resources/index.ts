@@ -11,6 +11,7 @@ export function configure(config: FrameworkConfiguration) {
     PLATFORM.moduleName("./converters/time-format"),
     PLATFORM.moduleName("./converters/custom-sort"),
     PLATFORM.moduleName("./converters/highlight-category"),
+    PLATFORM.moduleName("./converters/highlight-label"),
     PLATFORM.moduleName("./converters/custom-sort-length"),
     PLATFORM.moduleName("./converters/custom-filter-sort-length"),
     PLATFORM.moduleName("./converters/filter"),

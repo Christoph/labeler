@@ -52,6 +52,10 @@ export class P3 {
     public key_property = "highest_value";
     public label_sort_property = "total_similarity";
     public label_sort_value = 0;
+    public labelSort = {
+        propertyName: "total_similarity",
+        direction: 'descending',
+    }
 
     // Status variables
     public finished = false;
@@ -230,6 +234,7 @@ export class P3 {
             o["keyword_avg_similarity"] = 0.0
             o["total_similarity"] = 0.0
             o["isActive"] = false
+            o["isHighlight"] = true
 
 
             for (let [k, l] of Object.entries(_.pickBy(mapping, x => x === key))) {
@@ -568,14 +573,32 @@ export class P3 {
     selectCategory(category) {
         if (this.selected_category) this.selected_category["isActive"] = false;
 
-        this.showCategory = false;
-        this.selected_category = category;
-        this.selected_label_list = category['labels'];
-        this.selected_category["isActive"] = true
+        if (this.selected_category != category) {
+            this.selected_category = category;
+            this.selected_category["isActive"] = true
 
-        const m = max(this.selected_label_list, d => d['total_similarity'])
-        const index = this.selected_label_list.findIndex(d => d['total_similarity'] == m);
-        this.selectLabel(this.selected_label_list[index])
+            for (const label of this.label_docs) {
+                label['isHighlight'] = false
+            }
+            for (const label of this.selected_category.labels) {
+                label['isHighlight'] = true
+            }
+
+            // const m = max(this.label_docs, d => d['total_similarity'])
+            // const index = this.label_docs.findIndex(d => d['total_similarity'] == m);
+            // this.selectLabel(this.label_docs[index])
+
+            this.label_sort_property = ""
+            this.label_sort_property = "isHighlight"
+        }
+        else {
+            this.selected_category = null
+            for (const label of this.label_docs) {
+                label['isHighlight'] = true
+            }
+            this.label_sort_property = "total_similarity"
+        }
+
     }
 
     unselectLabel() {
@@ -588,7 +611,7 @@ export class P3 {
         this.selected_label = label
         this.selected_label["isActive"] = true
 
-        this.updateSelectedSimilarities(this.selected_keyword);
+        // this.updateSelectedSimilarities(this.selected_keyword);
 
         // Update graph
         // this.createGraphData();
@@ -614,12 +637,21 @@ export class P3 {
 
         // Update Labels List
         this.computeLabelSimilarities(this.label_docs, this.selected_keyword);
-        this.updateCategoriyList(this.label_categories)
+        // this.updateCategoriyList(this.label_categories)
         // this.populateLabels(this.label_docs, this.selected_keyword);
 
         // Update graph
         // this.createGraphData();
-        this.s_words = key.co_oc.filter(x => !x.keyword.mapping)
+        // this.s_words = key.co_oc.filter(x => !x.keyword.mapping)
+
+        // let temp = this.label_docs
+        // this.label_docs = null
+        // this.label_docs = temp
+
+        const m = max(this.label_docs, d => d['total_similarity'])
+        const index = this.label_docs.findIndex(d => d['total_similarity'] == m);
+        this.selectLabel(this.label_docs[index])
+
 
         // if (key.label) {
         //     this.selectLabel(key.label)
@@ -812,6 +844,7 @@ export class P3 {
 
     computeLabelSimilarities(labels, keyword) {
         // Only compute if not already computed
+
         for (let label of labels) {
             let substring_dist = 0
             let substring_ex = []
@@ -945,8 +978,14 @@ export class P3 {
         }
 
         // Sort labels list
-        this.label_sort_property = "";
-        this.label_sort_property = "total_similarity"
+        if (this.selected_category) {
+            this.label_sort_property = "";
+            this.label_sort_property = "isHighlight"
+        }
+        else {
+            this.label_sort_property = "";
+            this.label_sort_property = "total_similarity"
+        }
 
     }
 
@@ -995,20 +1034,13 @@ export class P3 {
     async moveToKeyword(key) {
         await this.selectKeyword(key)
 
-        // if (key.isDone) {
-        //     this.selectLabel(key.label)
-        // }
-        // else {
-        //     this.selectLabel(this.label_docs[0])
-        // }
-
         // Reset filter
         this.searchDocumentTerm = ""
         this.searchKeywordsTerm = ""
         this.searchLabelsTerm = ""
 
         // Reset scrolling after applying
-        this['labelsList'].scrollTop = 0;
+        // this['labelsList'].scrollTop = 0;
     }
 
     async skipKeyword() {
@@ -1040,12 +1072,12 @@ export class P3 {
         // this['labelsList'].scrollTop = 0;
 
         this.scrollCategory = 0
-        const m = max(this.label_categories, d => d['total_similarity'])
-        const index = this.label_categories.findIndex(d => d['total_similarity'] == m);
-        this.selectCategory(this.label_categories[index])
+        const m = max(this.label_docs, d => d['total_similarity'])
+        const index = this.label_docs.findIndex(d => d['total_similarity'] == m);
+        this.selectLabel(this.label_docs[index])
     }
 
-    async undoKeyword() {
+    async undoKeyword1() {
         // Reset last element
         this.last_selected_keyword.mapping = ""
         this.last_selected_keyword.label = {};
@@ -1079,28 +1111,25 @@ export class P3 {
         // this['labelsList'].scrollTop = 0;
 
         this.scrollCategory = 0
-        const m = max(this.label_categories, d => d['total_similarity'])
-        const index = this.label_categories.findIndex(d => d['total_similarity'] == m);
-        this.selectCategory(this.label_categories[index])
+        const m = max(this.label_docs, d => d['total_similarity'])
+        const index = this.label_docs.findIndex(d => d['total_similarity'] == m);
+        this.selectLabel(this.label_docs[index])
     }
 
     throttled_applyLabel = _.throttle(x => this.applyLabel(), 1000)
 
     async applyLabel() {
-
-        let temp = []
-        temp.push(this.selected_keyword.keyword)
-        for (let index = 0; index < 10; index++) {
-            const element = this.selected_label_list[index];
-            temp.push(element.label)
-        }
-        this.ranking.push(temp)
+        // let temp = []
+        // temp.push(this.selected_keyword.keyword)
+        // for (let index = 0; index < 10; index++) {
+        //     const element = this.selected_label_list[index];
+        //     temp.push(element.label)
+        // }
+        // this.ranking.push(temp)
 
         this.selected_keyword.mapping = this.selected_label.label;
         this.selected_keyword.label = this.selected_label;
         this.selected_keyword.isDone = true;
-
-        this.last_selected_additional_keywords = []
 
         // Handle timing
         let div = 0
@@ -1111,18 +1140,18 @@ export class P3 {
         this.selected_keyword["time"] = time_fraction
 
 
-        if (this.selected_additional_keywords) {
-            for (const keyword of this.selected_additional_keywords) {
-                keyword.mapping = this.selected_label.label;
-                keyword.label = this.selected_label;
-                keyword.isDone = true;
-                keyword["time"] = time_fraction;
+        // if (this.selected_additional_keywords) {
+        //     for (const keyword of this.selected_additional_keywords) {
+        //         keyword.mapping = this.selected_label.label;
+        //         keyword.label = this.selected_label;
+        //         keyword.isDone = true;
+        //         keyword["time"] = time_fraction;
 
-                this.last_selected_additional_keywords.push(keyword)
-            }
+        //         this.last_selected_additional_keywords.push(keyword)
+        //     }
 
-            this.selected_additional_keywords = [];
-        }
+        //     this.selected_additional_keywords = [];
+        // }
 
         this.keyword_time = 0
 
@@ -1149,24 +1178,24 @@ export class P3 {
         this.updateKeywordStats();
 
         // Check if some documents are now finished
-        for (const doc of this.documents) {
-            if (doc["Keywords_Processed"].every(x => x["isDone"])) doc["isDone"] = true;
-        }
+        // for (const doc of this.documents) {
+        //     if (doc["Keywords_Processed"].every(x => x["isDone"])) doc["isDone"] = true;
+        // }
 
-        this.updateDocumentStats();
+        // this.updateDocumentStats();
 
         // this.unselectCategory();
         // this.unselectLabel();
 
-        this.scrollCategory = 0
-        const m = max(this.label_categories, d => d['total_similarity'])
-        const index = this.label_categories.findIndex(d => d['total_similarity'] == m);
-        this.selectCategory(this.label_categories[index])
+        // this.scrollCategory = 0
+        // const m = max(this.label_categories, d => d['total_similarity'])
+        // const index = this.label_categories.findIndex(d => d['total_similarity'] == m);
+        // this.selectCategory(this.label_categories[index])
 
         // // Reset filter
-        // this.searchDocumentTerm = ""
-        // this.searchKeywordsTerm = ""
-        // this.searchLabelsTerm = ""
+        this.searchDocumentTerm = ""
+        this.searchKeywordsTerm = ""
+        this.searchLabelsTerm = ""
 
         // // Reset scrolling after applying
         // this['labelsList'].scrollTop = 0;
