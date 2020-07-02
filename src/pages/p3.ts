@@ -10,6 +10,7 @@ import * as tfidf from 'tiny-tfidf';
 import * as porter from 'wink-porter2-stemmer';
 import * as distances from 'wink-distance';
 import { max } from 'd3';
+import * as d3 from 'd3';
 
 @autoinject()
 export class P3 {
@@ -77,6 +78,7 @@ export class P3 {
     public sort_property = "descending";
     public graph_data;
     public ranking = []
+    public category_layout = [[], [], [], []]
 
     // Distance Metrics
     // cosine_similarity(v1, v2) {
@@ -515,6 +517,46 @@ export class P3 {
 
         // // Stemmer
         // console.log(porter("running"))
+
+        // Prepare for category layout
+        const max_column_size = this.label_docs.length / 6
+        for (const cat of this.label_categories) {
+            if (!this.category_layout[0]) {
+                this.category_layout[0].push(cat)
+                continue
+            }
+            if (!this.category_layout[1]) {
+                this.category_layout[1].push(cat)
+                continue
+            }
+            if (!this.category_layout[2]) {
+                this.category_layout[2].push(cat)
+                continue
+            }
+            if (!this.category_layout[3]) {
+                this.category_layout[3].push(cat)
+                continue
+            }
+
+            if (d3.sum(this.category_layout[0], x => x.labels.length) < max_column_size) {
+                this.category_layout[0].push(cat)
+                continue
+            }
+            if (d3.sum(this.category_layout[1], x => x.labels.length) < max_column_size) {
+                this.category_layout[1].push(cat)
+                continue
+            }
+            if (d3.sum(this.category_layout[2], x => x.labels.length) < max_column_size) {
+                this.category_layout[2].push(cat)
+                continue
+            }
+            this.category_layout[3].push(cat)
+
+            if (this.category_layout[0] && this.category_layout[1] && this.category_layout[2] && this.category_layout[3]) {
+                this.category_layout.sort((a, b) => d3.sum(b, x => x.labels.length) - d3.sum(a, x => x.labels.length))
+            }
+        }
+        console.log(this.category_layout)
 
         console.log(this.labeled_documents)
         console.log(this.documents)
