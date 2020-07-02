@@ -797,7 +797,7 @@ export class P3 {
         if (num > 0.5) return "#094D08"
         else if (num > 0.25) return "#108C0E"
         else if (num > 0) return "#7CC07B"
-        else return "#D8DBDB"
+        else return "#FFFFFF"
     }
 
     colorConverterExplanation(num: number) {

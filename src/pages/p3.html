@@ -259,4 +259,122 @@
       </div>
     </div>
   </div>
+  <div class="row" style="font-size:x-small">
+    <div class="col m3">
+      <div repeat.for="category of category_layout[0]">
+        <table>
+          <thead style="margin-left: 5px">
+            <tr style="border:none; display: block; width: 100%;">
+              <!-- <th class="table_head"></th> -->
+              <th class="table_head" style="font-size: large">${category.category}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr repeat.for="label of category.labels | customSort: { propertyName: 'label',
+                direction: 'descending',
+              }" css="cursor: pointer; background-color: ${label['color']}; border: ${label.isActive ? '20px solid steelblue' :
+              ''}; font-size:
+              ${label.isActive ? 'large' :
+              'x-small'}" click.delegate="selectLabel(label)">
+              <!-- <td class="table_cell">
+                <md-checkbox checked.bind="label['isActive']">
+              </td> -->
+              <td class="table_cell">
+                <span>
+                  ${label['label']}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="col m3">
+      <div repeat.for="category of category_layout[1]">
+        <table>
+          <thead style="margin-left: 5px">
+            <tr style="border:none; display: block; width: 100%;">
+              <!-- <th class="table_head"></th> -->
+              <th class="table_head" style="font-size: large">${category.category}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr repeat.for="label of category.labels | customSort: { propertyName: 'label',
+                direction: 'descending', }" css="cursor: pointer; background-color: ${label['color']}; border:
+                ${label.isActive ? '20px solid steelblue' :
+                ''}; font-size:
+                ${label.isActive ? 'large' :
+                'x-small'}" click.delegate="selectLabel(label)">
+              <!-- <td class="table_cell">
+                <md-checkbox checked.bind="label['isActive']">
+              </td> -->
+              <td class="table_cell">
+                <span>
+                  ${label['label']}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="col m3">
+      <div repeat.for="category of category_layout[2]">
+        <table>
+          <thead style="margin-left: 5px">
+            <tr style="border:none; display: block; width: 100%;">
+              <!-- <th class="table_head"></th> -->
+              <th class="table_head" style="font-size: large">${category.category}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr repeat.for="label of category.labels | customSort: { propertyName: 'label',
+                direction: 'descending', }" css="cursor: pointer; background-color: ${label['color']}; border:
+                ${label.isActive ? '20px solid steelblue' :
+                ''}; font-size:
+                ${label.isActive ? 'large' :
+                'x-small'}" click.delegate="selectLabel(label)">
+              <!-- <td class="table_cell">
+                <md-checkbox checked.bind="label['isActive']">
+              </td> -->
+              <td class="table_cell">
+                <span>
+                  ${label['label']}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="col m3">
+      <div repeat.for="category of category_layout[3]">
+        <table>
+          <thead style="margin-left: 5px">
+            <tr style="border:none; display: block; width: 100%;">
+              <!-- <th class="table_head"></th> -->
+              <th class="table_head" style="font-size: large">${category.category}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr repeat.for="label of category.labels | customSort: { propertyName: 'label',
+                direction: 'descending', }" css="cursor: pointer; background-color: ${label['color']}; border:
+                ${label.isActive ? '20px solid steelblue' :
+                ''}; font-size:
+                ${label.isActive ? 'large' :
+                'x-small'}" click.delegate="selectLabel(label)">
+              <!-- <td class="table_cell">
+                <md-checkbox checked.bind="label['isActive']">
+              </td> -->
+              <td class="table_cell">
+                <span>
+                  ${label['label']}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 </template>
